@@ -186,8 +186,9 @@ export function SettingsScreen() {
         <SectionHead title="Données" />
         <div className="card card--pad stack stack-4">
           <p className="meta" style={{ lineHeight: 1.6 }}>
-            Tout est stocké sur cet appareil, hors ligne. La sauvegarde JSON contient les cartes,
-            l’historique et les réglages : c’est elle qu’il faut utiliser pour changer de téléphone.
+            Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers
+            un service tiers — polices comprises. La sauvegarde JSON contient les cartes, l’historique et les
+            réglages : c’est elle qu’il faut utiliser pour changer de téléphone.
           </p>
 
           <button

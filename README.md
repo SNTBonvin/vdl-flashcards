@@ -7,6 +7,24 @@ interrogation, import/export et rappels par catégorie.
 Tout est stocké **localement** sur l'appareil (IndexedDB). Aucun compte, aucun
 serveur, fonctionnement hors ligne complet une fois l'application installée.
 
+## Vie privée
+
+L'application est destinée à des élèves : elle n'émet **aucune requête vers un
+service tiers**, y compris au chargement de la page.
+
+- Les polices sont **auto-hébergées** (`public/fonts/`), et non servies par
+  Google Fonts — un chargement depuis `fonts.gstatic.com` transmettrait
+  l'adresse IP de chaque élève à Google à chaque visite.
+- Aucune mesure d'audience, aucun traceur, aucun cookie tiers.
+- Aucun compte, aucune donnée envoyée à un serveur : les cartes et l'historique
+  de révision ne quittent l'appareil que si l'utilisateur exporte lui-même une
+  sauvegarde.
+- Les notifications de rappel sont générées localement par le navigateur.
+
+Vérification : `document` ne charge que des ressources de son propre domaine —
+un contrôle automatisé compte les requêtes sortantes au démarrage et doit
+trouver zéro requête externe.
+
 ## Fonctionnalités
 
 - **Classement** — matières › catégories › cartes, avec recherche plein texte.
@@ -38,6 +56,7 @@ npm run dev        # serveur de développement
 npm run build      # vérification des types puis build de production
 npm run preview    # sert le build de production
 npm run icons      # régénère les icônes PNG de la PWA
+npm run fonts      # resynchronise les polices auto-hébergées depuis @fontsource
 ```
 
 ## Structure
@@ -52,13 +71,15 @@ src/
   screens/     Aujourd'hui, Matières, Catégorie, Réviser, Statistiques, Réglages
   components/  icônes trait fin et briques d'interface
   styles/      charte graphique « Papier » (tokens) et mise en page
-scripts/       générateur d'icônes PNG (sans dépendance)
+public/fonts/  polices auto-hébergées (woff2) et leurs licences OFL
+scripts/       générateur d'icônes PNG et synchronisation des polices
 ```
 
 ## Charte graphique
 
 Palette « Papier », accent unique vert sapin (`#275f4a`) sur fonds crème chauds,
-typographies Hanken Grotesk (interface) et IBM Plex Mono (données et libellés).
+typographies Hanken Grotesk (interface) et IBM Plex Mono (données et libellés),
+toutes deux auto-hébergées sous licence SIL Open Font License 1.1.
 Toutes les valeurs sont des variables CSS définies dans
 `src/styles/theme.css` : c'est le seul fichier à modifier pour ajuster le thème.
 
