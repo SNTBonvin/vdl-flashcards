@@ -218,6 +218,15 @@ Deux points méritent d'être connus avant de toucher aux couleurs :
 La balise `theme-color` suit le thème, pour que la barre d'état du téléphone
 s'accorde au fond de l'application.
 
+## Licence
+
+Code sous licence **MIT** (voir `LICENSE`) : réutilisation, modification et
+redistribution libres, y compris par d'autres établissements, à condition de
+conserver la mention de copyright.
+
+Les polices embarquées dans `public/fonts/` relèvent de leur propre licence,
+la SIL Open Font License 1.1, dont le texte est joint à côté des fichiers.
+
 ## Charte graphique
 
 Palette « Papier », accent unique vert sapin (`#275f4a`) sur fonds crème chauds,
