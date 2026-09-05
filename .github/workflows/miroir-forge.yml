@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Récupérer l'historique complet
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Sans l'historique entier, la Forge refuserait la mise à jour.
           fetch-depth: 0
