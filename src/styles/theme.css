@@ -5,12 +5,24 @@
 
 :root {
   /* --- Accent unique : vert sapin --- */
+  /* Le vert du texte, des icônes et des liens. */
   --primary: #275f4a;
   --primary-hover: #1d4c3b;
+  /* Vert soutenu, pour un texte posé sur un fond teinté. */
   --primary-dark: #173d2f;
   --primary-light: #356f57;
   --primary-tint: #e9efe9;
   --primary-tint-warm: #f2f4ee;
+
+  /*
+   * Le vert des aplats (bouton principal, pastille, interrupteur) est un jeton
+   * distinct du vert du texte : en thème sombre, un aplat lisible et un texte
+   * lisible ne peuvent pas être la même couleur.
+   */
+  --primary-fill: #275f4a;
+  --primary-fill-hover: #1d4c3b;
+  --primary-fill-active: #173d2f;
+  --on-primary: #ffffff;
 
   /* --- Neutres chauds --- */
   --ink: #221f1a;
@@ -21,6 +33,8 @@
   --rule: #f0ece3;
   --paper: #f6f4ee;
   --surface: #fffdf8;
+  /* Fond visible autour de la coque sur grand écran. */
+  --canvas: #efece4;
 
   /* --- Statuts sémantiques --- */
   --ok: #356f57;
@@ -31,6 +45,19 @@
   --warn-bg: #f5ecd6;
   --err: #a4453a;
   --err-bg: #f4e7e3;
+
+  /* --- Couleurs de composants, isolées pour pouvoir s'inverser --- */
+  --toast-bg: #221f1a;
+  --toast-fg: #f6f4ee;
+  --scrim: rgba(34, 31, 26, 0.32);
+  --focus-ring: rgba(39, 95, 74, 0.1);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236e6557' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  /* Dégradé du graphe d'activité, du plus faible au plus soutenu. */
+  --heat-1: #cfdccf;
+  --heat-2: #9dbaa6;
+  --heat-3: #5d8b71;
+  --heat-4: #275f4a;
 
   /* --- Rayons --- */
   --r-sm: 8px;
@@ -62,6 +89,74 @@
   --safe-t: env(safe-area-inset-top, 0px);
 
   color-scheme: light;
+}
+
+/* =========================================================
+   Palette sombre — « Papier de nuit »
+   Mêmes principes que la palette claire : neutres CHAUDS (brun très sombre,
+   jamais de noir pur ni de gris bleuté), un seul accent vert, hiérarchie par
+   l'espacement et le poids.
+
+   Un seul bloc suffit : le thème effectif est toujours écrit sur <html> par le
+   petit script de index.html, y compris en mode automatique. Pas de palette
+   dupliquée entre un sélecteur et une media query, donc pas de risque de
+   désynchronisation.
+   ========================================================= */
+
+:root[data-theme='dark'] {
+  /* L'accent s'éclaircit : #275f4a serait illisible sur ce fond. */
+  --primary: #7fb89b;
+  --primary-hover: #93c6ab;
+  --primary-dark: #a8d3bc;
+  --primary-light: #93c6ab;
+  --primary-tint: #1f2c25;
+  --primary-tint-warm: #221f18;
+
+  /* L'aplat, lui, reste soutenu : un vert clair ferait « bonbon ». */
+  --primary-fill: #35785d;
+  --primary-fill-hover: #3d8365;
+  --primary-fill-active: #2b6249;
+  --on-primary: #f4f1e8;
+
+  /* Encres inversées, toujours chaudes. */
+  --ink: #f4f1e8;
+  --ink-2: #cfc8b8;
+  --ink-3: #9e9583;
+  --ink-4: #766d5d;
+  --border: #302b23;
+  --rule: #262119;
+  --paper: #14120e;
+  --surface: #1c1913;
+  --canvas: #0d0b08;
+
+  /* Statuts : teinte conservée, luminosité relevée. */
+  --ok: #7fb89b;
+  --ok-bg: #1b2a22;
+  --run: #6fb3a4;
+  --run-bg: #172724;
+  --warn: #d8ac53;
+  --warn-bg: #2a2317;
+  --err: #d98d80;
+  --err-bg: #2b1d19;
+
+  /* La notification s'inverse : elle était sombre sur fond clair. */
+  --toast-bg: #322c23;
+  --toast-fg: #f4f1e8;
+  --scrim: rgba(0, 0, 0, 0.62);
+  --focus-ring: rgba(127, 184, 155, 0.16);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239e9583' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  --heat-1: #2c4034;
+  --heat-2: #43644f;
+  --heat-3: #5d8b71;
+  --heat-4: #7fb89b;
+
+  /* Les ombres portent peu sur fond sombre : les bordures prennent le relais. */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 22px -16px rgba(0, 0, 0, 0.8);
+  --shadow-3: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 40px -22px rgba(0, 0, 0, 0.9);
+
+  color-scheme: dark;
 }
 
 /* ---------------- Reset ---------------- */
@@ -282,15 +377,15 @@ a {
 
 /* Primaire : plein vert — une seule par bloc */
 .btn--primary {
-  background: var(--primary);
-  color: #fff;
+  background: var(--primary-fill);
+  color: var(--on-primary);
 }
 .btn--primary:active {
-  background: var(--primary-dark);
+  background: var(--primary-fill-active);
 }
 @media (hover: hover) {
   .btn--primary:hover {
-    background: var(--primary-hover);
+    background: var(--primary-fill-hover);
   }
 }
 
@@ -493,7 +588,7 @@ a {
 .select:focus {
   outline: none;
   border-color: var(--primary-light);
-  box-shadow: 0 0 0 3px rgba(39, 95, 74, 0.1);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .textarea {
@@ -504,7 +599,7 @@ a {
 
 .select {
   padding-right: 36px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236e6557' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: var(--select-arrow);
   background-repeat: no-repeat;
   background-position: right 12px center;
 }
@@ -538,8 +633,8 @@ a {
   transition: transform 0.18s ease;
 }
 .switch[aria-checked='true'] {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--primary-fill);
+  border-color: var(--primary-fill);
 }
 .switch[aria-checked='true']::after {
   transform: translateX(18px);

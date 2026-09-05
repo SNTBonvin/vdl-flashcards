@@ -21,10 +21,18 @@ import {
 } from '../io/transfer'
 import { notificationSupport, requestPermission } from '../reminders/reminders'
 import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
+import { useTheme, type ThemeMode } from '../theme/theme'
+
+const THEMES: { value: ThemeMode; label: string }[] = [
+  { value: 'auto', label: 'Automatique' },
+  { value: 'light', label: 'Clair' },
+  { value: 'dark', label: 'Sombre' },
+]
 
 export function SettingsScreen() {
   const store = useStore()
   const toast = useToast()
+  const theme = useTheme()
   const fileInput = useRef<HTMLInputElement>(null)
   const [pendingRestore, setPendingRestore] = useState<ReturnType<typeof parseBackup> | null>(null)
   const [wiping, setWiping] = useState(false)
@@ -69,6 +77,31 @@ export function SettingsScreen() {
       <div className="page-title">
         <h1>Réglages</h1>
       </div>
+
+      {/* ---------------- Apparence ---------------- */}
+      <section className="stack stack-3">
+        <SectionHead title="Apparence" />
+        <div className="card card--pad stack stack-3">
+          <div className="seg">
+            {THEMES.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                className="seg__item"
+                aria-pressed={theme.mode === item.value}
+                onClick={() => theme.setMode(item.value)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <span className="meta" style={{ lineHeight: 1.55 }}>
+            {theme.mode === 'auto'
+              ? `Suit le réglage du téléphone — actuellement ${theme.resolved === 'dark' ? 'sombre' : 'clair'}.`
+              : 'Réglage propre à cet appareil.'}
+          </span>
+        </div>
+      </section>
 
       {/* ---------------- Révision ---------------- */}
       <section className="stack stack-3">

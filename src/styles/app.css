@@ -13,7 +13,7 @@
 
 @media (min-width: 561px) {
   body {
-    background: #efece4;
+    background: var(--canvas);
   }
   .shell {
     border-left: 1px solid var(--border);
@@ -128,8 +128,8 @@
   height: 17px;
   padding: 0 4px;
   border-radius: 999px;
-  background: var(--primary);
-  color: #fff;
+  background: var(--primary-fill);
+  color: var(--on-primary);
   font-size: 9.5px;
   font-weight: 600;
   line-height: 17px;
@@ -268,7 +268,7 @@
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(34, 31, 26, 0.32);
+  background: var(--scrim);
   animation: fade-in 0.2s ease both;
   display: flex;
   align-items: flex-end;
@@ -335,8 +335,8 @@
   gap: var(--gap-2);
   padding: 11px 15px;
   border-radius: var(--r-md);
-  background: var(--ink);
-  color: #f6f4ee;
+  background: var(--toast-bg);
+  color: var(--toast-fg);
   font-size: 13.5px;
   font-weight: 500;
   box-shadow: var(--shadow-3);
@@ -459,12 +459,12 @@
   color: var(--err);
 }
 .grade--good {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
+  background: var(--primary-fill);
+  border-color: var(--primary-fill);
+  color: var(--on-primary);
 }
 .grade--good:active {
-  background: var(--primary-dark);
+  background: var(--primary-fill-active);
 }
 
 .grade__eta {
@@ -543,16 +543,16 @@
   background: var(--rule);
 }
 .heat__cell[data-level='1'] {
-  background: #cfdccf;
+  background: var(--heat-1);
 }
 .heat__cell[data-level='2'] {
-  background: #9dbaa6;
+  background: var(--heat-2);
 }
 .heat__cell[data-level='3'] {
-  background: #5d8b71;
+  background: var(--heat-3);
 }
 .heat__cell[data-level='4'] {
-  background: var(--primary);
+  background: var(--heat-4);
 }
 
 /* ---- Bandeau de mise à jour ---- */

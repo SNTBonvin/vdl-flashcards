@@ -50,6 +50,8 @@ trouver zéro requête externe.
   changer d'appareil, ou CSV pour un tableur.
 - **Statistiques** — activité sur 14 semaines, taux de réussite, répartition des
   cartes par état, résultats par matière.
+- **Thème clair et sombre** — automatique (suit le téléphone), clair ou sombre,
+  au choix et par appareil.
 
 ## Mises à jour
 
@@ -103,6 +105,28 @@ src/
 public/fonts/  polices auto-hébergées (woff2) et leurs licences OFL
 scripts/       générateur d'icônes PNG et synchronisation des polices
 ```
+
+## Thème clair et sombre
+
+La palette sombre reprend les principes de la charte : neutres chauds (brun très
+sombre, jamais de noir pur ni de gris bleuté), un seul accent vert, hiérarchie
+par l'espacement.
+
+Deux points méritent d'être connus avant de toucher aux couleurs :
+
+- Le vert des **aplats** (`--primary-fill`) est un jeton distinct du vert du
+  **texte** (`--primary`). En thème sombre, un aplat lisible et un texte lisible
+  ne peuvent pas être la même couleur : le texte s'éclaircit (`#7fb89b`) alors
+  que le bouton reste soutenu (`#35785d`), faute de quoi il ferait « bonbon ».
+- Le thème effectif est toujours écrit sur `<html data-theme>`, y compris en
+  mode automatique, par un court script en ligne dans `index.html` exécuté avant
+  le premier rendu — sans lui, l'application apparaîtrait en clair une fraction
+  de seconde avant de basculer. La feuille de style n'a donc qu'**un seul** bloc
+  sombre à maintenir, et non une palette dupliquée entre un sélecteur et une
+  media query.
+
+La balise `theme-color` suit le thème, pour que la barre d'état du téléphone
+s'accorde au fond de l'application.
 
 ## Charte graphique
 
