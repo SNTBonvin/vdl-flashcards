@@ -656,7 +656,12 @@
 
 @media (min-width: 1024px) {
   .shell {
-    max-width: 1140px;
+    /* L'application occupe toute la fenêtre : bornée, elle flotterait au
+       milieu de deux bandes vides sur un grand écran. C'est la *ligne de
+       texte* qu'il faut borner, pas la surface — voir `.screen` plus bas. */
+    max-width: none;
+    border-left: 0;
+    border-right: 0;
     /* Le rail occupe la première colonne sur toute la hauteur, l'en-tête
        et le contenu s'empilent dans la seconde. Les éléments sont placés
        explicitement : l'ordre du HTML reste inchangé. */
@@ -674,10 +679,20 @@
     grid-column: 2;
     grid-row: 2;
     width: 100%;
-    /* Une ligne de texte de 900px est pénible à lire : on borne. */
-    max-width: 840px;
+    /* Une ligne de texte trop longue est pénible à lire : la surface occupe
+       tout l'écran, la colonne de lecture reste bornée et centrée. */
+    max-width: 1040px;
     margin-inline: auto;
     padding: var(--gap-3) var(--gap-6) var(--gap-7);
+  }
+
+  /* L'en-tête suit la même colonne, sinon son contenu flotterait à droite. */
+  .appbar__inner {
+    width: 100%;
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-left: var(--gap-6);
+    padding-right: var(--gap-6);
   }
 
   /* Session de révision : elle occupe tout, la navigation étant masquée. */
