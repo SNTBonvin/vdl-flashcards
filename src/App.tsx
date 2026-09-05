@@ -15,6 +15,7 @@ import { ReviewScreen } from './screens/Review'
 import { StatsScreen } from './screens/Stats'
 import { SettingsScreen } from './screens/Settings'
 import { ShareScreen } from './screens/Share'
+import { HelpScreen } from './screens/Help'
 
 export function App() {
   return (
@@ -62,6 +63,7 @@ function Shell() {
       {route.name === 'stats' && <StatsScreen />}
       {route.name === 'settings' && <SettingsScreen />}
       {route.name === 'share' && <ShareScreen token={route.token} />}
+      {route.name === 'help' && <HelpScreen />}
 
       {/* Masqué pendant une session : on n'interrompt pas une révision en cours. */}
       {showChrome && <UpdateBanner update={update} />}
@@ -72,7 +74,7 @@ function Shell() {
             const active =
               route.name === tab.name ||
               (tab.name === 'library' && (route.name === 'subject' || route.name === 'deck')) ||
-              (tab.name === 'settings' && route.name === 'stats')
+              (tab.name === 'settings' && (route.name === 'stats' || route.name === 'help'))
             return (
               <button
                 key={tab.name}
@@ -110,7 +112,8 @@ function AppBar({ route }: { route: Route }) {
   const deck = route.name === 'deck' ? store.decks.find((d) => d.id === route.id) : null
   const deckSubject = deck ? store.subjects.find((s) => s.id === deck.subjectId) : null
 
-  const nested = route.name === 'subject' || route.name === 'deck' || route.name === 'stats'
+  const nested =
+    route.name === 'subject' || route.name === 'deck' || route.name === 'stats' || route.name === 'help'
 
   const titles: Record<string, string> = {
     today: 'Aujourd’hui',
@@ -119,6 +122,7 @@ function AppBar({ route }: { route: Route }) {
     stats: 'Statistiques',
     settings: 'Réglages',
     share: 'Thème partagé',
+    help: 'Prise en main',
   }
 
   return (

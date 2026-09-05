@@ -61,12 +61,26 @@ export function TodayScreen() {
         <EmptyState
           icon="layers"
           title="Aucune carte pour l’instant"
-          text="Créez une matière, puis un thème, et ajoutez vos premières flashcards. Vous pouvez aussi importer un fichier existant."
+          text="Créez une matière, puis un thème, et ajoutez vos premières flashcards. Vous pouvez aussi partir d’un exemple pour voir comment tout s’articule."
           action={
-            <button type="button" className="btn btn--primary" onClick={() => navigate({ name: 'library' })}>
-              <Icon name="plus" size={18} />
-              Créer une matière
-            </button>
+            <div className="stack stack-2" style={{ width: '100%', maxWidth: 280 }}>
+              <button
+                type="button"
+                className="btn btn--primary btn--block"
+                onClick={() => navigate({ name: 'library' })}
+              >
+                <Icon name="plus" size={18} />
+                Créer une matière
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--block"
+                onClick={() => navigate({ name: 'help' })}
+              >
+                <Icon name="sparkle" size={18} />
+                Découvrir avec un exemple
+              </button>
+            </div>
           }
         />
       </main>

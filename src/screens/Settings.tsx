@@ -22,6 +22,7 @@ import {
 import { notificationSupport, requestPermission } from '../reminders/reminders'
 import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
 import { useTheme, type ThemeMode } from '../theme/theme'
+import { useRoute } from '../lib/router'
 
 const THEMES: { value: ThemeMode; label: string }[] = [
   { value: 'auto', label: 'Automatique' },
@@ -32,6 +33,7 @@ const THEMES: { value: ThemeMode; label: string }[] = [
 export function SettingsScreen() {
   const store = useStore()
   const toast = useToast()
+  const { navigate } = useRoute()
   const theme = useTheme()
   const fileInput = useRef<HTMLInputElement>(null)
   const [pendingRestore, setPendingRestore] = useState<ReturnType<typeof parseBackup> | null>(null)
@@ -293,6 +295,23 @@ export function SettingsScreen() {
             {APP_VERSION} · {APP_BUILD_DATE}
           </span>
         </div>
+
+        <button
+          type="button"
+          className="card card--pad card--tap"
+          onClick={() => navigate({ name: 'help' })}
+        >
+          <div className="row">
+            <span className="glyph">
+              <Icon name="sparkle" size={18} />
+            </span>
+            <span className="grow stack" style={{ gap: 1 }}>
+              <span className="listrow__title">Prise en main</span>
+              <span className="meta">Le mode d’emploi, et un exemple à ajouter en un clic.</span>
+            </span>
+            <Icon name="chevron-right" size={18} />
+          </div>
+        </button>
 
         <button type="button" className="card card--pad card--tap" onClick={() => setAboutOpen(true)}>
           <div className="row">
