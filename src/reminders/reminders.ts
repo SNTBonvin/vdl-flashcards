@@ -7,7 +7,7 @@
  * toutes les minutes tant qu'elle est visible : si l'heure programmée du jour
  * est passée et qu'aucune notification n'a encore été envoyée, elle part.
  * À défaut de notification système, la pastille de l'onglet « Aujourd'hui »
- * signale les catégories en attente.
+ * signale les thèmes en attente.
  */
 
 import type { Deck } from '../db/types'
@@ -68,7 +68,7 @@ async function show(title: string, body: string, tag: string) {
 }
 
 /**
- * Envoie les rappels dus et renvoie les identifiants des catégories notifiées,
+ * Envoie les rappels dus et renvoie les identifiants des thèmes notifiées,
  * pour que l'appelant enregistre la date de déclenchement.
  */
 export async function fireDueReminders(

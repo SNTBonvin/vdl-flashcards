@@ -487,7 +487,7 @@
   text-align: center;
 }
 
-/* ---- Grille de sélection de catégories ---- */
+/* ---- Grille de sélection de thèmes ---- */
 
 .picker {
   display: flex;
@@ -552,5 +552,42 @@
   background: #5d8b71;
 }
 .heat__cell[data-level='4'] {
+  background: var(--primary);
+}
+
+/* ---- Bandeau de mise à jour ---- */
+
+.updatebar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--nav-h) + var(--safe-b));
+  z-index: 45;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 var(--gap-3) var(--gap-3);
+  animation: fade-up 0.24s ease both;
+  pointer-events: none;
+}
+
+.updatebar__inner {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-3);
+  padding: var(--gap-3) var(--gap-3) var(--gap-3) var(--gap-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+  position: relative;
+  overflow: hidden;
+}
+
+.updatebar__inner::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
   background: var(--primary);
 }

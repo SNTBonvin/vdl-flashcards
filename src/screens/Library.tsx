@@ -88,7 +88,7 @@ export function LibraryScreen() {
                     <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
                       <span className="listrow__title clamp-2">{card.front}</span>
                       <span className="listrow__sub truncate">
-                        {deck?.name ?? 'Catégorie supprimée'} · {card.back}
+                        {deck?.name ?? 'Thème supprimé'} · {card.back}
                       </span>
                     </span>
                     <Icon name="chevron-right" size={18} />
@@ -102,7 +102,7 @@ export function LibraryScreen() {
         <EmptyState
           icon="folder"
           title="Aucune matière"
-          text="Les matières regroupent vos catégories : Histoire, Anglais, Biologie… Commencez par en créer une."
+          text="Les matières regroupent vos thèmes : Histoire, Anglais, Biologie… Commencez par en créer une."
           action={
             <button type="button" className="btn btn--primary" onClick={() => setCreating(true)}>
               <Icon name="plus" size={18} />
@@ -131,7 +131,7 @@ export function LibraryScreen() {
                       <span className="listrow__title truncate">{subject.name}</span>
                       <span className="row" style={{ gap: 6 }}>
                         <span className="chip">
-                          {decks.length} {plural(decks.length, 'catégorie')}
+                          {decks.length} {plural(decks.length, 'thème')}
                         </span>
                         <span className="chip">
                           {counts.total} {plural(counts.total, 'carte')}

@@ -20,6 +20,7 @@ import {
   stamp,
 } from '../io/transfer'
 import { notificationSupport, requestPermission } from '../reminders/reminders'
+import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
 
 export function SettingsScreen() {
   const store = useStore()
@@ -75,7 +76,7 @@ export function SettingsScreen() {
         <div className="card card--pad stack stack-5">
           <Field
             label="Nouvelles cartes par jour"
-            hint="Par catégorie. Au-delà, les cartes neuves attendent le lendemain."
+            hint="Par thème. Au-delà, les cartes neuves attendent le lendemain."
           >
             <input
               className="input mono"
@@ -148,7 +149,7 @@ export function SettingsScreen() {
               }
             }}
             label="Notifications de révision"
-            hint="Chaque catégorie peut ensuite avoir son propre horaire."
+            hint="Chaque thème peut ensuite avoir son propre horaire."
           />
 
           <div className="row row--between">
@@ -234,7 +235,7 @@ export function SettingsScreen() {
             </span>
           </div>
           <span className="meta" style={{ fontSize: 12 }}>
-            matières · catégories · cartes
+            matières · thèmes · cartes
           </span>
 
           <button type="button" className="btn btn--danger btn--block" onClick={() => setWiping(true)}>
@@ -247,6 +248,19 @@ export function SettingsScreen() {
       {/* ---------------- À propos ---------------- */}
       <section className="stack stack-3">
         <SectionHead title="À propos" />
+
+        <div className="card card--pad row row--between">
+          <span className="grow stack" style={{ gap: 1 }}>
+            <span className="listrow__title">Version installée</span>
+            <span className="meta">
+              Comparez-la avec vos élèves pour vérifier qu’ils sont à jour.
+            </span>
+          </span>
+          <span className="chip mono">
+            {APP_VERSION} · {APP_BUILD_DATE}
+          </span>
+        </div>
+
         <button type="button" className="card card--pad card--tap" onClick={() => setAboutOpen(true)}>
           <div className="row">
             <span className="glyph">
@@ -268,7 +282,7 @@ export function SettingsScreen() {
         title="Restaurer cette sauvegarde ?"
         text={
           pendingRestore
-            ? `Le contenu actuel sera remplacé par ${pendingRestore.subjects.length} ${plural(pendingRestore.subjects.length, 'matière')}, ${pendingRestore.decks.length} ${plural(pendingRestore.decks.length, 'catégorie')} et ${pendingRestore.cards.length} ${plural(pendingRestore.cards.length, 'carte')}. Cette action est irréversible.`
+            ? `Le contenu actuel sera remplacé par ${pendingRestore.subjects.length} ${plural(pendingRestore.subjects.length, 'matière')}, ${pendingRestore.decks.length} ${plural(pendingRestore.decks.length, 'thème')} et ${pendingRestore.cards.length} ${plural(pendingRestore.cards.length, 'carte')}. Cette action est irréversible.`
             : ''
         }
         confirmLabel="Restaurer"
@@ -283,7 +297,7 @@ export function SettingsScreen() {
       <ConfirmSheet
         open={wiping}
         title="Tout effacer ?"
-        text="Toutes les matières, catégories, cartes et l’historique de révision seront supprimés de cet appareil. Exportez d’abord une sauvegarde si vous souhaitez les conserver."
+        text="Toutes les matières, thèmes, cartes et l’historique de révision seront supprimés de cet appareil. Exportez d’abord une sauvegarde si vous souhaitez les conserver."
         confirmLabel="Effacer"
         onClose={() => setWiping(false)}
         onConfirm={async () => {

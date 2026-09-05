@@ -61,7 +61,7 @@ export function TodayScreen() {
         <EmptyState
           icon="layers"
           title="Aucune carte pour l’instant"
-          text="Créez une matière, puis une catégorie, et ajoutez vos premières flashcards. Vous pouvez aussi importer un fichier existant."
+          text="Créez une matière, puis un thème, et ajoutez vos premières flashcards. Vous pouvez aussi importer un fichier existant."
           action={
             <button type="button" className="btn btn--primary" onClick={() => navigate({ name: 'library' })}>
               <Icon name="plus" size={18} />
@@ -182,7 +182,7 @@ export function TodayScreen() {
                 <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
                   <span className="listrow__title truncate">{subject.name}</span>
                   <span className="listrow__sub">
-                    {decks.length} {plural(decks.length, 'catégorie')} · {counts.total}{' '}
+                    {decks.length} {plural(decks.length, 'thème')} · {counts.total}{' '}
                     {plural(counts.total, 'carte')}
                   </span>
                 </span>

@@ -12,7 +12,16 @@ export interface Subject {
   position: number
 }
 
-/** Catégorie de cartes à l'intérieur d'une matière (ex. « La Ve République »). */
+/**
+ * Thème de cartes à l'intérieur d'une matière (ex. « La Ve République »).
+ *
+ * Le type et le champ `deckId` des cartes gardent volontairement leur nom
+ * d'origine : ce sont les clés effectivement écrites dans IndexedDB et dans
+ * les sauvegardes JSON déjà exportées. Les renommer obligerait à migrer les
+ * données existantes — et donc à risquer de les perdre — pour un simple
+ * changement de vocabulaire. « Thème » est le mot de l'interface, `Deck`
+ * celui du stockage.
+ */
 export interface Deck {
   id: ID
   subjectId: ID
@@ -23,7 +32,7 @@ export interface Deck {
   reminder: Reminder | null
 }
 
-/** Rappel de révision programmé pour une catégorie. */
+/** Rappel de révision programmé pour un thème. */
 export interface Reminder {
   enabled: boolean
   /** Heure au format « HH:MM ». */
@@ -83,7 +92,7 @@ export interface ReviewLog {
 }
 
 export interface Settings {
-  /** Nouvelles cartes introduites par jour et par catégorie. */
+  /** Nouvelles cartes introduites par jour et par thème. */
   newPerDay: number
   /** Plafond de cartes à réviser par session. */
   maxPerSession: number

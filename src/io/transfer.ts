@@ -2,7 +2,7 @@
  * Import et export des données.
  *
  * Trois formats :
- *  - JSON  : sauvegarde intégrale (matières, catégories, cartes, historique,
+ *  - JSON  : sauvegarde intégrale (matières, thèmes, cartes, historique,
  *            réglages) — c'est le format à utiliser pour changer de téléphone.
  *  - CSV   : tableur, une carte par ligne.
  *  - Texte : collage rapide « recto ; verso », compatible avec un export Anki
@@ -147,7 +147,7 @@ export function parseRows(text: string, forcedDelimiter?: string): ParsedRow[] {
       if (head.includes('recto') && head.includes('verso')) continue
     }
 
-    // Format complet (export de l'application) : matière, catégorie, recto, verso…
+    // Format complet (export de l'application) : matière, thème, recto, verso…
     const full = cells.length >= 6 && cells[2] !== '' && cells[3] !== ''
     const front = full ? cells[2] : cells[0]
     const back = full ? cells[3] : cells[1]
@@ -180,7 +180,7 @@ export function parseBackup(text: string): Backup {
     throw new ImportError("Ce fichier ne provient pas de l'application.")
   }
   if (!Array.isArray(data.subjects) || !Array.isArray(data.decks) || !Array.isArray(data.cards)) {
-    throw new ImportError('Sauvegarde incomplète : matières, catégories ou cartes manquantes.')
+    throw new ImportError('Sauvegarde incomplète : matières, thèmes ou cartes manquantes.')
   }
 
   return {

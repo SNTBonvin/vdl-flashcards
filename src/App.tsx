@@ -5,6 +5,8 @@ import { Icon, type IconName } from './components/Icon'
 import { useRoute, type Route } from './lib/router'
 import { countCards, isDue, isNew } from './srs/queue'
 import { fireDueReminders, isReminderPending } from './reminders/reminders'
+import { UpdateBanner } from './components/UpdateBanner'
+import { useAppUpdate } from './pwa/update'
 import { TodayScreen } from './screens/Today'
 import { LibraryScreen } from './screens/Library'
 import { SubjectScreen } from './screens/Subject'
@@ -34,6 +36,7 @@ function Shell() {
   const store = useStore()
   const { route, navigate } = useRoute()
   const [sessionOpen, setSessionOpen] = useState(false)
+  const update = useAppUpdate()
 
   const dueTotal = useMemo(
     () => store.cards.filter((c) => isDue(c) || isNew(c)).length,
@@ -57,6 +60,9 @@ function Shell() {
       {route.name === 'review' && <ReviewScreen onSessionChange={setSessionOpen} />}
       {route.name === 'stats' && <StatsScreen />}
       {route.name === 'settings' && <SettingsScreen />}
+
+      {/* Masqué pendant une session : on n'interrompt pas une révision en cours. */}
+      {showChrome && <UpdateBanner update={update} />}
 
       {showChrome && (
         <nav className="tabbar" aria-label="Navigation principale">

@@ -9,7 +9,7 @@ import type { Card, Grade, ID } from '../db/types'
 
 const MODES: { value: SessionMode; label: string; hint: string }[] = [
   { value: 'due', label: 'Programmé', hint: 'Les cartes échues du jour, plus les nouvelles.' },
-  { value: 'quiz', label: 'Interrogation', hint: 'Toutes les cartes des catégories choisies, mélangées.' },
+  { value: 'quiz', label: 'Interrogation', hint: 'Toutes les cartes des thèmes choisis, mélangées.' },
   { value: 'hard', label: 'Difficiles', hint: 'Uniquement les cartes déjà ratées au moins une fois.' },
 ]
 
@@ -90,7 +90,7 @@ function ReviewSetup({
         <EmptyState
           icon="review"
           title="Rien à réviser"
-          text="Créez d’abord une matière et une catégorie, puis ajoutez des cartes pour lancer une session."
+          text="Créez d’abord une matière et un thème, puis ajoutez des cartes pour lancer une session."
         />
       </main>
     )
@@ -124,7 +124,7 @@ function ReviewSetup({
 
       <section className="stack stack-3">
         <SectionHead
-          title="Catégories"
+          title="Thèmes"
           aside={
             <button
               type="button"
@@ -197,13 +197,13 @@ function ReviewSetup({
           const started = onStart(
             selected,
             mode,
-            names.length === 1 ? names[0] : `${names.length} catégories`,
+            names.length === 1 ? names[0] : `${names.length} thèmes`,
           )
           if (started === 0) toast('Aucune carte à réviser avec ces réglages.', 'error')
         }}
       >
         {selected.length === 0
-          ? 'Choisissez une catégorie'
+          ? 'Choisissez un thème'
           : preview === 0
             ? 'Aucune carte à réviser'
             : `Commencer — ${preview} ${plural(preview, 'carte')}`}

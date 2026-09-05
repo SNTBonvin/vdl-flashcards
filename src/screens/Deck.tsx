@@ -59,8 +59,8 @@ export function DeckScreen({ id }: { id: string }) {
       <main className="screen">
         <EmptyState
           icon="layers"
-          title="Catégorie introuvable"
-          text="Elle a peut-être été supprimée."
+          title="Thème introuvable"
+          text="Il a peut-être été supprimé."
           action={
             <button type="button" className="btn btn--ghost" onClick={() => navigate({ name: 'library' })}>
               Retour aux matières
@@ -167,7 +167,7 @@ export function DeckScreen({ id }: { id: string }) {
             text={
               filter === 'all'
                 ? 'Ajoutez vos cartes une par une, ou importez une liste depuis un tableur ou un autre logiciel.'
-                : 'Changez de filtre pour retrouver le reste des cartes de cette catégorie.'
+                : 'Changez de filtre pour retrouver le reste des cartes de ce thème.'
             }
             action={
               filter === 'all' ? (
@@ -240,13 +240,13 @@ export function DeckScreen({ id }: { id: string }) {
 
       <DeckSheet
         open={editingDeck}
-        title="Modifier la catégorie"
+        title="Modifier le thème"
         initial={{ name: deck.name, description: deck.description }}
         onClose={() => setEditingDeck(false)}
         onSubmit={async (name, description) => {
           await store.updateDeck(deck.id, { name, description })
           setEditingDeck(false)
-          toast('Catégorie mise à jour.')
+          toast('Thème mis à jour.')
         }}
       />
 
@@ -284,11 +284,11 @@ export function DeckScreen({ id }: { id: string }) {
       <ConfirmSheet
         open={confirming}
         title={`Supprimer « ${deck.name} » ?`}
-        text={`Les ${counts.total} ${plural(counts.total, 'carte')} de cette catégorie et leur progression seront définitivement supprimées.`}
+        text={`Les ${counts.total} ${plural(counts.total, 'carte')} de ce thème et leur progression seront définitivement supprimées.`}
         onClose={() => setConfirming(false)}
         onConfirm={async () => {
           await store.deleteDeck(deck.id)
-          toast('Catégorie supprimée.')
+          toast('Thème supprimé.')
           navigate({ name: 'subject', id: deck.subjectId })
         }}
       />

@@ -56,7 +56,7 @@ export function SubjectScreen({ id }: { id: string }) {
     <main className="screen stack stack-5">
       <StatRow
         items={[
-          { value: decks.length, label: plural(decks.length, 'catégorie') },
+          { value: decks.length, label: plural(decks.length, 'thème') },
           { value: counts.total, label: plural(counts.total, 'carte') },
           { value: waiting, label: 'à réviser', accent: waiting > 0 },
         ]}
@@ -93,16 +93,16 @@ export function SubjectScreen({ id }: { id: string }) {
       </div>
 
       <section className="stack stack-3">
-        <SectionHead title="Catégories" />
+        <SectionHead title="Thèmes" />
         {decks.length === 0 ? (
           <EmptyState
             icon="layers"
-            title="Aucune catégorie"
-            text="Une catégorie regroupe les cartes d’un chapitre ou d’un thème précis."
+            title="Aucun thème"
+            text="Un thème regroupe les cartes d’un chapitre ou d’un thème précis."
             action={
               <button type="button" className="btn btn--primary" onClick={() => setCreating(true)}>
                 <Icon name="plus" size={18} />
-                Nouvelle catégorie
+                Nouveau thème
               </button>
             }
           />
@@ -146,7 +146,7 @@ export function SubjectScreen({ id }: { id: string }) {
             </div>
             <button type="button" className="btn btn--ghost btn--block" onClick={() => setCreating(true)}>
               <Icon name="plus" size={18} />
-              Nouvelle catégorie
+              Nouveau thème
             </button>
           </>
         )}
@@ -158,7 +158,7 @@ export function SubjectScreen({ id }: { id: string }) {
         onSubmit={async (name, description) => {
           const deck = await store.createDeck(subject.id, name, description)
           setCreating(false)
-          toast(`Catégorie « ${deck.name} » créée.`)
+          toast(`Thème « ${deck.name} » créé.`)
           navigate({ name: 'deck', id: deck.id })
         }}
       />
@@ -178,7 +178,7 @@ export function SubjectScreen({ id }: { id: string }) {
       <ConfirmSheet
         open={confirming}
         title={`Supprimer « ${subject.name} » ?`}
-        text={`Cette matière, ses ${decks.length} ${plural(decks.length, 'catégorie')} et ses ${counts.total} ${plural(counts.total, 'carte')} seront définitivement supprimées. Pensez à exporter une sauvegarde avant.`}
+        text={`Cette matière, ses ${decks.length} ${plural(decks.length, 'thème')} et ses ${counts.total} ${plural(counts.total, 'carte')} seront définitivement supprimés. Pensez à exporter une sauvegarde avant.`}
         onClose={() => setConfirming(false)}
         onConfirm={async () => {
           await store.deleteSubject(subject.id)
@@ -195,7 +195,7 @@ export function DeckSheet({
   onClose,
   onSubmit,
   initial,
-  title = 'Nouvelle catégorie',
+  title = 'Nouveau thème',
 }: {
   open: boolean
   onClose: () => void
@@ -225,7 +225,7 @@ export function DeckSheet({
       }
     >
       <div className="stack stack-5">
-        <Field label="Nom de la catégorie">
+        <Field label="Nom du thème">
           <input
             className="input"
             value={name}

@@ -90,7 +90,7 @@ const byPosition = <T extends { position: number; createdAt: number }>(a: T, b: 
   a.position - b.position || a.createdAt - b.createdAt
 
 export interface Store extends State {
-  /** Cartes indexées par catégorie — recalculé à chaque changement. */
+  /** Cartes indexées par thème — recalculé à chaque changement. */
   cardsByDeck: Map<ID, Card[]>
   decksBySubject: Map<ID, Deck[]>
 
@@ -196,7 +196,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'cards', payload: cards.filter((c) => !deckIds.includes(c.deckId)) })
   }, [])
 
-  /* ---------------------------- Catégories ---------------------------- */
+  /* ---------------------------- Thèmes ---------------------------- */
 
   const createDeck = useCallback(async (subjectId: ID, name: string, description = '') => {
     const current = stateRef.current.decks

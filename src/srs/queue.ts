@@ -6,7 +6,7 @@ export type SessionMode = 'due' | 'quiz' | 'hard'
 
 export interface QueueOptions {
   mode: SessionMode
-  /** Cartes déjà introduites aujourd'hui, par catégorie. */
+  /** Cartes déjà introduites aujourd'hui, par thème. */
   introducedToday: Record<ID, number>
   settings: Settings
   now?: number
@@ -35,7 +35,7 @@ function shuffle<T>(items: T[]): T[] {
 }
 
 /**
- * Construit la file d'une session à partir des cartes des catégories choisies.
+ * Construit la file d'une session à partir des cartes des thèmes choisis.
  *
  * - « due »  : les cartes échues, complétées par des cartes neuves dans la
  *              limite quotidienne réglée.
@@ -59,7 +59,7 @@ export function buildQueue(cards: Card[], options: QueueOptions): Card[] {
 
   const due = cards.filter((c) => isDue(c, now)).sort((a, b) => a.srs.due - b.srs.due)
 
-  // Cartes neuves : quota par catégorie, dans l'ordre de création.
+  // Cartes neuves : quota par thème, dans l'ordre de création.
   const remaining: Record<ID, number> = {}
   const fresh: Card[] = []
   for (const card of cards.filter(isNew).sort((a, b) => a.createdAt - b.createdAt)) {
