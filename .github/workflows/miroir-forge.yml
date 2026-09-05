@@ -1,0 +1,56 @@
+# Recopie automatique de la branche « main » vers la Forge des communs
+# numériques éducatifs, qui héberge et publie le site.
+#
+# Pourquoi ce détour : dans son édition libre, GitLab ne sait pas *tirer*
+# depuis un dépôt distant — le miroir en extraction est réservé aux éditions
+# payantes. C'est donc GitHub qui pousse.
+#
+# À faire une seule fois avant que cela fonctionne :
+#
+#   1. Sur la Forge : Paramètres → Jetons d'accès → créer un jeton de projet,
+#      rôle « Mainteneur », portée « write_repository ». Copier la valeur, elle
+#      n'est affichée qu'une fois.
+#   2. Sur GitHub : Settings → Secrets and variables → Actions → New repository
+#      secret, nommé exactement FORGE_TOKEN, contenant ce jeton.
+
+name: Miroir vers la Forge
+
+on:
+  push:
+    branches: [main]
+  # Permet aussi de relancer la recopie à la main depuis l'onglet Actions.
+  workflow_dispatch:
+
+# Deux recopies simultanées se marcheraient dessus.
+concurrency:
+  group: miroir-forge
+  cancel-in-progress: false
+
+env:
+  FORGE_REPO: forge.apps.education.fr/bonvinchristophe/vdl-flashcards.git
+
+jobs:
+  miroir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer l'historique complet
+        uses: actions/checkout@v4
+        with:
+          # Sans l'historique entier, la Forge refuserait la mise à jour.
+          fetch-depth: 0
+          ref: main
+
+      - name: Pousser vers la Forge
+        env:
+          FORGE_TOKEN: ${{ secrets.FORGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FORGE_TOKEN}" ]; then
+            echo "Le secret FORGE_TOKEN est absent. Voir l'en-tête de ce fichier." >&2
+            exit 1
+          fi
+          # Volontairement sans « --force » : si les deux dépôts divergeaient,
+          # mieux vaut un échec visible que l'écrasement silencieux d'une
+          # modification faite directement sur la Forge.
+          git push "https://oauth2:${FORGE_TOKEN}@${FORGE_REPO}" HEAD:main
+          echo "Branche main recopiée sur la Forge — le pipeline de publication va suivre."
