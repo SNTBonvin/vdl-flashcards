@@ -1,0 +1,36 @@
+# Publication sur GitLab Pages.
+#
+# GitLab Pages sert le site dans un sous-dossier (par exemple
+# « /vdl-flashcards/ ») et non à la racine d'un domaine. Le chemin est déduit
+# de CI_PAGES_URL et transmis à Vite par VITE_BASE : rien n'est écrit en dur,
+# le même dépôt se publie donc aussi bien à la racine (Netlify, domaine propre)
+# que dans un sous-dossier.
+
+image: node:22-alpine
+
+stages:
+  - build
+
+pages:
+  stage: build
+  script:
+    # Chemin de publication, terminé par une barre oblique. En l'absence de
+    # CI_PAGES_URL (exécution manuelle du job), on retombe sur la racine.
+    - |
+      export VITE_BASE="$(node -e "
+        const url = process.env.CI_PAGES_URL
+        console.log(url ? new URL(url).pathname.replace(/\/?$/, '/') : '/')
+      ")"
+    - echo "Publication sous $VITE_BASE"
+    - npm ci
+    - npm run build
+    # GitLab Pages exige un dossier nommé « public », or le dépôt en contient
+    # déjà un (polices et icônes sources). Il a été consommé par la
+    # construction : on peut le remplacer sans risque.
+    - rm -rf public
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

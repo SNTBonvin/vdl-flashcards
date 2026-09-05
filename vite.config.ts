@@ -6,7 +6,21 @@ import { readFileSync } from 'node:fs'
 const { version } = JSON.parse(readFileSync('./package.json', 'utf8')) as { version: string }
 const buildDate = new Date().toISOString().slice(0, 10)
 
+/**
+ * Chemin auquel le site est servi.
+ *
+ * À la racine d'un domaine (Netlify, domaine propre), c'est « / ». GitLab Pages
+ * sert en revanche dans un sous-dossier du type « /mon-projet/ » : la valeur est
+ * alors fournie par la variable VITE_BASE, que la CI déduit de CI_PAGES_URL.
+ *
+ * Vite réécrit seul les chemins de index.html et les URL de polices du CSS ;
+ * seuls le manifeste et les icônes de notification demandent un traitement
+ * explicite, ici et dans src/reminders/reminders.ts.
+ */
+const base = `/${(process.env.VITE_BASE ?? '/').replace(/^\/+|\/+$/g, '')}/`.replace('//', '/')
+
 export default defineConfig({
+  base,
   define: {
     __APP_VERSION__: JSON.stringify(version),
     __APP_BUILD_DATE__: JSON.stringify(buildDate)
@@ -25,8 +39,8 @@ export default defineConfig({
         description: 'Créer, réviser et planifier ses flashcards avec répétition espacée.',
         lang: 'fr',
         dir: 'ltr',
-        start_url: '/',
-        scope: '/',
+        start_url: base,
+        scope: base,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#f6f4ee',

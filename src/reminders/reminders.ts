@@ -51,8 +51,10 @@ async function show(title: string, body: string, tag: string) {
   const options: NotificationOptions = {
     body,
     tag,
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    // BASE_URL suit le chemin de publication : « / » à la racine d'un domaine,
+    // « /mon-projet/ » sur GitLab Pages.
+    icon: `${import.meta.env.BASE_URL}icons/icon-192.png`,
+    badge: `${import.meta.env.BASE_URL}icons/icon-192.png`,
     lang: 'fr',
   }
   // Le service worker permet à la notification de survivre à la fermeture

@@ -241,5 +241,43 @@ la pastille de l'onglet « Aujourd'hui ».
 
 ## Déploiement
 
-Site statique : `npm run build` produit `dist/`. La configuration Netlify
-(`netlify.toml`) est incluse — build `npm run build`, dossier publié `dist`.
+Site statique : `npm run build` produit `dist/`.
+
+### Chemin de publication
+
+Le site peut être servi **à la racine d'un domaine** ou **dans un sous-dossier**,
+sans modification du code. Le chemin est donné par la variable `VITE_BASE` :
+
+```bash
+npm run build                            # racine d'un domaine  →  /
+VITE_BASE=/vdl-flashcards/ npm run build # sous-dossier          →  /vdl-flashcards/
+```
+
+Vite réécrit seul les chemins de `index.html` et les URL de polices du CSS. Deux
+endroits demandaient un traitement explicite et l'ont reçu : le manifeste
+(`start_url` et `scope`, dans `vite.config.ts`) et les icônes des notifications
+(`import.meta.env.BASE_URL`, dans `src/reminders/reminders.ts`).
+
+Le routage passant par le fragment (`#/...`), **aucune règle de réécriture
+n'est nécessaire** : la seule URL réelle est celle de la page d'accueil. Les
+liens de partage sont construits à partir du chemin courant et suivent donc le
+sous-dossier automatiquement.
+
+### GitLab Pages
+
+`.gitlab-ci.yml` publie sur GitLab Pages. Le chemin est déduit de `CI_PAGES_URL`
+et transmis à Vite : rien n'est écrit en dur. Le job remplace le dossier
+`public/` du dépôt (polices et icônes sources, déjà consommées par la
+construction) par le résultat, GitLab Pages exigeant ce nom.
+
+Si l'instance ne dispose pas de runners partagés, il reste possible de
+construire en local et de publier l'artefact à la main.
+
+À vérifier avant la première publication : que les pages de l'instance sont
+**accessibles sans authentification**, faute de quoi ni l'application ni les
+liens de partage ne fonctionneraient pour les élèves.
+
+### Netlify
+
+`netlify.toml` est conservé — build `npm run build`, dossier publié `dist`,
+publication à la racine.
