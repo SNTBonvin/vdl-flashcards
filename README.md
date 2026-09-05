@@ -50,10 +50,36 @@ trouver zéro requête externe.
   changer d'appareil, ou CSV pour un tableur.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
-- **Statistiques** — activité sur 14 semaines, taux de réussite, répartition des
-  cartes par état, résultats par matière.
+- **Thème reçu, thème vivant** — celui qui reçoit un thème peut y ajouter ses
+  propres cartes, archiver celles dont il ne veut pas, et distinguer d'un coup
+  d'œil les cartes reçues des siennes.
+- **Statistiques** — thèmes à retravailler, activité sur 14 semaines, taux de
+  réussite, répartition des cartes par état, résultats par matière ; et un bilan
+  de fin de session ventilé par thème.
 - **Thème clair et sombre** — automatique (suit le téléphone), clair ou sombre,
   au choix et par appareil.
+
+## Statistiques par thème
+
+Chaque réponse enregistre le thème de **sa carte**, pas celui de la session : une
+interrogation mêlant plusieurs thèmes est donc correctement ventilée, et l'était
+déjà rétroactivement avant l'ajout de ces écrans.
+
+Deux endroits l'exploitent :
+
+- le **bilan de fin de session**, quand la session a mêlé plusieurs thèmes :
+  réussite et nombre de ratées par thème, chaque ligne relançant aussitôt les
+  cartes difficiles du thème concerné ;
+- la section **« À retravailler »** des statistiques : les thèmes classés par
+  taux d'échec sur 30 jours.
+
+Un thème n'y est comparé qu'à partir de **6 réponses** sur la période. En
+dessous, un seul échec suffirait à le propulser en tête : le chiffre serait du
+bruit, pas un signal.
+
+Aucune de ces lignes n'est un simple affichage — toutes lancent une session sur
+le thème concerné. Une statistique qui ne mène pas à une action est un bulletin
+de notes de plus.
 
 ## Partage d'un thème
 
@@ -73,16 +99,42 @@ nombre de modules du QR code et non du nombre de cartes :
 | ≤ 5 000 caractères | lien seulement — certains ENT tronquent les liens longs |
 | au-delà | l'application renvoie vers l'export JSON |
 
-Trois règles gouvernent la réception (`importShare` dans `src/state/store.tsx`) :
+Cinq règles gouvernent la réception (`importShare` dans `src/state/store.tsx`),
+et toutes protègent le travail de celui qui reçoit :
 
 - **Rien n'est ajouté automatiquement.** Le lien affiche un aperçu ; l'élève
   décide.
-- **La progression est conservée.** Les cartes sont appariées sur leur recto
-  normalisé : une carte déjà travaillée garde son intervalle et son historique
-  même si l'auteur en corrige le verso. Le lien porte un identifiant de partage
-  stable, si bien qu'une rediffusion met le jeu à jour au lieu de le dupliquer.
+- **La progression est conservée.** Les cartes reçues sont appariées sur leur
+  recto normalisé : une carte déjà travaillée garde son intervalle et son
+  historique même si l'auteur en corrige le verso. Le lien porte un identifiant
+  de partage stable, si bien qu'une rediffusion met le jeu à jour au lieu de le
+  dupliquer.
+- **L'import ne touche jamais une carte personnelle.** L'appariement ne porte
+  que sur les cartes venues du même partage. Si une carte personnelle occupe le
+  même recto, elle est laissée intacte et la carte reçue n'est pas créée : ni
+  écrasement silencieux, ni doublon.
 - **Un lien ne supprime jamais rien.** Une carte retirée par l'auteur reste chez
   ceux qui l'avaient déjà reçue.
+- **Une carte archivée ne réapparaît pas.** Son contenu est mis à jour, mais
+  elle reste hors de la liste.
+
+### Archivage, origine et appropriation
+
+L'archivage remplace la suppression pour les cartes reçues, et ce n'est pas
+qu'une douceur d'interface : **l'enregistrement conservé fait office de pierre
+tombale**. Une carte archivée est « déjà connue » à la rediffusion suivante,
+donc elle ne ressuscite pas — sans qu'il faille tenir une liste de refus à
+côté. Une carte personnelle, elle, reste supprimable définitivement.
+
+Chaque carte porte son origine (`sharedFrom`). L'interface la signale par une
+mention discrète et deux filtres, « Reçues » et « Mes cartes ».
+
+**Modifier une carte reçue, c'est se l'approprier** : elle bascule du côté de
+l'utilisateur et cesse de suivre les mises à jour de l'auteur. C'est annoncé
+avant la modification, pas découvert après. Ce choix vaut mieux qu'un verrou en
+lecture seule, qui ne protégerait rien (les données sont sur l'appareil, donc
+modifiables par export/import) tout en empêchant un élève de corriger une
+coquille ou de reformuler une réponse avec ses mots.
 
 `CompressionStream` manque sur les navigateurs les plus anciens (iOS antérieur à
 16.4) : le lien est alors produit sans compression, donc plus long, sans autre

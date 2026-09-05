@@ -504,6 +504,20 @@
   background: var(--primary-tint-warm);
 }
 
+/* Variante défilable : au-delà de quatre entrées, on préfère un défilement
+   horizontal à des libellés illisibles. */
+.seg--scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.seg--scroll::-webkit-scrollbar {
+  display: none;
+}
+.seg--scroll .seg__item {
+  flex: 0 0 auto;
+  padding: 0 14px;
+}
+
 .seg__item {
   flex: 1;
   height: 34px;

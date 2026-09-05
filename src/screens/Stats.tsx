@@ -1,13 +1,27 @@
 import { useMemo } from 'react'
 import { useStore } from '../state/store'
+import { useRoute } from '../lib/router'
+import { requestSession } from '../state/session'
 import { countCards } from '../srs/queue'
+import { Icon } from '../components/Icon'
 import { SectionHead, StatRow, EmptyState, plural } from '../components/ui'
 import { DAY_MS, dayKey, startOfDay } from '../lib/date'
 
 const WEEKS = 14
 
+/**
+ * Nombre minimum de réponses sur la fenêtre pour qu'un thème soit comparé aux
+ * autres. En dessous, un seul échec suffirait à le propulser en tête du
+ * classement : le chiffre serait du bruit, pas un signal.
+ */
+const MIN_ANSWERS = 6
+
+/** Fenêtre d'observation, en jours. */
+const WINDOW = 30
+
 export function StatsScreen() {
   const store = useStore()
+  const { navigate } = useRoute()
   const now = Date.now()
 
   const totals = useMemo(() => countCards(store.cards, now), [store.cards, now])
@@ -57,6 +71,41 @@ export function StatsScreen() {
     return { fresh, learning, review, relearning, suspended }
   }, [store.cards])
 
+  /**
+   * Thèmes à retravailler, classés par taux d'échec sur la fenêtre.
+   *
+   * Le `deckId` étant enregistré sur chaque réponse et non sur la session, une
+   * interrogation mêlant plusieurs thèmes est correctement ventilée : chaque
+   * réponse compte pour le thème de sa carte.
+   */
+  const toReview = useMemo(() => {
+    const from = now - WINDOW * DAY_MS
+    const tally = new Map<string, { answers: number; failed: number }>()
+    for (const log of store.logs) {
+      if (log.ts < from) continue
+      const current = tally.get(log.deckId) ?? { answers: 0, failed: 0 }
+      current.answers += 1
+      if (log.grade === 'again') current.failed += 1
+      tally.set(log.deckId, current)
+    }
+
+    return store.decks
+      .map((deck) => {
+        const stat = tally.get(deck.id) ?? { answers: 0, failed: 0 }
+        const counts = countCards(store.cardsByDeck.get(deck.id) ?? [], now)
+        return {
+          deck,
+          subject: store.subjects.find((s) => s.id === deck.subjectId),
+          answers: stat.answers,
+          rate: stat.answers > 0 ? Math.round((stat.failed / stat.answers) * 100) : 0,
+          hard: counts.hard,
+        }
+      })
+      .filter((row) => row.answers >= MIN_ANSWERS && row.rate > 0)
+      .sort((a, b) => b.rate - a.rate || b.hard - a.hard)
+      .slice(0, 6)
+  }, [store.logs, store.decks, store.subjects, store.cardsByDeck, now])
+
   const bySubject = useMemo(
     () =>
       store.subjects
@@ -99,6 +148,58 @@ export function StatsScreen() {
       />
 
       <section className="stack stack-3">
+        <SectionHead
+          title="À retravailler"
+          aside={<span className="meta mono">{WINDOW} derniers jours</span>}
+        />
+        {toReview.length === 0 ? (
+          <div className="card card--pad">
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              Rien à signaler pour l’instant. Un thème apparaît ici dès qu’il compte au moins{' '}
+              {MIN_ANSWERS} réponses sur la période et que certaines ont été ratées.
+            </p>
+          </div>
+        ) : (
+          <div className="stack stack-2">
+            {toReview.map((row) => (
+              <button
+                key={row.deck.id}
+                type="button"
+                className="card card--pad card--tap"
+                data-status={row.rate >= 40 ? 'err' : row.rate >= 20 ? 'warn' : 'ok'}
+                onClick={() => {
+                  // Chaque ligne mène à une action : sans quoi ce n'est qu'un
+                  // bulletin de notes de plus.
+                  requestSession({
+                    deckIds: [row.deck.id],
+                    mode: row.hard > 0 ? 'hard' : 'quiz',
+                    label: row.deck.name,
+                  })
+                  navigate({ name: 'review' })
+                }}
+              >
+                <div className="row">
+                  <div className="grow stack" style={{ gap: 4, minWidth: 0 }}>
+                    <span className="listrow__title truncate">{row.deck.name}</span>
+                    <span className="listrow__sub truncate">{row.subject?.name}</span>
+                    <span className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
+                      <span className="chip mono">{100 - row.rate} % de réussite</span>
+                      {row.hard > 0 && (
+                        <span className="chip chip--warn">
+                          {row.hard} {plural(row.hard, 'carte difficile', 'cartes difficiles')}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <Icon name="chevron-right" size={18} />
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="stack stack-3">
         <SectionHead title="Activité" aside={<span className="meta mono">{WEEKS} semaines</span>} />
         <div className="card card--pad stack stack-3">
           <div className="heat">
@@ -136,7 +237,7 @@ export function StatsScreen() {
           <StatLine label="Acquises" value={states.review} status="ok" />
           <StatLine label="À reprendre" value={states.relearning} status="err" />
           <StatLine label="Échues aujourd’hui" value={totals.due} status="warn" />
-          {states.suspended > 0 && <StatLine label="Suspendues" value={states.suspended} status="idle" />}
+          {states.suspended > 0 && <StatLine label="Archivées" value={states.suspended} status="idle" />}
         </div>
       </section>
 

@@ -47,7 +47,14 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
   }, [])
 
   if (queue === null) return <ReviewSetup onStart={startWith} />
-  return <Session queue={queue} label={label} onExit={() => setQueue(null)} />
+  return (
+    <Session
+      queue={queue}
+      label={label}
+      onExit={() => setQueue(null)}
+      onRestart={(deckIds, mode, sessionLabel) => startWith(deckIds, mode, sessionLabel)}
+    />
+  )
 }
 
 /* ------------------------------ Préparation ------------------------------ */
@@ -220,12 +227,27 @@ interface Tally {
   good: number
 }
 
-function Session({ queue, label, onExit }: { queue: Card[]; label: string; onExit: () => void }) {
+const EMPTY_TALLY: Tally = { again: 0, hard: 0, good: 0 }
+
+function Session({
+  queue,
+  label,
+  onExit,
+  onRestart,
+}: {
+  queue: Card[]
+  label: string
+  onExit: () => void
+  onRestart: (deckIds: ID[], mode: SessionMode, label: string) => void
+}) {
   const store = useStore()
   const [cards, setCards] = useState<Card[]>(queue)
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
-  const [tally, setTally] = useState<Tally>({ again: 0, hard: 0, good: 0 })
+  const [tally, setTally] = useState<Tally>(EMPTY_TALLY)
+  // Ventilation par thème : c'est elle qui rend le bilan utile quand la session
+  // a mélangé plusieurs thèmes, ce que le total global ne dit pas.
+  const [byDeck, setByDeck] = useState<Record<ID, Tally>>({})
   const [startedAt] = useState(() => Date.now())
 
   const total = queue.length
@@ -240,6 +262,10 @@ function Session({ queue, label, onExit }: { queue: Card[]; label: string; onExi
     if (!card) return
     const updated = await store.answer(card, grade)
     setTally((t) => ({ ...t, [grade]: t[grade] + 1 }))
+    setByDeck((current) => {
+      const previous = current[card.deckId] ?? EMPTY_TALLY
+      return { ...current, [card.deckId]: { ...previous, [grade]: previous[grade] + 1 } }
+    })
 
     // Une carte ratée revient avant la fin de la session.
     const soon = updated.srs.due <= Date.now() + 11 * 60_000
@@ -270,6 +296,20 @@ function Session({ queue, label, onExit }: { queue: Card[]; label: string; onExi
     const minutes = Math.max(1, Math.round((Date.now() - startedAt) / 60_000))
     const success = reviewed > 0 ? Math.round(((tally.good + tally.hard) / reviewed) * 100) : 0
 
+    // La ventilation n'a d'intérêt que si la session a mêlé plusieurs thèmes.
+    const themes = Object.entries(byDeck)
+      .map(([deckId, counts]) => {
+        const answers = counts.again + counts.hard + counts.good
+        return {
+          deckId,
+          name: store.decks.find((d) => d.id === deckId)?.name ?? 'Thème supprimé',
+          answers,
+          failed: counts.again,
+          rate: answers > 0 ? Math.round(((counts.good + counts.hard) / answers) * 100) : 0,
+        }
+      })
+      .sort((a, b) => a.rate - b.rate)
+
     return (
       <main className="review">
         <div className="finish">
@@ -297,6 +337,43 @@ function Session({ queue, label, onExit }: { queue: Card[]; label: string; onExi
               <div className="stat__label">ratées</div>
             </div>
           </div>
+
+          {themes.length > 1 && (
+            <div className="stack stack-3" style={{ width: '100%' }}>
+              <SectionHead title="Par thème" />
+              <div className="stack stack-2">
+                {themes.map((theme) => (
+                  <button
+                    key={theme.deckId}
+                    type="button"
+                    className="card card--pad card--tap"
+                    data-status={theme.rate >= 80 ? 'ok' : theme.rate >= 60 ? 'warn' : 'err'}
+                    disabled={theme.failed === 0}
+                    onClick={() => onRestart([theme.deckId], 'hard', theme.name)}
+                    style={{ textAlign: 'left' }}
+                  >
+                    <div className="row">
+                      <div className="grow stack" style={{ gap: 3, minWidth: 0 }}>
+                        <span className="listrow__title truncate">{theme.name}</span>
+                        <span className="row" style={{ gap: 6 }}>
+                          <span className="chip mono">{theme.rate} %</span>
+                          {theme.failed > 0 && (
+                            <span className="chip chip--err">
+                              {theme.failed} {plural(theme.failed, 'ratée')}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      {theme.failed > 0 && <Icon name="chevron-right" size={18} />}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                Touchez un thème pour reprendre aussitôt ses cartes difficiles.
+              </p>
+            </div>
+          )}
 
           <div className="stack stack-3" style={{ width: '100%' }}>
             <button type="button" className="btn btn--primary btn--lg btn--block" onClick={onExit}>

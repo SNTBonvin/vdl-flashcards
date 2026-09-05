@@ -22,7 +22,14 @@ import { DAY_SHORT, formatDue } from '../lib/date'
 import { ImportError, parseRows, readFile } from '../io/transfer'
 import { ShareSheet } from '../components/ShareSheet'
 
-type Filter = 'all' | 'due' | 'new' | 'hard'
+/**
+ * Les filtres mêlent deux dimensions — l'état de révision et l'origine — dans
+ * un seul sélecteur exclusif. C'est volontairement simple : croiser « difficiles »
+ * et « reçues » n'apporterait rien à ce stade, et deux barres de filtres sur un
+ * téléphone coûtent plus qu'elles ne rapportent. Les cartes archivées sont
+ * exclues de tous les autres filtres.
+ */
+type Filter = 'all' | 'due' | 'new' | 'hard' | 'shared' | 'own' | 'archived'
 
 export function DeckScreen({ id }: { id: string }) {
   const store = useStore()
@@ -35,24 +42,39 @@ export function DeckScreen({ id }: { id: string }) {
   const [importOpen, setImportOpen] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | 'new' | null>(null)
   const [sharing, setSharing] = useState(false)
+  /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
+  const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
 
   const deck = store.decks.find((d) => d.id === id)
   const cards = useMemo(() => store.cardsByDeck.get(id) ?? [], [store.cardsByDeck, id])
   const counts = countCards(cards)
 
+  /** Le thème contient-il à la fois des cartes reçues et des cartes personnelles ? */
+  const mixed = useMemo(
+    () => cards.some((c) => c.sharedFrom) && cards.some((c) => !c.sharedFrom),
+    [cards],
+  )
+
   const visible = useMemo(() => {
     const now = Date.now()
     const sorted = cards.slice().sort((a, b) => a.createdAt - b.createdAt)
+    if (filter === 'archived') return sorted.filter((c) => c.suspended)
+
+    const live = sorted.filter((c) => !c.suspended)
     switch (filter) {
       case 'due':
-        return sorted.filter((c) => !c.suspended && c.srs.state !== 'new' && c.srs.due <= now)
+        return live.filter((c) => c.srs.state !== 'new' && c.srs.due <= now)
       case 'new':
-        return sorted.filter((c) => c.srs.state === 'new')
+        return live.filter((c) => c.srs.state === 'new')
       case 'hard':
-        return sorted.filter((c) => c.srs.lapses > 0 || c.srs.state === 'relearning')
+        return live.filter((c) => c.srs.lapses > 0 || c.srs.state === 'relearning')
+      case 'shared':
+        return live.filter((c) => c.sharedFrom)
+      case 'own':
+        return live.filter((c) => !c.sharedFrom)
       default:
-        return sorted
+        return live
     }
   }, [cards, filter])
 
@@ -160,13 +182,17 @@ export function DeckScreen({ id }: { id: string }) {
       <section className="stack stack-3">
         <SectionHead title="Cartes" aside={<span className="meta mono">{visible.length}</span>} />
 
-        <div className="seg">
+        <div className="seg seg--scroll">
           {(
             [
               ['all', 'Toutes'],
               ['due', 'Dues'],
               ['new', 'Neuves'],
               ['hard', 'Difficiles'],
+              ...(mixed ? ([['shared', 'Reçues'], ['own', 'Mes cartes']] as [Filter, string][]) : []),
+              ...(counts.archived > 0
+                ? ([['archived', `Archivées ${counts.archived}`]] as [Filter, string][])
+                : []),
             ] as [Filter, string][]
           ).map(([value, label]) => (
             <button
@@ -211,7 +237,14 @@ export function DeckScreen({ id }: { id: string }) {
                 <span className={`dot dot--${statusOf(card)}`} />
                 <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
                   <span className="listrow__title clamp-2">{card.front}</span>
-                  <span className="listrow__sub truncate">{card.back}</span>
+                  <span className="listrow__sub truncate">
+                    {card.sharedFrom && (
+                      <span className="mono" style={{ color: 'var(--primary)', fontSize: 10.5 }}>
+                        REÇUE ·{' '}
+                      </span>
+                    )}
+                    {card.back}
+                  </span>
                 </span>
                 <span className="chip mono">{cardStateLabel(card)}</span>
               </button>
@@ -235,6 +268,17 @@ export function DeckScreen({ id }: { id: string }) {
         onClose={() => setEditingCard(null)}
         onSubmit={async (values) => {
           if (editingCard && editingCard !== 'new') {
+            // Modifier une carte reçue, c'est se l'approprier : elle cesse de
+            // suivre les mises à jour de l'auteur. On le dit avant, pas après.
+            const rewritten =
+              editingCard.sharedFrom !== undefined &&
+              (values.front !== editingCard.front ||
+                values.back !== editingCard.back ||
+                values.notes !== editingCard.notes)
+            if (rewritten) {
+              setClaiming({ card: editingCard, values })
+              return
+            }
             await store.updateCard(editingCard.id, values)
             toast('Carte modifiée.')
           } else {
@@ -302,6 +346,21 @@ export function DeckScreen({ id }: { id: string }) {
         }}
       />
 
+      <ConfirmSheet
+        open={claiming !== null}
+        title="Cette carte deviendra la vôtre"
+        text={`En la modifiant, elle quitte les cartes reçues${deck.sharedBy ? ` de ${deck.sharedBy}` : ''} et devient une carte personnelle. Les corrections apportées au thème partagé ne s’y appliqueront plus, et votre progression sur cette carte est conservée.`}
+        confirmLabel="Modifier"
+        onClose={() => setClaiming(null)}
+        onConfirm={async () => {
+          if (!claiming) return
+          await store.updateCard(claiming.card.id, { ...claiming.values, sharedFrom: undefined })
+          toast('Carte modifiée — elle est désormais la vôtre.')
+          setEditingCard(null)
+          setClaiming(null)
+        }}
+      />
+
       <ShareSheet open={sharing} deck={deck} onClose={() => setSharing(false)} />
 
       <ConfirmSheet
@@ -328,7 +387,7 @@ function statusOf(card: Card): 'ok' | 'run' | 'warn' | 'err' | 'idle' {
 }
 
 function cardStateLabel(card: Card): string {
-  if (card.suspended) return 'suspendue'
+  if (card.suspended) return 'archivée'
   if (card.srs.state === 'new') return 'neuve'
   if (card.srs.state === 'relearning') return 'à revoir'
   if (card.srs.due <= Date.now()) return 'due'
@@ -336,6 +395,14 @@ function cardStateLabel(card: Card): string {
 }
 
 /* ------------------------------ Éditeur de carte ------------------------------ */
+
+export interface CardValues {
+  front: string
+  back: string
+  notes: string
+  tags: string[]
+  suspended: boolean
+}
 
 export function CardSheet({
   open,
@@ -348,7 +415,7 @@ export function CardSheet({
   open: boolean
   card: Card | null
   onClose: () => void
-  onSubmit: (values: { front: string; back: string; notes: string; tags: string[]; suspended: boolean }) => void
+  onSubmit: (values: CardValues) => void
   onDelete?: () => void
   onReset?: () => void
 }) {
@@ -392,7 +459,7 @@ export function CardSheet({
         onClose={onClose}
         footer={
           <>
-            {card && onDelete && (
+            {card && onDelete && !card.sharedFrom && (
               <button
                 type="button"
                 className="icon-btn icon-btn--danger"
@@ -450,9 +517,15 @@ export function CardSheet({
               <Toggle
                 checked={suspended}
                 onChange={setSuspended}
-                label="Suspendre la carte"
-                hint="Elle ne sera plus proposée en révision."
+                label="Archiver la carte"
+                hint="Elle sort de la liste et n’est plus proposée en révision. Réversible."
               />
+              {card.sharedFrom && (
+                <p className="meta" style={{ lineHeight: 1.55 }}>
+                  Cette carte a été reçue par partage. Elle s’archive plutôt qu’elle ne se supprime :
+                  une suppression définitive serait annulée à la prochaine mise à jour du thème.
+                </p>
+              )}
               <div className="card card--pad stack stack-3">
                 <span className="eyebrow">Progression</span>
                 <div className="row row--between">

@@ -85,8 +85,24 @@ export interface Card {
   tags: string[]
   createdAt: number
   updatedAt: number
-  /** Une carte suspendue n'est jamais proposée en révision. */
+  /**
+   * Carte archivée : elle disparaît de la liste et n'est plus jamais proposée
+   * en révision, mais elle reste en base — et c'est essentiel. Une carte reçue
+   * d'un partage puis archivée est ainsi « déjà connue » à la rediffusion
+   * suivante, donc elle ne réapparaît pas. L'enregistrement conservé fait
+   * office de pierre tombale, sans qu'il faille tenir une liste de refus.
+   *
+   * Le champ garde son nom d'origine, `suspended`, parce que c'est la clé
+   * écrite dans IndexedDB et dans les sauvegardes déjà exportées.
+   * « Archivée » est le mot de l'interface.
+   */
   suspended: boolean
+  /**
+   * Identifiant du partage dont la carte provient. Absent pour les cartes que
+   * l'utilisateur a créées lui-même — et retiré dès qu'il modifie une carte
+   * reçue, celle-ci devenant alors la sienne.
+   */
+  sharedFrom?: string
   srs: Srs
 }
 

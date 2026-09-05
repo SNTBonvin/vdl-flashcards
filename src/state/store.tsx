@@ -39,6 +39,8 @@ export interface ImportResult {
   updated: number
   /** Cartes déjà présentes et inchangées : leur progression est conservée. */
   unchanged: number
+  /** Cartes écartées parce qu'une carte personnelle occupait déjà ce recto. */
+  skipped: number
   /** Le thème existait déjà (même identifiant de partage). */
   merged: boolean
 }
@@ -266,6 +268,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       createdAt: now,
       updatedAt: now,
       suspended: data.suspended ?? false,
+      ...(data.sharedFrom ? { sharedFrom: data.sharedFrom } : {}),
       srs: data.srs ?? newSrs(now),
     }
   }
@@ -383,11 +386,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   /**
    * Ajoute un thème reçu par lien, ou le met à jour s'il est déjà là.
    *
-   * Deux règles importantes pour l'élève :
-   *  - les cartes sont appariées sur leur recto normalisé, donc une carte déjà
-   *    travaillée **conserve sa progression** même si le verso a été corrigé ;
-   *  - une carte retirée du jeu par l'auteur n'est jamais supprimée : un lien
-   *    n'efface rien chez celui qui le reçoit.
+   * Quatre règles, qui protègent toutes le travail de celui qui reçoit :
+   *
+   *  - les cartes reçues sont appariées sur leur recto normalisé, donc une
+   *    carte déjà travaillée **conserve sa progression** même si l'auteur en
+   *    corrige le verso ;
+   *  - **l'import ne touche jamais une carte personnelle.** L'appariement ne
+   *    porte que sur les cartes venues de ce même partage. Si une carte
+   *    personnelle porte par hasard le même recto, elle est laissée intacte et
+   *    la carte reçue n'est pas créée — pas d'écrasement silencieux, pas de
+   *    doublon ;
+   *  - une carte retirée du jeu par l'auteur n'est jamais supprimée ;
+   *  - une carte archivée par celui qui l'a reçue reste archivée. Son contenu
+   *    est mis à jour, mais elle ne réapparaît pas dans sa liste.
    */
   const importShare = useCallback(async (payload: SharePayload): Promise<ImportResult> => {
     const { subjects, decks, cards } = stateRef.current
@@ -433,26 +444,45 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
 
     const inDeck = cards.filter((c) => c.deckId === deck.id)
-    const byKey = new Map(inDeck.map((c) => [cardKey(c.front), c]))
+    // Deux index séparés : celui des cartes issues de ce partage, sur lequel
+    // porte la mise à jour, et celui des cartes personnelles, qui sert
+    // uniquement à ne pas créer de doublon.
+    const fromShare = new Map(
+      inDeck.filter((c) => c.sharedFrom === payload.id).map((c) => [cardKey(c.front), c]),
+    )
+    const own = new Set(
+      inDeck.filter((c) => c.sharedFrom !== payload.id).map((c) => cardKey(c.front)),
+    )
 
     const created: Card[] = []
     const touched: Card[] = []
     let unchanged = 0
+    let skipped = 0
 
     for (const [front, back, notes] of payload.c) {
       if (!front?.trim() || !back?.trim()) continue
-      const current = byKey.get(cardKey(front))
+      const key = cardKey(front)
+      const current = fromShare.get(key)
+
       if (!current) {
-        created.push(makeCard(deck.id, { front, back, notes: notes ?? '' } as Card))
+        // Une carte personnelle occupe déjà ce recto : on la laisse tranquille.
+        if (own.has(key)) {
+          skipped += 1
+          continue
+        }
+        created.push(
+          makeCard(deck.id, { front, back, notes: notes ?? '', sharedFrom: payload.id } as Card),
+        )
         continue
       }
+
       const nextBack = back.trim()
       const nextNotes = (notes ?? '').trim()
       if (current.back === nextBack && current.notes === nextNotes) {
         unchanged += 1
         continue
       }
-      // La progression (srs) est délibérément laissée intacte.
+      // La progression (srs) et l'archivage sont délibérément laissés intacts.
       touched.push({ ...current, back: nextBack, notes: nextNotes, updatedAt: now })
     }
 
@@ -482,6 +512,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       added: created.length,
       updated: touched.length,
       unchanged,
+      skipped,
       merged: Boolean(existing),
     }
   }, [])

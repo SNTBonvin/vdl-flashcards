@@ -77,7 +77,10 @@ export function buildQueue(cards: Card[], options: QueueOptions): Card[] {
 }
 
 export interface DeckCounts {
+  /** Cartes visibles : les archivées en sont exclues. */
   total: number
+  /** Cartes archivées, comptées à part. */
+  archived: number
   due: number
   fresh: number
   hard: number
@@ -89,15 +92,19 @@ export function countCards(cards: Card[], now = Date.now()): DeckCounts {
   let due = 0
   let fresh = 0
   let hard = 0
+  let archived = 0
   let nextDue: number | null = null
 
   for (const card of cards) {
-    if (card.suspended) continue
+    if (card.suspended) {
+      archived += 1
+      continue
+    }
     if (isNew(card)) fresh += 1
     else if (card.srs.due <= now) due += 1
     else if (nextDue === null || card.srs.due < nextDue) nextDue = card.srs.due
     if (isHard(card)) hard += 1
   }
 
-  return { total: cards.length, due, fresh, hard, nextDue }
+  return { total: cards.length - archived, archived, due, fresh, hard, nextDue }
 }
