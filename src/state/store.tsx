@@ -28,6 +28,15 @@ import {
 } from '../db/types'
 import { grade as gradeCard, newSrs } from '../srs/scheduler'
 import { cardKey, type SharePayload } from '../io/share'
+import {
+  DEMO_CARDS,
+  DEMO_DECK_DESCRIPTION,
+  DEMO_DECK_ID,
+  DEMO_DECK_NAME,
+  DEMO_SUBJECT_CODE,
+  DEMO_SUBJECT_ID,
+  DEMO_SUBJECT_NAME,
+} from '../demo/demo'
 import { dayKey } from '../lib/date'
 import { uid } from '../lib/id'
 
@@ -127,6 +136,13 @@ export interface Store extends State {
 
   answer(card: Card, value: Grade): Promise<Card>
   resetCards(ids: ID[]): Promise<void>
+
+  /** L'exemple de démonstration est-il installé ? */
+  hasDemo: boolean
+  /** Installe l'exemple de démonstration. Renvoie l'identifiant de son thème. */
+  installDemo(): Promise<ID>
+  /** Retire l'exemple de démonstration, et lui seul. */
+  removeDemo(): Promise<void>
 
   /** Attribue un identifiant de partage au thème s'il n'en a pas encore. */
   prepareShare(deckId: ID): Promise<string>
@@ -265,7 +281,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       back: data.back.trim(),
       notes: (data.notes ?? '').trim(),
       tags: data.tags ?? [],
-      createdAt: now,
+      createdAt: data.createdAt ?? now,
       updatedAt: now,
       suspended: data.suspended ?? false,
       ...(data.sharedFrom ? { sharedFrom: data.sharedFrom } : {}),
@@ -369,6 +385,67 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     await idb.putMany('cards', next.filter((c) => set.has(c.id)))
     dispatch({ type: 'cards', payload: next })
   }, [])
+
+  /* -------------------------- Démonstration ---------------------------- */
+
+  /**
+   * Installe l'exemple. Les identifiants étant réservés, une seconde
+   * installation remplace la première au lieu d'empiler des doublons.
+   */
+  const installDemo = useCallback(async () => {
+    const { subjects, decks, cards } = stateRef.current
+    const now = Date.now()
+
+    const subject: Subject = {
+      id: DEMO_SUBJECT_ID,
+      name: DEMO_SUBJECT_NAME,
+      code: DEMO_SUBJECT_CODE,
+      createdAt: now,
+      position: subjects.length,
+    }
+    const deck: Deck = {
+      id: DEMO_DECK_ID,
+      subjectId: DEMO_SUBJECT_ID,
+      name: DEMO_DECK_NAME,
+      description: DEMO_DECK_DESCRIPTION,
+      createdAt: now,
+      position: 0,
+      reminder: null,
+    }
+    const fresh = DEMO_CARDS.map((card, index) =>
+      makeCard(DEMO_DECK_ID, {
+        ...card,
+        // Décalage d'une milliseconde pour garantir l'ordre d'affichage.
+        createdAt: now + index,
+      } as Card),
+    )
+
+    // On repart d'une base propre si l'exemple était déjà là.
+    const staleCards = cards.filter((c) => c.deckId === DEMO_DECK_ID).map((c) => c.id)
+    await idb.del('cards', staleCards)
+    await Promise.all([idb.put('subjects', subject), idb.put('decks', deck), idb.putMany('cards', fresh)])
+
+    dispatch({
+      type: 'subjects',
+      payload: [...subjects.filter((s) => s.id !== DEMO_SUBJECT_ID), subject].sort(byPosition),
+    })
+    dispatch({
+      type: 'decks',
+      payload: [...decks.filter((d) => d.id !== DEMO_DECK_ID), deck].sort(byPosition),
+    })
+    dispatch({
+      type: 'cards',
+      payload: [...cards.filter((c) => c.deckId !== DEMO_DECK_ID), ...fresh],
+    })
+    return DEMO_DECK_ID
+  }, [])
+
+  const removeDemo = useCallback(async () => {
+    // La suppression d'une matière emporte déjà ses thèmes et ses cartes ; les
+    // identifiants réservés garantissent qu'elle ne touche rien d'autre.
+    await deleteSubject(DEMO_SUBJECT_ID)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteSubject])
 
   /* ----------------------------- Partage ------------------------------ */
 
@@ -591,6 +668,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       answer,
       resetCards,
+      hasDemo: state.subjects.some((s) => s.id === DEMO_SUBJECT_ID),
+      installDemo,
+      removeDemo,
       prepareShare,
       importShare,
       saveSettings,
@@ -615,6 +695,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       answer,
       resetCards,
+      installDemo,
+      removeDemo,
       prepareShare,
       importShare,
       saveSettings,

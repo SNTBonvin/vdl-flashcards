@@ -1,11 +1,29 @@
 # Flashcards — Val de Lys
 
+**<https://bonvinchristophe.forge.apps.education.fr/vdl-flashcards>**
+
 Application web progressive (PWA) de flashcards pensée pour le smartphone :
 création et classement des cartes, révision par répétition espacée, mode
 interrogation, import/export et rappels par thème.
 
 Tout est stocké **localement** sur l'appareil (IndexedDB). Aucun compte, aucun
 serveur, fonctionnement hors ligne complet une fois l'application installée.
+
+## Prise en main
+
+Le mode d'emploi est dans [TUTORIEL.md](TUTORIEL.md), et le même contenu est
+accessible **dans l'application** — *Réglages → Prise en main* — ce qui est plus
+commode depuis un téléphone.
+
+Pour découvrir l'application sans rien saisir, cette page propose d'**ajouter un
+exemple en un clic** : une matière, un thème et sept cartes qui portent sur
+l'application elle-même, si bien que les réviser apprend à s'en servir. Un
+second clic les retire.
+
+Les identifiants de l'exemple sont réservés (`demo-matiere-exemple`,
+`demo-theme-exemple`) et ne sont jamais produits par le générateur aléatoire :
+la suppression retire donc exactement ce qui a été créé, sans pouvoir toucher
+aux matières de l'utilisateur.
 
 ## Vie privée
 
