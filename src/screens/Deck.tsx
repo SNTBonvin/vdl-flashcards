@@ -20,6 +20,7 @@ import { DEFAULT_REMINDER_TIME, WEEKDAYS, requestPermission } from '../reminders
 import type { Card, Reminder } from '../db/types'
 import { DAY_SHORT, formatDue } from '../lib/date'
 import { ImportError, parseRows, readFile } from '../io/transfer'
+import { ShareSheet } from '../components/ShareSheet'
 
 type Filter = 'all' | 'due' | 'new' | 'hard'
 
@@ -33,6 +34,7 @@ export function DeckScreen({ id }: { id: string }) {
   const [reminderOpen, setReminderOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | 'new' | null>(null)
+  const [sharing, setSharing] = useState(false)
   const [filter, setFilter] = useState<Filter>('all')
 
   const deck = store.decks.find((d) => d.id === id)
@@ -80,6 +82,18 @@ export function DeckScreen({ id }: { id: string }) {
 
   return (
     <main className="screen stack stack-5">
+      {deck.sharedBy && (
+        <div className="card card--pad row" data-status="run" style={{ gap: 12 }}>
+          <span className="glyph glyph--warm">
+            <Icon name="layers" size={18} />
+          </span>
+          <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+            <span className="listrow__title truncate">Partagé par {deck.sharedBy}</span>
+            <span className="meta">Vos réponses et votre progression vous appartiennent.</span>
+          </span>
+        </div>
+      )}
+
       {deck.description && (
         <p style={{ color: 'var(--ink-2)', fontSize: 14.5, lineHeight: 1.6, padding: '0 2px' }}>
           {deck.description}
@@ -135,6 +149,13 @@ export function DeckScreen({ id }: { id: string }) {
           Importer
         </button>
       </div>
+
+      {counts.total > 0 && (
+        <button type="button" className="btn btn--ghost btn--block" onClick={() => setSharing(true)}>
+          <Icon name="move" size={18} />
+          Partager ce thème
+        </button>
+      )}
 
       <section className="stack stack-3">
         <SectionHead title="Cartes" aside={<span className="meta mono">{visible.length}</span>} />
@@ -280,6 +301,8 @@ export function DeckScreen({ id }: { id: string }) {
           toast(`${added} ${plural(added, 'carte importée', 'cartes importées')}.`)
         }}
       />
+
+      <ShareSheet open={sharing} deck={deck} onClose={() => setSharing(false)} />
 
       <ConfirmSheet
         open={confirming}

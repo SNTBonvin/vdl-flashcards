@@ -48,10 +48,48 @@ trouver zéro requête externe.
   validation.
 - **Export** — sauvegarde JSON intégrale (cartes + historique + réglages) pour
   changer d'appareil, ou CSV pour un tableur.
+- **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
+  en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
 - **Statistiques** — activité sur 14 semaines, taux de réussite, répartition des
   cartes par état, résultats par matière.
 - **Thème clair et sombre** — automatique (suit le téléphone), clair ou sombre,
   au choix et par appareil.
+
+## Partage d'un thème
+
+Un thème se partage par un lien qui **contient** le jeu de cartes, après le `#` :
+aucun serveur à héberger, et la partie située après le `#` n'étant jamais
+transmise à l'hébergeur, personne ne peut savoir quel jeu a été ouvert ni par
+qui. Le contenu est compressé (`deflate-raw`) puis encodé en base64url, ce qui
+donne de l'ordre de 50 à 70 caractères par carte.
+
+L'interface classe le lien selon ce qu'on peut réellement en faire, à partir du
+nombre de modules du QR code et non du nombre de cartes :
+
+| Lien | Usage |
+|---|---|
+| ≤ 85 modules | QR code lisible au vidéoprojecteur |
+| ≤ 125 modules | QR code dense, à scanner de près |
+| ≤ 5 000 caractères | lien seulement — certains ENT tronquent les liens longs |
+| au-delà | l'application renvoie vers l'export JSON |
+
+Trois règles gouvernent la réception (`importShare` dans `src/state/store.tsx`) :
+
+- **Rien n'est ajouté automatiquement.** Le lien affiche un aperçu ; l'élève
+  décide.
+- **La progression est conservée.** Les cartes sont appariées sur leur recto
+  normalisé : une carte déjà travaillée garde son intervalle et son historique
+  même si l'auteur en corrige le verso. Le lien porte un identifiant de partage
+  stable, si bien qu'une rediffusion met le jeu à jour au lieu de le dupliquer.
+- **Un lien ne supprime jamais rien.** Une carte retirée par l'auteur reste chez
+  ceux qui l'avaient déjà reçue.
+
+`CompressionStream` manque sur les navigateurs les plus anciens (iOS antérieur à
+16.4) : le lien est alors produit sans compression, donc plus long, sans autre
+conséquence.
+
+Le QR code est toujours dessiné en sombre sur blanc, y compris en thème sombre :
+beaucoup de téléphones lisent mal un QR inversé.
 
 ## Mises à jour
 

@@ -14,6 +14,7 @@ import { DeckScreen } from './screens/Deck'
 import { ReviewScreen } from './screens/Review'
 import { StatsScreen } from './screens/Stats'
 import { SettingsScreen } from './screens/Settings'
+import { ShareScreen } from './screens/Share'
 
 export function App() {
   return (
@@ -60,6 +61,7 @@ function Shell() {
       {route.name === 'review' && <ReviewScreen onSessionChange={setSessionOpen} />}
       {route.name === 'stats' && <StatsScreen />}
       {route.name === 'settings' && <SettingsScreen />}
+      {route.name === 'share' && <ShareScreen token={route.token} />}
 
       {/* Masqué pendant une session : on n'interrompt pas une révision en cours. */}
       {showChrome && <UpdateBanner update={update} />}
@@ -116,6 +118,7 @@ function AppBar({ route }: { route: Route }) {
     review: 'Réviser',
     stats: 'Statistiques',
     settings: 'Réglages',
+    share: 'Thème partagé',
   }
 
   return (

@@ -10,6 +10,8 @@ export type Route =
   | { name: 'review' }
   | { name: 'stats' }
   | { name: 'settings' }
+  /** Réception d'un thème partagé : le jeu de cartes est contenu dans le jeton. */
+  | { name: 'share'; token: string }
 
 export function parseHash(hash: string): Route {
   const path = hash.replace(/^#\/?/, '').split('?')[0]
@@ -27,6 +29,8 @@ export function parseHash(hash: string): Route {
       return { name: 'stats' }
     case 'settings':
       return { name: 'settings' }
+    case 'p':
+      return param ? { name: 'share', token: param } : { name: 'today' }
     default:
       return { name: 'today' }
   }
@@ -38,6 +42,8 @@ export function toPath(route: Route): string {
       return `#/subject/${route.id}`
     case 'deck':
       return `#/deck/${route.id}`
+    case 'share':
+      return `#/p/${route.token}`
     case 'today':
       return '#/today'
     default:

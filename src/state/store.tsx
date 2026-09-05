@@ -27,8 +27,21 @@ import {
   type Subject,
 } from '../db/types'
 import { grade as gradeCard, newSrs } from '../srs/scheduler'
+import { cardKey, type SharePayload } from '../io/share'
 import { dayKey } from '../lib/date'
 import { uid } from '../lib/id'
+
+export interface ImportResult {
+  deckId: ID
+  /** Cartes nouvellement ajoutées. */
+  added: number
+  /** Cartes déjà présentes dont le contenu a été mis à jour. */
+  updated: number
+  /** Cartes déjà présentes et inchangées : leur progression est conservée. */
+  unchanged: number
+  /** Le thème existait déjà (même identifiant de partage). */
+  merged: boolean
+}
 
 interface IntroTracker {
   day: string
@@ -112,6 +125,11 @@ export interface Store extends State {
 
   answer(card: Card, value: Grade): Promise<Card>
   resetCards(ids: ID[]): Promise<void>
+
+  /** Attribue un identifiant de partage au thème s'il n'en a pas encore. */
+  prepareShare(deckId: ID): Promise<string>
+  /** Ajoute ou met à jour un thème reçu par lien. */
+  importShare(payload: SharePayload): Promise<ImportResult>
 
   saveSettings(patch: Partial<Settings>): Promise<void>
   restore(backup: Backup): Promise<void>
@@ -349,6 +367,125 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'cards', payload: next })
   }, [])
 
+  /* ----------------------------- Partage ------------------------------ */
+
+  const prepareShare = useCallback(async (deckId: ID) => {
+    const deck = stateRef.current.decks.find((d) => d.id === deckId)
+    if (!deck) throw new Error('Thème introuvable.')
+    if (deck.shareId) return deck.shareId
+    const shareId = uid('sh')
+    const next = stateRef.current.decks.map((d) => (d.id === deckId ? { ...d, shareId } : d))
+    await idb.put('decks', next.find((d) => d.id === deckId)!)
+    dispatch({ type: 'decks', payload: next })
+    return shareId
+  }, [])
+
+  /**
+   * Ajoute un thème reçu par lien, ou le met à jour s'il est déjà là.
+   *
+   * Deux règles importantes pour l'élève :
+   *  - les cartes sont appariées sur leur recto normalisé, donc une carte déjà
+   *    travaillée **conserve sa progression** même si le verso a été corrigé ;
+   *  - une carte retirée du jeu par l'auteur n'est jamais supprimée : un lien
+   *    n'efface rien chez celui qui le reçoit.
+   */
+  const importShare = useCallback(async (payload: SharePayload): Promise<ImportResult> => {
+    const { subjects, decks, cards } = stateRef.current
+    const now = Date.now()
+
+    const normalized = payload.s.trim().toLowerCase()
+    let subject = subjects.find((s) => s.name.trim().toLowerCase() === normalized)
+    let nextSubjects = subjects
+    if (!subject) {
+      subject = {
+        id: uid('s'),
+        name: payload.s.trim(),
+        code: payload.s.trim().slice(0, 3).toUpperCase(),
+        createdAt: now,
+        position: subjects.length,
+      }
+      nextSubjects = [...subjects, subject]
+      await idb.put('subjects', subject)
+    }
+
+    // Le thème est retrouvé par son identifiant de partage, où qu'il ait été
+    // rangé entre-temps par l'élève.
+    const existing = decks.find((d) => d.shareId === payload.id)
+    const deck: Deck = existing
+      ? {
+          ...existing,
+          name: payload.t.trim(),
+          description: payload.d?.trim() ?? existing.description,
+          shareRev: Math.max(existing.shareRev ?? 0, payload.rev),
+          sharedBy: payload.by ?? existing.sharedBy,
+        }
+      : {
+          id: uid('d'),
+          subjectId: subject.id,
+          name: payload.t.trim(),
+          description: payload.d?.trim() ?? '',
+          createdAt: now,
+          position: decks.filter((d) => d.subjectId === subject!.id).length,
+          reminder: null,
+          shareId: payload.id,
+          shareRev: payload.rev,
+          sharedBy: payload.by,
+        }
+
+    const inDeck = cards.filter((c) => c.deckId === deck.id)
+    const byKey = new Map(inDeck.map((c) => [cardKey(c.front), c]))
+
+    const created: Card[] = []
+    const touched: Card[] = []
+    let unchanged = 0
+
+    for (const [front, back, notes] of payload.c) {
+      if (!front?.trim() || !back?.trim()) continue
+      const current = byKey.get(cardKey(front))
+      if (!current) {
+        created.push(makeCard(deck.id, { front, back, notes: notes ?? '' } as Card))
+        continue
+      }
+      const nextBack = back.trim()
+      const nextNotes = (notes ?? '').trim()
+      if (current.back === nextBack && current.notes === nextNotes) {
+        unchanged += 1
+        continue
+      }
+      // La progression (srs) est délibérément laissée intacte.
+      touched.push({ ...current, back: nextBack, notes: nextNotes, updatedAt: now })
+    }
+
+    await Promise.all([
+      idb.put('decks', deck),
+      idb.putMany('cards', [...created, ...touched]),
+    ])
+
+    const touchedIds = new Set(touched.map((c) => c.id))
+    dispatch({ type: 'subjects', payload: nextSubjects.slice().sort(byPosition) })
+    dispatch({
+      type: 'decks',
+      payload: (existing ? decks.map((d) => (d.id === deck.id ? deck : d)) : [...decks, deck]).sort(
+        byPosition,
+      ),
+    })
+    dispatch({
+      type: 'cards',
+      payload: [
+        ...cards.map((c) => (touchedIds.has(c.id) ? touched.find((u) => u.id === c.id)! : c)),
+        ...created,
+      ],
+    })
+
+    return {
+      deckId: deck.id,
+      added: created.length,
+      updated: touched.length,
+      unchanged,
+      merged: Boolean(existing),
+    }
+  }, [])
+
   /* ---------------------------- Réglages ------------------------------ */
 
   const saveSettings = useCallback(async (patch: Partial<Settings>) => {
@@ -423,6 +560,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       answer,
       resetCards,
+      prepareShare,
+      importShare,
       saveSettings,
       restore,
       wipe,
@@ -445,6 +584,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       answer,
       resetCards,
+      prepareShare,
+      importShare,
       saveSettings,
       restore,
       wipe,

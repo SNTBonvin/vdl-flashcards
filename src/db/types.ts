@@ -30,6 +30,19 @@ export interface Deck {
   createdAt: number
   position: number
   reminder: Reminder | null
+  /**
+   * Identifiant stable du partage, présent dès qu'un thème a été partagé ou
+   * reçu. C'est lui qui permet de mettre un jeu à jour plutôt que d'en créer
+   * un doublon quand le même lien est rouvert.
+   *
+   * Ces trois champs sont facultatifs : les thèmes créés avant l'arrivée du
+   * partage n'en ont pas, et n'ont pas besoin d'être migrés.
+   */
+  shareId?: string
+  /** Révision reçue ou diffusée la plus récente. */
+  shareRev?: number
+  /** Nom affiché de la personne qui a partagé ce thème. */
+  sharedBy?: string
 }
 
 /** Rappel de révision programmé pour un thème. */
@@ -104,6 +117,8 @@ export interface Settings {
   notificationsEnabled: boolean
   /** Intervalle maximum en jours. */
   maxInterval: number
+  /** Nom affiché sur les liens de partage que l'on émet. */
+  sharedBy: string
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -113,6 +128,7 @@ export const DEFAULT_SETTINGS: Settings = {
   reverse: false,
   notificationsEnabled: false,
   maxInterval: 365,
+  sharedBy: '',
 }
 
 /** Format du fichier d'export/import JSON. */
