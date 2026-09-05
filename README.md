@@ -286,6 +286,21 @@ construire en local et de publier l'artefact à la main.
 **accessibles sans authentification**, faute de quoi ni l'application ni les
 liens de partage ne fonctionneraient pour les élèves.
 
+### Synchronisation GitHub → Forge
+
+Le développement a lieu sur GitHub, la publication sur la Forge. Comme GitLab,
+dans son édition libre, ne sait pas *tirer* depuis un dépôt distant (le miroir
+en extraction est réservé aux éditions payantes), c'est GitHub qui pousse :
+`.github/workflows/miroir-forge.yml` recopie `main` vers la Forge à chaque
+envoi, ce qui y déclenche le pipeline de publication.
+
+Prérequis, une seule fois : un jeton de projet de la Forge (portée
+`write_repository`) stocké dans les secrets GitHub sous le nom `FORGE_TOKEN`.
+
+**Une seule source de vérité** : GitHub. Ne modifier le code directement sur la
+Forge ferait diverger les deux dépôts, et la recopie échouerait — délibérément,
+plutôt que d'écraser en silence.
+
 ### Netlify
 
 `netlify.toml` est conservé — build `npm run build`, dossier publié `dist`,
