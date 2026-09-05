@@ -235,7 +235,11 @@ L'application reste pensée pour le téléphone, mais s'adapte au-delà :
 |---|---|
 | < 700 px | Colonne unique, navigation en bas — atteignable au pouce |
 | 700 – 1023 px | Colonne élargie à 680 px, carte de révision agrandie, navigation toujours en bas : une tablette se tient en main |
-| ≥ 1024 px | Rail de navigation à gauche, contenu borné à 840 px pour rester lisible, feuilles modales converties en boîtes de dialogue centrées |
+| ≥ 1024 px | Rail de navigation à gauche, surface occupant toute la fenêtre, colonne de lecture bornée à 1040 px et centrée, feuilles modales converties en boîtes de dialogue centrées |
+
+C'est la **ligne de texte** qui est bornée, pas la surface : l'application
+occupe tout l'écran, mais une question et sa réponse séparées par 1 700 px
+seraient illisibles.
 
 Tout se joue dans `src/styles/app.css` : le balisage ne change pas, les
 éléments sont replacés par la grille CSS. La barre du bas et le rail latéral
