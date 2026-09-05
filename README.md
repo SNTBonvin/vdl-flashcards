@@ -227,6 +227,25 @@ conserver la mention de copyright.
 Les polices embarquées dans `public/fonts/` relèvent de leur propre licence,
 la SIL Open Font License 1.1, dont le texte est joint à côté des fichiers.
 
+## Tablette et écran
+
+L'application reste pensée pour le téléphone, mais s'adapte au-delà :
+
+| Largeur | Mise en page |
+|---|---|
+| < 700 px | Colonne unique, navigation en bas — atteignable au pouce |
+| 700 – 1023 px | Colonne élargie à 680 px, carte de révision agrandie, navigation toujours en bas : une tablette se tient en main |
+| ≥ 1024 px | Rail de navigation à gauche, contenu borné à 840 px pour rester lisible, feuilles modales converties en boîtes de dialogue centrées |
+
+Tout se joue dans `src/styles/app.css` : le balisage ne change pas, les
+éléments sont replacés par la grille CSS. La barre du bas et le rail latéral
+sont **le même composant**, seul son placement diffère.
+
+Un piège rencontré et corrigé, à connaître avant de toucher à ces règles : dans
+un conteneur flex, `margin-inline: auto` sur un enfant le réduit à la largeur
+de son contenu au lieu de le centrer à sa largeur maximale. D'où les
+`width: 100%` qui accompagnent chaque `max-width` dans ces media queries.
+
 ## Charte graphique
 
 Palette « Papier », accent unique vert sapin (`#275f4a`) sur fonds crème chauds,

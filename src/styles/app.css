@@ -11,16 +11,6 @@
   position: relative;
 }
 
-@media (min-width: 561px) {
-  body {
-    background: var(--canvas);
-  }
-  .shell {
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-  }
-}
-
 /* ---- En-tête ---- */
 
 .appbar {
@@ -604,4 +594,222 @@
   inset: 0 auto 0 0;
   width: 3px;
   background: var(--primary);
+}
+
+
+/* =========================================================
+   Tablette et écran
+   Mêmes composants, mêmes couleurs, même hiérarchie : seule
+   la mise en page s'adapte. Le mobile reste la référence, ces
+   règles ne font que l'élargir.
+   ========================================================= */
+
+/* ---- À partir de 561px : la coque se détache du fond ---- */
+
+@media (min-width: 561px) {
+  body {
+    background: var(--canvas);
+  }
+
+  .shell {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+}
+
+/* ---- Tablette : on élargit, la navigation reste en bas ----
+   Une tablette se tient en main : le pouce atteint toujours le
+   bas de l'écran, la barre inférieure garde donc tout son sens. */
+
+@media (min-width: 700px) {
+  .shell {
+    max-width: 680px;
+  }
+
+  .screen {
+    padding-left: var(--gap-5);
+    padding-right: var(--gap-5);
+  }
+
+  .flashcard {
+    min-height: 46dvh;
+    padding: var(--gap-7) var(--gap-6);
+  }
+
+  .flashcard__text {
+    font-size: 25px;
+  }
+
+  .flashcard__text--answer {
+    font-size: 21px;
+  }
+
+  .grade {
+    height: 68px;
+  }
+}
+
+/* ---- Écran : la navigation passe sur le côté ----
+   Au-delà de cette largeur, on ne tient plus l'appareil : une
+   barre flottant en bas d'un écran de 27 pouces n'a plus de sens,
+   et la colonne de 560px laisserait le contenu perdu au milieu. */
+
+@media (min-width: 1024px) {
+  .shell {
+    max-width: 1140px;
+    /* Le rail occupe la première colonne sur toute la hauteur, l'en-tête
+       et le contenu s'empilent dans la seconde. Les éléments sont placés
+       explicitement : l'ordre du HTML reste inchangé. */
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+  }
+
+  .appbar {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .screen {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    /* Une ligne de texte de 900px est pénible à lire : on borne. */
+    max-width: 840px;
+    margin-inline: auto;
+    padding: var(--gap-3) var(--gap-6) var(--gap-7);
+  }
+
+  /* Session de révision : elle occupe tout, la navigation étant masquée. */
+  .review {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+
+  /* ---- Rail de navigation ---- */
+
+  .tabbar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100dvh;
+    max-width: none;
+    margin: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 3px;
+    padding: var(--gap-5) var(--gap-3);
+    border-top: 0;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .tab {
+    flex: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--gap-3);
+    width: 100%;
+    height: 44px;
+    padding: 0 var(--gap-3);
+    border-radius: var(--r-md);
+    font-size: 10.5px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .tab[aria-current='page'] {
+    background: var(--primary-tint);
+  }
+
+  @media (hover: hover) {
+    .tab:hover:not([aria-current='page']) {
+      background: var(--primary-tint-warm);
+    }
+  }
+
+  /* Dans le rail, la pastille se range en fin de ligne. */
+  .tab__badge {
+    position: static;
+    margin: 0 0 0 auto;
+    left: auto;
+    top: auto;
+  }
+
+  /* ---- Feuilles : des boîtes de dialogue, plus des tiroirs ----
+     Un tiroir venant du bas est un geste tactile ; à la souris,
+     une boîte centrée est la convention. */
+
+  .scrim {
+    align-items: center;
+    padding: var(--gap-5);
+  }
+
+  .sheet {
+    max-width: 540px;
+    max-height: 84dvh;
+    border-radius: var(--r-xl);
+    animation: fade-up 0.2s ease both;
+  }
+
+  .sheet__grab {
+    display: none;
+  }
+
+  .sheet__head {
+    padding-top: var(--gap-4);
+  }
+
+  .sheet__foot {
+    padding-bottom: var(--gap-4);
+  }
+
+  /* ---- Éléments flottants : plus de barre en bas à contourner ---- */
+
+  .toast {
+    bottom: var(--gap-5);
+  }
+
+  .updatebar {
+    left: auto;
+    right: var(--gap-5);
+    bottom: var(--gap-5);
+    max-width: 380px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ---- Session de révision : enfin de la place ---- */
+
+  .review__top,
+  .review__actions {
+    width: 100%;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  /* `width: 100%` est indispensable : sans elle, une marge automatique sur un
+     enfant de conteneur flex le réduit à la largeur de son contenu au lieu de
+     le centrer à sa largeur maximale. */
+  .flashcard {
+    width: 100%;
+    max-width: 720px;
+    margin-inline: auto;
+    min-height: 40dvh;
+  }
+
+  .grades {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+
+  .finish {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
 }
