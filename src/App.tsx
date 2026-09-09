@@ -3,6 +3,7 @@ import { StoreProvider, useStore } from './state/store'
 import { ToastProvider } from './components/ui'
 import { Icon, type IconName } from './components/Icon'
 import { useRoute, type Route } from './lib/router'
+import { claimPersistIfSilent } from './lib/storage'
 import { countCards, isDue, isNew } from './srs/queue'
 import { fireDueReminders, isReminderPending } from './reminders/reminders'
 import { UpdateBanner } from './components/UpdateBanner'
@@ -46,6 +47,12 @@ function Shell() {
   )
 
   useReminderTicker()
+
+  // Stockage durable : on ne prend que ce que le navigateur accorde sans rien
+  // afficher. La demande qui ouvre une fenêtre reste dans les réglages.
+  useEffect(() => {
+    void claimPersistIfSilent()
+  }, [])
 
   if (!store.ready) return <Booting />
 

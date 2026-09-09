@@ -144,6 +144,22 @@ contenant les cartes, l'historique et les réglages. Sur le nouvel appareil,
 L'export CSV existe aussi, pour un tableur — mais il ne contient pas la
 progression.
 
+### Protéger les données sur l'appareil
+
+Par défaut, un navigateur s'autorise à effacer ce qu'un site a stocké quand il
+manque de place — et sur iPhone, le stockage d'un site resté sept jours sans
+visite peut disparaître (des vacances suffisent).
+
+*Réglages → Données → **Protection sur cet appareil*** dit où l'on en est. Si
+la pastille indique « à demander », le bouton **Protéger mes données** demande
+au navigateur de ne plus y toucher. Sur les téléphones Android, la protection
+est souvent accordée d'elle-même dès que l'application est installée sur
+l'écran d'accueil ; sur Firefox, une fenêtre demande confirmation.
+
+Cela ne protège pas d'un effacement volontaire (vider les données du
+navigateur, désinstaller l'application) : la sauvegarde exportée reste le seul
+filet vraiment sûr.
+
 ## Vie privée
 
 Tout est stocké sur l'appareil, hors ligne. Aucun compte, aucun serveur, aucune

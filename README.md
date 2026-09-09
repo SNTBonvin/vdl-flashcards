@@ -43,6 +43,23 @@ Vérification : `document` ne charge que des ressources de son propre domaine �
 un contrôle automatisé compte les requêtes sortantes au démarrage et doit
 trouver zéro requête externe.
 
+### Durabilité du stockage
+
+Ce que l'application écrit est en stockage « au mieux » : le navigateur peut le
+supprimer s'il manque de place, et WebKit efface le stockage d'un site resté
+sept jours sans visite. `navigator.storage.persist()` lève ces deux menaces.
+
+La demande est silencieuse sur les navigateurs Chromium quand l'application est
+installée, mais Firefox ouvre une fenêtre de permission — inexplicable pour un
+élève si elle surgit au premier lancement. `src/lib/storage.ts` sépare donc les
+deux cas : au démarrage, l'application ne prend que ce que
+`navigator.permissions.query({ name: 'persistent-storage' })` annonce déjà comme
+accordé ; sinon elle n'affiche rien et attend un geste explicite dans les
+réglages, où l'état et la place occupée sont visibles.
+
+Aucune protection ne survit à un effacement demandé par l'utilisateur : la
+sauvegarde JSON reste le filet.
+
 ## Fonctionnalités
 
 - **Classement** — matières › thèmes › cartes, avec recherche plein texte.
@@ -77,6 +94,9 @@ trouver zéro requête externe.
 - **Statistiques** — thèmes à retravailler, activité sur 14 semaines, taux de
   réussite, répartition des cartes par état, résultats par matière ; et un bilan
   de fin de session ventilé par thème.
+- **Stockage durable** — l'application demande au navigateur de ne pas évincer
+  ses données, silencieusement quand il l'accorde sans rien afficher, sinon par
+  un bouton dans les réglages, où figure aussi la place occupée.
 - **Thème clair et sombre** — automatique (suit le téléphone), clair ou sombre,
   au choix et par appareil.
 

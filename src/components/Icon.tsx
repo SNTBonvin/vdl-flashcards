@@ -36,6 +36,7 @@ export type IconName =
   | 'sparkle'
   | 'folder'
   | 'move'
+  | 'shield'
 
 const PATHS: Record<IconName, string> = {
   today: 'M7 3v3M17 3v3M4 8.5h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM9 14l2 2 4-4',
@@ -70,6 +71,7 @@ const PATHS: Record<IconName, string> = {
   sparkle: 'm12 4 1.9 4.9L19 10.8l-5.1 1.9L12 17.6l-1.9-4.9L5 10.8l5.1-1.9zM18 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z',
   folder: 'M3.5 6.8a1 1 0 0 1 1-1h4.2l1.8 2.2h8a1 1 0 0 1 1 1v9.2a1 1 0 0 1-1 1h-14a1 1 0 0 1-1-1z',
   move: 'M4 8.5h9M4 12.5h6M4 16.5h9M14.5 12.5H21M17.8 9.2l3.2 3.3-3.2 3.3',
+  shield: 'M12 3.6 5.5 6.1v5.6c0 3.6 2.5 6.5 6.5 8.7 4-2.2 6.5-5.1 6.5-8.7V6.1z',
 }
 
 interface Props {
