@@ -11,7 +11,7 @@ import {
   shareUrl,
   type ShareSize,
 } from '../io/share'
-import type { Deck } from '../db/types'
+import type { Card, Deck } from '../db/types'
 
 /**
  * Produit le lien de partage d'un thème, avec un QR quand le jeu est assez
@@ -20,11 +20,19 @@ import type { Deck } from '../db/types'
 export function ShareSheet({
   open,
   deck,
+  cards: subset,
+  title = 'Partager ce thème',
   onClose,
+  onShared,
 }: {
   open: boolean
   deck: Deck
+  /** Sous-ensemble à diffuser — un lot. Par défaut, tout le thème. */
+  cards?: Card[]
+  title?: string
   onClose: () => void
+  /** Appelé quand le lien a été produit, pour dater la diffusion. */
+  onShared?: () => void
 }) {
   const store = useStore()
   const toast = useToast()
@@ -34,7 +42,7 @@ export function ShareSheet({
   const [building, setBuilding] = useState(false)
 
   const subject = store.subjects.find((s) => s.id === deck.subjectId)
-  const cards = (store.cardsByDeck.get(deck.id) ?? []).filter((c) => !c.suspended)
+  const cards = (subset ?? store.cardsByDeck.get(deck.id) ?? []).filter((c) => !c.suspended)
 
   // Le lien est reconstruit à chaque ouverture et à chaque changement de nom :
   // il porte un horodatage, qui fait office de numéro de révision.
@@ -50,6 +58,7 @@ export function ShareSheet({
       setUrl(link)
       setSize(measure(link, qrModuleCount(link)))
       setBuilding(false)
+      onShared?.()
     })().catch(() => {
       if (!cancelled) {
         setBuilding(false)
@@ -94,7 +103,7 @@ export function ShareSheet({
   return (
     <Sheet
       open={open}
-      title="Partager ce thème"
+      title={title}
       onClose={onClose}
       footer={
         <button

@@ -86,6 +86,35 @@ créée lui-même n'est jamais écrasée.
 Ordre de grandeur : environ 70 caractères par carte. Vingt cartes donnent un
 lien d'environ 1,4 Ko, et un QR code encore lisible de près.
 
+## Diffuser en plusieurs lots
+
+Un thème de trente cartes tient dans un lien, mais son QR code devient trop
+dense pour être projeté. Les **lots de distribution** répondent à ce cas :
+on importe toutes les cartes d'un coup dans le même thème, puis on les diffuse
+par paquets.
+
+Dans un thème → **Nouveau lot** (ou **Sélectionner** dans la liste des cartes) →
+cochez les cartes → **Créer un lot** → donnez-lui un intitulé.
+
+La fiche d'un lot affiche le nombre de cartes, la longueur du lien qu'il
+produira et la date de sa dernière diffusion. Trois boutons : **Diffuser ce
+lot** (lien + QR code), **Modifier les cartes du lot**, **Supprimer le lot**.
+
+Ce qu'il faut savoir :
+
+- un lot est **évolutif** : ajoutez ou retirez des cartes quand vous voulez, le
+  lien est recalculé à la diffusion suivante ;
+- un lot **resservira** tel quel à une autre classe : rien n'y est attaché, ni
+  élève, ni date, ni classe ;
+- une carte peut appartenir à **plusieurs lots** ;
+- supprimer un lot ne supprime aucune carte, et ne retire rien de ce que vos
+  élèves ont déjà reçu ;
+- l'intitulé du lot est **pour vous** : l'élève ne le voit pas. Chez lui, les
+  lots d'un même thème se rejoignent dans ce thème, sans le découpage.
+
+L'intitulé n'apparaît nulle part chez l'élève, et aucune information sur qui a
+reçu quoi n'est enregistrée : l'application ne suit personne.
+
 ## Côté élève
 
 Un thème reçu n'est pas figé :

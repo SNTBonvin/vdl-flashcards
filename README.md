@@ -64,10 +64,13 @@ trouver zéro requête externe.
 - **Rappels** — horaire et jours de la semaine par thème.
 - **Import** — CSV, TSV ou texte collé (`recto ; verso`), avec aperçu avant
   validation.
-- **Export** — sauvegarde JSON intégrale (cartes + historique + réglages) pour
-  changer d'appareil, ou CSV pour un tableur.
+- **Export** — sauvegarde JSON intégrale (cartes + historique + lots + réglages)
+  pour changer d'appareil, ou CSV pour un tableur.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
+- **Lots de distribution** — dans un thème, une sélection de cartes cochées se
+  conserve, se modifie et se diffuse séparément : de quoi importer trente cartes
+  d'un coup puis les donner en trois fois (voir « Lots de distribution »).
 - **Thème reçu, thème vivant** — celui qui reçoit un thème peut y ajouter ses
   propres cartes, archiver celles dont il ne veut pas, et distinguer d'un coup
   d'œil les cartes reçues des siennes.
@@ -135,6 +138,29 @@ et toutes protègent le travail de celui qui reçoit :
   ceux qui l'avaient déjà reçue.
 - **Une carte archivée ne réapparaît pas.** Son contenu est mis à jour, mais
   elle reste hors de la liste.
+
+### Lots de distribution
+
+Un thème de trente cartes tient dans un lien, mais son QR code n'est plus
+projetable. Les lots répondent à ce cas sans découper le thème : on importe
+toutes les cartes au même endroit, puis on coche celles que porte chaque lot.
+
+Un lot (`Distribution`, magasin `distributions`) est une liste d'identifiants de
+cartes rattachée à un thème, avec un intitulé, sa date de création et celle de
+sa dernière diffusion. Il ne contient ni copie des cartes, ni destinataire :
+
+- **évolutif** — la sélection se modifie à tout moment ; le lien est reconstruit
+  à chaque diffusion, jamais mis en cache ;
+- **réutilisable** — rien n'y attache une classe ni une date d'usage, le même
+  lot resservira l'année suivante ;
+- **non exclusif** — une carte peut figurer dans plusieurs lots ;
+- **sans effet de bord** — supprimer un lot ne touche aucune carte, et une carte
+  archivée sort des lots qui la citaient sans qu'on ait à les modifier.
+
+La diffusion d'un lot réutilise l'identifiant de partage **du thème**. Chez
+l'élève, les lots successifs se rejoignent donc dans un seul thème, se
+complètent sans rien effacer, et le découpage reste invisible. L'intitulé d'un
+lot ne quitte jamais l'appareil de l'enseignant.
 
 ### Archivage, origine et appropriation
 

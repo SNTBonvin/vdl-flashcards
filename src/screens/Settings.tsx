@@ -46,6 +46,7 @@ export function SettingsScreen() {
       decks: store.decks,
       cards: store.cards,
       logs: store.logs,
+      distributions: store.distributions,
       settings: store.settings,
     })
     download(`flashcards-${stamp()}.json`, JSON.stringify(backup, null, 2), 'application/json')
