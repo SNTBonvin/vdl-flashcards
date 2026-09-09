@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../state/store'
 import { Icon } from '../components/Icon'
 import {
@@ -23,6 +23,13 @@ import { notificationSupport, requestPermission } from '../reminders/reminders'
 import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
 import { useTheme, type ThemeMode } from '../theme/theme'
 import { useRoute } from '../lib/router'
+import {
+  formatBytes,
+  readPersist,
+  readUsage,
+  requestPersist,
+  type PersistState,
+} from '../lib/storage'
 
 const THEMES: { value: ThemeMode; label: string }[] = [
   { value: 'auto', label: 'Automatique' },
@@ -39,6 +46,21 @@ export function SettingsScreen() {
   const [pendingRestore, setPendingRestore] = useState<ReturnType<typeof parseBackup> | null>(null)
   const [wiping, setWiping] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [persist, setPersist] = useState<PersistState | null>(null)
+  const [usage, setUsage] = useState<number | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      const [state, size] = await Promise.all([readPersist(), readUsage()])
+      if (cancelled) return
+      setPersist(state)
+      setUsage(size?.usage ?? null)
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const exportJson = () => {
     const backup = buildBackup({
@@ -46,6 +68,7 @@ export function SettingsScreen() {
       decks: store.decks,
       cards: store.cards,
       logs: store.logs,
+      distributions: store.distributions,
       settings: store.settings,
     })
     download(`flashcards-${stamp()}.json`, JSON.stringify(backup, null, 2), 'application/json')
@@ -272,6 +295,63 @@ export function SettingsScreen() {
           <span className="meta" style={{ fontSize: 12 }}>
             matières · thèmes · cartes
           </span>
+
+          <hr className="rule" />
+
+          <div className="row row--between">
+            <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+              <span className="listrow__title">Protection sur cet appareil</span>
+              <span className="meta">
+                {persist === 'persisted'
+                  ? 'Le navigateur ne supprimera pas vos cartes pour faire de la place.'
+                  : persist === 'unsupported'
+                    ? 'Ce navigateur ne sait pas protéger le stockage. Exportez la sauvegarde régulièrement.'
+                    : persist === 'denied'
+                      ? 'Le navigateur a refusé. Exportez la sauvegarde régulièrement.'
+                      : 'Sans protection, le navigateur peut effacer vos cartes s’il manque de place.'}
+              </span>
+            </span>
+            <span className={`chip ${persist === 'persisted' ? 'chip--ok' : 'chip--warn'}`}>
+              {persist === null
+                ? '…'
+                : persist === 'persisted'
+                  ? 'protégées'
+                  : persist === 'unsupported'
+                    ? 'indisponible'
+                    : persist === 'denied'
+                      ? 'refusée'
+                      : 'à demander'}
+            </span>
+          </div>
+
+          {(persist === 'ask' || persist === 'grantable') && (
+            <button
+              type="button"
+              className="btn btn--ghost btn--block"
+              onClick={async () => {
+                const granted = await requestPersist()
+                setPersist(granted ? 'persisted' : 'denied')
+                toast(
+                  granted
+                    ? 'Vos cartes sont protégées sur cet appareil.'
+                    : 'Le navigateur a refusé. Pensez à exporter la sauvegarde.',
+                  granted ? 'default' : 'error',
+                )
+              }}
+            >
+              <Icon name="shield" size={17} />
+              Protéger mes données
+            </button>
+          )}
+
+          {usage !== null && (
+            <div className="row row--between">
+              <span className="meta">Place occupée</span>
+              <span className="mono" style={{ fontSize: 13 }}>
+                {formatBytes(usage)}
+              </span>
+            </div>
+          )}
 
           <button type="button" className="btn btn--danger btn--block" onClick={() => setWiping(true)}>
             <Icon name="trash" size={17} />

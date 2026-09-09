@@ -9,7 +9,7 @@
  *            en tabulations ou une liste rédigée à la main.
  */
 
-import type { Backup, Card, Deck, Settings, Subject } from '../db/types'
+import type { Backup, Card, Deck, Distribution, Settings, Subject } from '../db/types'
 
 /* ------------------------------- Export -------------------------------- */
 
@@ -18,6 +18,7 @@ export function buildBackup(data: {
   decks: Deck[]
   cards: Card[]
   logs: Backup['logs']
+  distributions: Distribution[]
   settings: Settings
 }): Backup {
   return {
@@ -28,6 +29,7 @@ export function buildBackup(data: {
     decks: data.decks,
     cards: data.cards,
     logs: data.logs,
+    distributions: data.distributions,
     settings: data.settings,
   }
 }
@@ -191,6 +193,7 @@ export function parseBackup(text: string): Backup {
     decks: data.decks,
     cards: data.cards,
     logs: Array.isArray(data.logs) ? data.logs : [],
+    distributions: Array.isArray(data.distributions) ? data.distributions : [],
     settings: (data.settings ?? {}) as Settings,
   }
 }

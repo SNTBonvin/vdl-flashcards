@@ -5,9 +5,11 @@
  */
 
 const DB_NAME = 'vdl-flashcards'
-const DB_VERSION = 1
+// 2 : ajout du magasin « distributions ». La montée de version ne touche pas
+// aux magasins existants, chaque création étant conditionnée.
+const DB_VERSION = 2
 
-export type StoreName = 'subjects' | 'decks' | 'cards' | 'logs' | 'meta'
+export type StoreName = 'subjects' | 'decks' | 'cards' | 'logs' | 'distributions' | 'meta'
 
 let dbPromise: Promise<IDBDatabase> | null = null
 
@@ -33,6 +35,10 @@ function openDb(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains('logs')) {
         const logs = db.createObjectStore('logs', { keyPath: 'id' })
         logs.createIndex('byTs', 'ts')
+      }
+      if (!db.objectStoreNames.contains('distributions')) {
+        const distributions = db.createObjectStore('distributions', { keyPath: 'id' })
+        distributions.createIndex('byDeck', 'deckId')
       }
       if (!db.objectStoreNames.contains('meta')) {
         db.createObjectStore('meta')
@@ -115,10 +121,11 @@ export function setMeta<T>(key: string, value: T): Promise<void> {
 
 /** Vide entièrement la base (utilisé par la restauration d'une sauvegarde). */
 export function clearAll(): Promise<void> {
-  return run(['subjects', 'decks', 'cards', 'logs'], 'readwrite', (tx) => {
+  return run(['subjects', 'decks', 'cards', 'logs', 'distributions'], 'readwrite', (tx) => {
     tx.objectStore('subjects').clear()
     tx.objectStore('decks').clear()
     tx.objectStore('cards').clear()
     tx.objectStore('logs').clear()
+    tx.objectStore('distributions').clear()
   })
 }

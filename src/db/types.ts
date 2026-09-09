@@ -120,6 +120,30 @@ export interface ReviewLog {
   nextInterval: number
 }
 
+/**
+ * Lot de distribution : une sélection nommée de cartes d'un thème, conservée
+ * pour être diffusée puis rediffusée.
+ *
+ * Le lot ne mémorise **pas** son lien : celui-ci est recalculé à l'ouverture à
+ * partir du contenu courant. C'est ce qui le rend modifiable sans effort — on
+ * ajoute deux cartes en novembre, le lien produit en novembre les contient.
+ *
+ * Tous les lots d'un thème partagent l'identifiant de partage **du thème** :
+ * un élève qui reçoit successivement plusieurs lots les voit fusionner dans un
+ * seul thème, sa progression intacte, au lieu d'accumuler des homonymes.
+ */
+export interface Distribution {
+  id: ID
+  deckId: ID
+  name: string
+  /** Cartes retenues. Une même carte peut figurer dans plusieurs lots. */
+  cardIds: ID[]
+  createdAt: number
+  updatedAt: number
+  /** Dernière fois que le lien a été produit. */
+  lastSharedAt: number | null
+}
+
 export interface Settings {
   /** Nouvelles cartes introduites par jour et par thème. */
   newPerDay: number
@@ -157,4 +181,6 @@ export interface Backup {
   cards: Card[]
   logs: ReviewLog[]
   settings: Settings
+  /** Absent des sauvegardes produites avant l'arrivée des lots. */
+  distributions?: Distribution[]
 }

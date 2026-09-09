@@ -25,6 +25,7 @@ import {
   type ReviewLog,
   type Settings,
   type Subject,
+  type Distribution,
 } from '../db/types'
 import { grade as gradeCard, newSrs } from '../srs/scheduler'
 import { cardKey, type SharePayload } from '../io/share'
@@ -65,6 +66,7 @@ interface State {
   decks: Deck[]
   cards: Card[]
   logs: ReviewLog[]
+  distributions: Distribution[]
   settings: Settings
   intro: IntroTracker
 }
@@ -75,6 +77,7 @@ type Action =
   | { type: 'decks'; payload: Deck[] }
   | { type: 'cards'; payload: Card[] }
   | { type: 'logs'; payload: ReviewLog[] }
+  | { type: 'distributions'; payload: Distribution[] }
   | { type: 'settings'; payload: Settings }
   | { type: 'intro'; payload: IntroTracker }
   | { type: 'replaceAll'; payload: Omit<State, 'ready' | 'intro'> }
@@ -85,6 +88,7 @@ const INITIAL: State = {
   decks: [],
   cards: [],
   logs: [],
+  distributions: [],
   settings: DEFAULT_SETTINGS,
   intro: { day: dayKey(), counts: {} },
 }
@@ -101,6 +105,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, cards: action.payload }
     case 'logs':
       return { ...state, logs: action.payload }
+    case 'distributions':
+      return { ...state, distributions: action.payload }
     case 'settings':
       return { ...state, settings: action.payload }
     case 'intro':
@@ -117,6 +123,7 @@ export interface Store extends State {
   /** Cartes indexées par thème — recalculé à chaque changement. */
   cardsByDeck: Map<ID, Card[]>
   decksBySubject: Map<ID, Deck[]>
+  distributionsByDeck: Map<ID, Distribution[]>
 
   createSubject(name: string, code?: string): Promise<Subject>
   updateSubject(id: ID, patch: Partial<Omit<Subject, 'id'>>): Promise<void>
@@ -134,8 +141,17 @@ export interface Store extends State {
   deleteCards(ids: ID[]): Promise<void>
   moveCards(ids: ID[], deckId: ID): Promise<void>
 
+  /** Archive ou désarchive un lot de cartes d'un seul geste. */
+  archiveCards(ids: ID[], archived: boolean): Promise<void>
+
   answer(card: Card, value: Grade): Promise<Card>
   resetCards(ids: ID[]): Promise<void>
+
+  createDistribution(deckId: ID, name: string, cardIds: ID[]): Promise<Distribution>
+  updateDistribution(id: ID, patch: Partial<Omit<Distribution, 'id' | 'deckId'>>): Promise<void>
+  deleteDistribution(id: ID): Promise<void>
+  /** Note la date de diffusion, pour retrouver ce qu'on a donné et quand. */
+  markDistributionShared(id: ID): Promise<void>
 
   /** L'exemple de démonstration est-il installé ? */
   hasDemo: boolean
@@ -164,11 +180,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      const [subjects, decks, cards, logs, settings, intro] = await Promise.all([
+      const [subjects, decks, cards, logs, distributions, settings, intro] = await Promise.all([
         idb.getAll<Subject>('subjects'),
         idb.getAll<Deck>('decks'),
         idb.getAll<Card>('cards'),
         idb.getAll<ReviewLog>('logs'),
+        idb.getAll<Distribution>('distributions'),
         idb.getMeta<Settings>('settings'),
         idb.getMeta<IntroTracker>('intro'),
       ])
@@ -182,6 +199,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           decks: decks.sort(byPosition),
           cards,
           logs,
+          distributions,
           settings: { ...DEFAULT_SETTINGS, ...(settings ?? {}) },
           intro: intro && intro.day === today ? intro : { day: today, counts: {} },
         },
@@ -219,17 +237,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const deleteSubject = useCallback(async (id: ID) => {
-    const { subjects, decks, cards } = stateRef.current
+    const { subjects, decks, cards, distributions } = stateRef.current
     const deckIds = decks.filter((d) => d.subjectId === id).map((d) => d.id)
     const cardIds = cards.filter((c) => deckIds.includes(c.deckId)).map((c) => c.id)
+    const lotIds = distributions.filter((d) => deckIds.includes(d.deckId)).map((d) => d.id)
     await Promise.all([
       idb.del('subjects', [id]),
       idb.del('decks', deckIds),
       idb.del('cards', cardIds),
+      idb.del('distributions', lotIds),
     ])
     dispatch({ type: 'subjects', payload: subjects.filter((s) => s.id !== id) })
     dispatch({ type: 'decks', payload: decks.filter((d) => d.subjectId !== id) })
     dispatch({ type: 'cards', payload: cards.filter((c) => !deckIds.includes(c.deckId)) })
+    dispatch({ type: 'distributions', payload: distributions.filter((d) => !deckIds.includes(d.deckId)) })
   }, [])
 
   /* ---------------------------- Thèmes ---------------------------- */
@@ -263,11 +284,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   )
 
   const deleteDeck = useCallback(async (id: ID) => {
-    const { decks, cards } = stateRef.current
+    const { decks, cards, distributions } = stateRef.current
     const cardIds = cards.filter((c) => c.deckId === id).map((c) => c.id)
-    await Promise.all([idb.del('decks', [id]), idb.del('cards', cardIds)])
+    const lotIds = distributions.filter((d) => d.deckId === id).map((d) => d.id)
+    await Promise.all([
+      idb.del('decks', [id]),
+      idb.del('cards', cardIds),
+      idb.del('distributions', lotIds),
+    ])
     dispatch({ type: 'decks', payload: decks.filter((d) => d.id !== id) })
     dispatch({ type: 'cards', payload: cards.filter((c) => c.deckId !== id) })
+    dispatch({ type: 'distributions', payload: distributions.filter((d) => d.deckId !== id) })
   }, [])
 
   /* ------------------------------ Cartes ------------------------------ */
@@ -339,6 +366,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'cards', payload: next })
   }, [])
 
+  const archiveCards = useCallback(async (ids: ID[], archived: boolean) => {
+    if (ids.length === 0) return
+    const set = new Set(ids)
+    const now = Date.now()
+    const next = stateRef.current.cards.map((c) =>
+      set.has(c.id) ? { ...c, suspended: archived, updatedAt: now } : c,
+    )
+    await idb.putMany('cards', next.filter((c) => set.has(c.id)))
+    dispatch({ type: 'cards', payload: next })
+  }, [])
+
   /* ---------------------------- Révision ------------------------------ */
 
   const answer = useCallback(async (card: Card, value: Grade) => {
@@ -384,6 +422,54 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     )
     await idb.putMany('cards', next.filter((c) => set.has(c.id)))
     dispatch({ type: 'cards', payload: next })
+  }, [])
+
+  /* ------------------------------- Lots -------------------------------- */
+
+  const createDistribution = useCallback(async (deckId: ID, name: string, cardIds: ID[]) => {
+    const now = Date.now()
+    const lot: Distribution = {
+      id: uid('lot'),
+      deckId,
+      name: name.trim(),
+      cardIds,
+      createdAt: now,
+      updatedAt: now,
+      lastSharedAt: null,
+    }
+    await idb.put('distributions', lot)
+    dispatch({ type: 'distributions', payload: [...stateRef.current.distributions, lot] })
+    return lot
+  }, [])
+
+  const updateDistribution = useCallback(
+    async (id: ID, patch: Partial<Omit<Distribution, 'id' | 'deckId'>>) => {
+      const next = stateRef.current.distributions.map((d) =>
+        d.id === id ? { ...d, ...patch, updatedAt: Date.now() } : d,
+      )
+      const updated = next.find((d) => d.id === id)
+      if (updated) await idb.put('distributions', updated)
+      dispatch({ type: 'distributions', payload: next })
+    },
+    [],
+  )
+
+  const deleteDistribution = useCallback(async (id: ID) => {
+    await idb.del('distributions', [id])
+    dispatch({
+      type: 'distributions',
+      payload: stateRef.current.distributions.filter((d) => d.id !== id),
+    })
+  }, [])
+
+  const markDistributionShared = useCallback(async (id: ID) => {
+    const now = Date.now()
+    const next = stateRef.current.distributions.map((d) =>
+      d.id === id ? { ...d, lastSharedAt: now } : d,
+    )
+    const updated = next.find((d) => d.id === id)
+    if (updated) await idb.put('distributions', updated)
+    dispatch({ type: 'distributions', payload: next })
   }, [])
 
   /* -------------------------- Démonstration ---------------------------- */
@@ -609,6 +695,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       idb.putMany('decks', backup.decks),
       idb.putMany('cards', backup.cards),
       idb.putMany('logs', backup.logs ?? []),
+      idb.putMany('distributions', backup.distributions ?? []),
       idb.setMeta('settings', { ...DEFAULT_SETTINGS, ...(backup.settings ?? {}) }),
     ])
     dispatch({
@@ -618,6 +705,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         decks: backup.decks.slice().sort(byPosition),
         cards: backup.cards,
         logs: backup.logs ?? [],
+        distributions: backup.distributions ?? [],
         settings: { ...DEFAULT_SETTINGS, ...(backup.settings ?? {}) },
       },
     })
@@ -627,7 +715,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     await idb.clearAll()
     dispatch({
       type: 'replaceAll',
-      payload: { subjects: [], decks: [], cards: [], logs: [], settings: stateRef.current.settings },
+      payload: {
+        subjects: [],
+        decks: [],
+        cards: [],
+        logs: [],
+        distributions: [],
+        settings: stateRef.current.settings,
+      },
     })
   }, [])
 
@@ -646,8 +741,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (list) list.push(deck)
       else decksBySubject.set(deck.subjectId, [deck])
     }
-    return { cardsByDeck, decksBySubject }
-  }, [state.cards, state.decks, state.subjects])
+    const distributionsByDeck = new Map<ID, Distribution[]>()
+    for (const lot of state.distributions) {
+      const list = distributionsByDeck.get(lot.deckId)
+      if (list) list.push(lot)
+      else distributionsByDeck.set(lot.deckId, [lot])
+    }
+    for (const list of distributionsByDeck.values()) list.sort((a, b) => a.createdAt - b.createdAt)
+
+    return { cardsByDeck, decksBySubject, distributionsByDeck }
+  }, [state.cards, state.decks, state.subjects, state.distributions])
 
   const value = useMemo<Store>(
     () => ({
@@ -666,8 +769,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       deleteCard,
       deleteCards,
       moveCards,
+      archiveCards,
       answer,
       resetCards,
+      createDistribution,
+      updateDistribution,
+      deleteDistribution,
+      markDistributionShared,
       hasDemo: state.subjects.some((s) => s.id === DEMO_SUBJECT_ID),
       installDemo,
       removeDemo,
@@ -693,8 +801,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       deleteCard,
       deleteCards,
       moveCards,
+      archiveCards,
       answer,
       resetCards,
+      createDistribution,
+      updateDistribution,
+      deleteDistribution,
+      markDistributionShared,
       installDemo,
       removeDemo,
       prepareShare,

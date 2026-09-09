@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { requestSession } from '../state/session'
@@ -21,6 +22,8 @@ import type { Card, Reminder } from '../db/types'
 import { DAY_SHORT, formatDue } from '../lib/date'
 import { ImportError, parseRows, readFile } from '../io/transfer'
 import { ShareSheet } from '../components/ShareSheet'
+import { DistributionSheet } from '../components/DistributionSheet'
+import type { Distribution, ID } from '../db/types'
 
 /**
  * Les filtres mêlent deux dimensions — l'état de révision et l'origine — dans
@@ -42,6 +45,20 @@ export function DeckScreen({ id }: { id: string }) {
   const [importOpen, setImportOpen] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | 'new' | null>(null)
   const [sharing, setSharing] = useState(false)
+  /**
+   * Sélection multiple. `editing` désigne le lot en cours de modification :
+   * quand il est présent, valider met le lot à jour au lieu d'en créer un.
+   */
+  const [selection, setSelection] = useState<{ ids: Set<ID>; editing: Distribution | null } | null>(
+    null,
+  )
+  const [namingLot, setNamingLot] = useState(false)
+  const [lotName, setLotName] = useState('')
+  // Les feuilles de lot sont repérées par identifiant, pas par objet : le lot
+  // change pendant qu'elles sont ouvertes (renommage, sélection modifiée).
+  const [openLotId, setOpenLotId] = useState<ID | null>(null)
+  const [sharingLotId, setSharingLotId] = useState<ID | null>(null)
+  const [movingTo, setMovingTo] = useState(false)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -49,6 +66,21 @@ export function DeckScreen({ id }: { id: string }) {
   const deck = store.decks.find((d) => d.id === id)
   const cards = useMemo(() => store.cardsByDeck.get(id) ?? [], [store.cardsByDeck, id])
   const counts = countCards(cards)
+  const lots = useMemo(() => store.distributionsByDeck.get(id) ?? [], [store.distributionsByDeck, id])
+
+  const selected = selection?.ids ?? new Set<ID>()
+  const selecting = selection !== null
+  const openLot = lots.find((l) => l.id === openLotId) ?? null
+  const sharingLot = lots.find((l) => l.id === sharingLotId) ?? null
+
+  const toggle = (cardId: ID) =>
+    setSelection((current) => {
+      if (!current) return current
+      const ids = new Set(current.ids)
+      if (ids.has(cardId)) ids.delete(cardId)
+      else ids.add(cardId)
+      return { ...current, ids }
+    })
 
   /** Le thème contient-il à la fois des cartes reçues et des cartes personnelles ? */
   const mixed = useMemo(
@@ -179,8 +211,75 @@ export function DeckScreen({ id }: { id: string }) {
         </button>
       )}
 
+      {(lots.length > 0 || counts.total > 0) && (
+        <section className="stack stack-3">
+          <SectionHead
+            title="Lots de distribution"
+            aside={
+              counts.total > 0 && !selecting ? (
+                <button
+                  type="button"
+                  className="btn btn--quiet"
+                  onClick={() => setSelection({ ids: new Set(), editing: null })}
+                >
+                  Nouveau lot
+                </button>
+              ) : undefined
+            }
+          />
+          {lots.length === 0 ? (
+            <div className="card card--pad">
+              <p className="meta" style={{ lineHeight: 1.6 }}>
+                Un lot est une sélection de cartes de ce thème, que l’on diffuse séparément. Chez
+                l’élève, les lots se rejoignent dans le même thème.
+              </p>
+            </div>
+          ) : (
+            <div className="card">
+              {lots.map((lot) => {
+                const inLot = cards.filter((c) => lot.cardIds.includes(c.id) && !c.suspended).length
+                return (
+                  <button
+                    key={lot.id}
+                    type="button"
+                    className="listrow"
+                    onClick={() => setOpenLotId(lot.id)}
+                  >
+                    <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+                      <span className="listrow__title truncate">{lot.name}</span>
+                      <span className="listrow__sub">
+                        {inLot} {plural(inLot, 'carte')}
+                        {lot.lastSharedAt
+                          ? ` · diffusé le ${new Date(lot.lastSharedAt).toLocaleDateString('fr-FR')}`
+                          : ' · jamais diffusé'}
+                      </span>
+                    </span>
+                    <Icon name="chevron-right" size={18} />
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </section>
+      )}
+
       <section className="stack stack-3">
-        <SectionHead title="Cartes" aside={<span className="meta mono">{visible.length}</span>} />
+        <SectionHead
+          title="Cartes"
+          aside={
+            counts.total > 0 ? (
+              <button
+                type="button"
+                className="btn btn--quiet"
+                onClick={() =>
+                  setSelection(selecting ? null : { ids: new Set(), editing: null })
+                }
+              >
+                {selecting ? 'Annuler' : 'Sélectionner'}
+              </button>
+            ) : undefined
+          }
+        />
 
         <div className="seg seg--scroll">
           {(
@@ -232,9 +331,15 @@ export function DeckScreen({ id }: { id: string }) {
                 key={card.id}
                 type="button"
                 className="listrow"
-                onClick={() => setEditingCard(card)}
+                onClick={() => (selecting ? toggle(card.id) : setEditingCard(card))}
               >
-                <span className={`dot dot--${statusOf(card)}`} />
+                {selecting ? (
+                  <span className="tick" data-checked={selected.has(card.id)} aria-hidden="true">
+                    <Icon name="check" size={14} strokeWidth={2.4} />
+                  </span>
+                ) : (
+                  <span className={`dot dot--${statusOf(card)}`} />
+                )}
                 <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
                   <span className="listrow__title clamp-2">{card.front}</span>
                   <span className="listrow__sub truncate">
@@ -258,6 +363,98 @@ export function DeckScreen({ id }: { id: string }) {
           <Icon name="flag" size={18} />
           Reprendre les {counts.hard} cartes difficiles
         </button>
+      )}
+
+      {selecting && (
+        <>
+          {/* La barre est fixe : cet espace évite qu'elle masque la dernière carte. */}
+          <div aria-hidden="true" style={{ height: selection?.editing ? 118 : 172 }} />
+          <SelectBarPortal>
+            <div className="selectbar__inner">
+              <div className="row row--between">
+                <span className="listrow__title">
+                  {selected.size}{' '}
+                  {plural(selected.size, 'carte sélectionnée', 'cartes sélectionnées')}
+                </span>
+                <button
+                  type="button"
+                  className="btn btn--quiet"
+                  onClick={() =>
+                    setSelection((current) =>
+                      current
+                        ? {
+                            ...current,
+                            ids:
+                              visible.every((c) => current.ids.has(c.id)) && visible.length > 0
+                                ? new Set<ID>()
+                                : new Set(visible.map((c) => c.id)),
+                          }
+                        : current,
+                    )
+                  }
+                >
+                  {visible.length > 0 && visible.every((c) => selected.has(c.id))
+                    ? 'Aucune'
+                    : 'Tout'}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn--primary btn--block"
+                disabled={selected.size === 0}
+                onClick={async () => {
+                  const editing = selection?.editing
+                  if (editing) {
+                    await store.updateDistribution(editing.id, { cardIds: [...selected] })
+                    setSelection(null)
+                    setOpenLotId(editing.id)
+                    toast('Lot mis à jour.')
+                  } else {
+                    setLotName(`Lot ${lots.length + 1}`)
+                    setNamingLot(true)
+                  }
+                }}
+              >
+                <Icon name="layers" size={18} />
+                {selection?.editing ? 'Enregistrer le lot' : 'Créer un lot'}
+              </button>
+
+              {!selection?.editing && (
+                <div className="row" style={{ gap: 10 }}>
+                  <button
+                    type="button"
+                    className="btn btn--ghost grow"
+                    disabled={selected.size === 0}
+                    onClick={() => setMovingTo(true)}
+                  >
+                    <Icon name="move" size={17} />
+                    Déplacer
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn--ghost grow"
+                    disabled={selected.size === 0}
+                    onClick={async () => {
+                      const ids = [...selected]
+                      const archiving = ids.some((cardId) => !cards.find((c) => c.id === cardId)?.suspended)
+                      await store.archiveCards(ids, archiving)
+                      setSelection(null)
+                      toast(
+                        archiving
+                          ? `${ids.length} ${plural(ids.length, 'carte archivée', 'cartes archivées')}.`
+                          : `${ids.length} ${plural(ids.length, 'carte réactivée', 'cartes réactivées')}.`,
+                      )
+                    }}
+                  >
+                    <Icon name={filter === 'archived' ? 'reset' : 'inbox'} size={17} />
+                    {filter === 'archived' ? 'Réactiver' : 'Archiver'}
+                  </button>
+                </div>
+              )}
+            </div>
+          </SelectBarPortal>
+        </>
       )}
 
       {/* --- Feuilles --- */}
@@ -363,6 +560,87 @@ export function DeckScreen({ id }: { id: string }) {
 
       <ShareSheet open={sharing} deck={deck} onClose={() => setSharing(false)} />
 
+      <Sheet
+        open={namingLot}
+        title="Nouveau lot"
+        onClose={() => setNamingLot(false)}
+        footer={
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            disabled={!lotName.trim()}
+            onClick={async () => {
+              const lot = await store.createDistribution(deck.id, lotName.trim(), [...selected])
+              setNamingLot(false)
+              setSelection(null)
+              setOpenLotId(lot.id)
+              toast('Lot créé.')
+            }}
+          >
+            Créer le lot
+          </button>
+        }
+      >
+        <div className="stack stack-5">
+          <Field label="Intitulé" hint="Pour vous y retrouver. L’élève ne le voit pas.">
+            <input
+              className="input"
+              value={lotName}
+              onChange={(e) => setLotName(e.target.value)}
+              placeholder="Lot 1"
+              autoFocus
+            />
+          </Field>
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            {selected.size} {plural(selected.size, 'carte retenue', 'cartes retenues')} sur{' '}
+            {counts.total}. Le lot reste modifiable, et une même carte peut figurer dans plusieurs
+            lots.
+          </p>
+        </div>
+      </Sheet>
+
+      <DistributionSheet
+        open={openLot !== null}
+        lot={openLot}
+        onClose={() => setOpenLotId(null)}
+        onShare={() => {
+          if (!openLot) return
+          setSharingLotId(openLot.id)
+          setOpenLotId(null)
+        }}
+        onEditSelection={() => {
+          if (!openLot) return
+          setSelection({ ids: new Set(openLot.cardIds), editing: openLot })
+          setFilter('all')
+          setOpenLotId(null)
+        }}
+      />
+
+      {sharingLot && (
+        <ShareSheet
+          open
+          deck={deck}
+          cards={cards.filter((c) => sharingLot.cardIds.includes(c.id))}
+          title={`Diffuser « ${sharingLot.name} »`}
+          onClose={() => setSharingLotId(null)}
+          onShared={() => void store.markDistributionShared(sharingLot.id)}
+        />
+      )}
+
+      <MoveSheet
+        open={movingTo}
+        count={selected.size}
+        currentDeckId={deck.id}
+        onClose={() => setMovingTo(false)}
+        onMove={async (target) => {
+          const ids = [...selected]
+          await store.moveCards(ids, target)
+          setMovingTo(false)
+          setSelection(null)
+          toast(`${ids.length} ${plural(ids.length, 'carte déplacée', 'cartes déplacées')}.`)
+        }}
+      />
+
       <ConfirmSheet
         open={confirming}
         title={`Supprimer « ${deck.name} » ?`}
@@ -392,6 +670,77 @@ function cardStateLabel(card: Card): string {
   if (card.srs.state === 'relearning') return 'à revoir'
   if (card.srs.due <= Date.now()) return 'due'
   return formatDue(card.srs.due)
+}
+
+/**
+ * La barre de sélection sort vers <body> : l'écran est animé et crée un
+ * contexte d'empilement, où « position: fixed » se cale sur l'écran et non sur
+ * la fenêtre. Même raison que pour les feuilles.
+ */
+function SelectBarPortal({ children }: { children: ReactNode }) {
+  return createPortal(<div className="selectbar">{children}</div>, document.body)
+}
+
+/* ------------------------------ Déplacement ------------------------------ */
+
+/**
+ * Déplacer des cartes vers un autre thème. Les lots qui les contenaient ne les
+ * comptent plus : un lot ne diffuse que les cartes présentes dans son thème.
+ */
+function MoveSheet({
+  open,
+  count,
+  currentDeckId,
+  onClose,
+  onMove,
+}: {
+  open: boolean
+  count: number
+  currentDeckId: string
+  onClose: () => void
+  onMove: (deckId: string) => void
+}) {
+  const store = useStore()
+  const targets = store.decks.filter((d) => d.id !== currentDeckId)
+
+  return (
+    <Sheet open={open} title="Déplacer les cartes" onClose={onClose}>
+      <div className="stack stack-5">
+        <p className="meta" style={{ lineHeight: 1.6 }}>
+          {count} {plural(count, 'carte partira', 'cartes partiront')} vers le thème choisi, avec
+          leur progression.
+        </p>
+
+        {targets.length === 0 ? (
+          <EmptyState
+            icon="layers"
+            title="Aucun autre thème"
+            text="Créez d’abord un second thème pour pouvoir y déplacer des cartes."
+          />
+        ) : (
+          <div className="card">
+            {targets.map((target) => {
+              const subject = store.subjects.find((s) => s.id === target.subjectId)
+              return (
+                <button
+                  key={target.id}
+                  type="button"
+                  className="listrow"
+                  onClick={() => onMove(target.id)}
+                >
+                  <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+                    <span className="listrow__title truncate">{target.name}</span>
+                    <span className="listrow__sub truncate">{subject?.name ?? 'Sans matière'}</span>
+                  </span>
+                  <Icon name="chevron-right" size={18} />
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </Sheet>
+  )
 }
 
 /* ------------------------------ Éditeur de carte ------------------------------ */

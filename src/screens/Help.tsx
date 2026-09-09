@@ -124,6 +124,12 @@ export function HelpScreen() {
       />
 
       <Step
+        icon="layers"
+        title="Diffuser en plusieurs lots"
+        text="Quand un thème compte trop de cartes pour un QR code projetable, importez-les toutes dans le même thème, puis cochez-en une partie et créez un lot. Chaque lot se diffuse séparément, se modifie à tout moment et resservira à une autre classe. Chez l’élève, les lots d’un même thème se rejoignent dans ce thème."
+      />
+
+      <Step
         icon="bell"
         title="Se faire rappeler"
         text="Chaque thème peut avoir son rappel : une heure et des jours de la semaine. Sur iPhone, l’application doit être installée sur l’écran d’accueil pour que les notifications fonctionnent."
