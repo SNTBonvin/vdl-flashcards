@@ -1,0 +1,89 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SNT-RACCOURCIS",
+  "publishedAt": "2026-09-12T21:28:00.078Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences Numérique et Technologie",
+  "deck": "Utilisation du clavier",
+  "shareId": "sh4u361s47415c2f",
+  "rev": 1789248480078,
+  "cards": [
+    [
+      "Se déconnecter",
+      "CTRL + ALT + SUPPR",
+      null
+    ],
+    [
+      "Ouvrir un nouveau document",
+      "CTRL + N",
+      "N pour New"
+    ],
+    [
+      "Fermer une fenêtre",
+      "ALT + F4",
+      null
+    ],
+    [
+      "Tout sélectionner",
+      "CRTL + A",
+      null
+    ],
+    [
+      "Copier",
+      "CRTL + C",
+      null
+    ],
+    [
+      "Rechercher un texte",
+      "CTRL + F",
+      "F pour Find"
+    ],
+    [
+      "Annuler une saisie",
+      "CTRL + Z",
+      null
+    ],
+    [
+      "Annuler Ctrl + Z",
+      "CTRL + Y",
+      null
+    ],
+    [
+      "Mettre du texte en gras",
+      "CRTL + G",
+      null
+    ],
+    [
+      "Imprimer",
+      "CTRL + P",
+      null
+    ],
+    [
+      "Mettre du texte en italique",
+      "CTRL + I",
+      null
+    ],
+    [
+      "Couper",
+      "CTRL + X",
+      null
+    ],
+    [
+      "Coller",
+      "CRTL + V",
+      null
+    ],
+    [
+      "Explorateur Windows",
+      "Windows + E",
+      null
+    ],
+    [
+      "Souligner un texte",
+      "CTRL + U",
+      null
+    ]
+  ]
+}
