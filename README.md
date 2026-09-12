@@ -203,8 +203,12 @@ Trois points méritent l'attention :
 L'application ne peut pas écrire dans le dépôt — elle en est servie, sans droits
 sur lui, et un jeton d'écriture dans un bundle public serait un jeton public. La
 publication est donc **assistée** : l'application prépare le fichier, son nom et
-son contenu, et ouvre la page de dépôt de la forge au bon endroit. Le pipeline
-valide ensuite chaque jeu (`scripts/check-sets.mjs`, `npm run check-sets`) :
+son contenu, et ouvre la page de dépôt du projet sur le bon dossier — celle de
+GitHub ou celle de GitLab, selon l'adresse renseignée. Le dépôt se fait sur le
+dépôt **source**, jamais sur un miroir : un fichier ajouté directement sur le
+miroir fait diverger les deux et bloque la recopie, que le workflow refuse de
+forcer de lui-même — un forçage manuel reste possible, une fois le contenu
+remis côté source. Le pipeline valide ensuite chaque jeu (`scripts/check-sets.mjs`, `npm run check-sets`) :
 nom de fichier, format, identifiant de partage, cartes — sinon la publication
 échoue plutôt que de laisser un code mort.
 
