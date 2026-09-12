@@ -1,0 +1,58 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SCIE-BIODIVER",
+  "publishedAt": "2026-09-12T20:43:51.616Z",
+  "listed": true,
+  "subject": "Sciences de la Vie et de la Terre",
+  "deck": "Biodiversité - Lot 2",
+  "shareId": "sh5w4j3i076b2h06",
+  "rev": 1789245831616,
+  "cards": [
+    [
+      "La biodiversité est-elle figée dans le temps ?",
+      "Non. La biodiversité évolue en permanence à toutes les échelles de temps.",
+      null
+    ],
+    [
+      "Qu'observe-t-on chez les foraminifères après la crise K/T ?",
+      "Disparition des Globotruncanidés baisse des Hétérohélicidés et apparition massive des Globigérinidés.",
+      null
+    ],
+    [
+      "Les organismes vivants actuels représentent-ils toute la biodiversité passée ?",
+      "Non. Ils ne représentent qu'une infime partie de tous les organismes ayant existé depuis le début de la vie.",
+      null
+    ],
+    [
+      "Quels groupes de foraminifères dominaient avant la crise K/T ?",
+      "Les Globotruncanidés et les Hétérohélicidés.",
+      null
+    ],
+    [
+      "Qu'est-ce qu'une crise biologique ?",
+      "Un événement entraînant des extinctions massives d'espèces suivi d'une phase de diversification.",
+      null
+    ],
+    [
+      "À quoi servent les fossiles pour étudier la biodiversité ?",
+      "Ils permettent de reconstituer la biodiversité du passé et de montrer que l'état actuel n'est qu'une étape de l'histoire du vivant.",
+      null
+    ],
+    [
+      "Qu'est-ce que la crise K/T ?",
+      "La crise entre le Crétacé et le Tertiaire (il y a environ 66 Ma) qui a provoqué des extinctions massives dont celle des dinosaures non-aviens.",
+      null
+    ],
+    [
+      "Quel est l'effet d'une crise biologique sur la biodiversité ?",
+      "Elle provoque un effondrement de la biodiversité : beaucoup d'espèces disparaissent mais d'autres persistent et se diversifient.",
+      null
+    ],
+    [
+      "Qu'est-ce que la biodiversité génétique ?",
+      "La diversité génétique qui existe entre les individus d'une même espèce.",
+      null
+    ]
+  ]
+}
