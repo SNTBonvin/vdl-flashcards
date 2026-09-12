@@ -3,6 +3,7 @@ import { useStore } from '../state/store'
 import { requestSession } from '../state/session'
 import { useRoute } from '../lib/router'
 import { countCards } from '../srs/queue'
+import { spiralSuggestion } from '../srs/spiral'
 import { isReminderPending } from '../reminders/reminders'
 import { Icon } from '../components/Icon'
 import { EmptyState, SectionHead, StatRow, plural } from '../components/ui'
@@ -35,6 +36,11 @@ export function TodayScreen() {
   const reminders = useMemo(
     () => store.decks.filter((deck) => isReminderPending(deck, now)),
     [store.decks, now],
+  )
+
+  const spiral = useMemo(
+    () => spiralSuggestion(store.decks, store.cardsByDeck, now),
+    [store.decks, store.cardsByDeck, now],
   )
 
   const pending = totals.due + totals.fresh
@@ -167,6 +173,40 @@ export function TodayScreen() {
                 </button>
               )
             })}
+          </div>
+        </section>
+      )}
+
+      {spiral && (
+        <section className="stack stack-3">
+          <SectionHead title="Reprise spiralaire" />
+          <div className="card card--pad stack stack-4" data-status="run">
+            <div className="row">
+              <span className="glyph glyph--warm">
+                <Icon name="reset" size={19} />
+              </span>
+              <div className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+                <span className="listrow__title truncate">{spiral.deck.name}</span>
+                <span className="meta">
+                  Revu il y a {spiral.days} jours · {spiral.cards} {plural(spiral.cards, 'carte')}
+                </span>
+              </div>
+            </div>
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              Repasser sur un chapitre ancien pendant qu’il reste accessible coûte peu et fixe
+              durablement : c’est ce qui manque quand on ne révise que le chapitre en cours.
+            </p>
+            <button
+              type="button"
+              className="btn btn--primary btn--block"
+              onClick={() => {
+                requestSession({ deckIds: [spiral.deck.id], mode: 'quiz', label: spiral.deck.name })
+                navigate({ name: 'review' })
+              }}
+            >
+              <Icon name="shuffle" size={18} />
+              Reprendre ce thème
+            </button>
           </div>
         </section>
       )}

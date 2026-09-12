@@ -2,7 +2,8 @@
  * Moteur de répétition espacée — variante simplifiée de SM-2.
  *
  * Principe : trois réponses possibles.
- *   « Raté »     → la carte repart en apprentissage et revient dans la minute.
+ *   « Raté »     → la carte repart en apprentissage : elle revient dans la
+ *                  minute, puis dix minutes plus tard.
  *   « Difficile » → l'intervalle progresse peu, la facilité baisse un peu.
  *   « Su »        → l'intervalle est multiplié par le facteur de facilité.
  *
@@ -16,11 +17,15 @@ export const MINUTE = 60_000
 export const DAY = 86_400_000
 
 /**
- * Palier d'apprentissage d'une carte neuve, en minutes. Un seul palier : une
- * carte neuve sue du premier coup rejoint aussitôt le cycle long, seule une
- * carte ratée ou jugée difficile revient dans la séance en cours.
+ * Paliers d'apprentissage, en minutes. Une carte trébuchée revient tout de
+ * suite, puis une seconde fois dix minutes plus tard : c'est le premier rappel
+ * de la courbe de l'oubli, celui qui fixe l'encodage.
+ *
+ * Une carte neuve sue du premier coup échappe à ces paliers et rejoint
+ * aussitôt le cycle long — rallonger la séance sur ce qui est déjà su
+ * découragerait sans rien consolider.
  */
-const LEARNING_STEPS = [1]
+const LEARNING_STEPS = [1, 10]
 /** Palier de réapprentissage après un oubli, en minutes. */
 const RELEARNING_STEPS = [10]
 /** Intervalle en jours à la sortie des paliers d'apprentissage. */
@@ -92,6 +97,9 @@ export function grade(srs: Srs, answer: Grade, settings: Settings, now = Date.no
       const step = clamp(srs.step, 0, steps.length - 1)
       return inMinutes(steps[step], state, step)
     }
+
+    // Carte jamais vue et sue d'emblée : elle sort directement.
+    if (srs.state === 'new') return schedule(GRADUATING_INTERVAL)
 
     // « Su » : palier suivant, ou sortie vers le cycle long.
     const step = srs.step + 1

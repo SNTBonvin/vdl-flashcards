@@ -43,7 +43,29 @@ export interface Deck {
   shareRev?: number
   /** Nom affiché de la personne qui a partagé ce thème. */
   sharedBy?: string
+  /**
+   * Plan de reprises choisi par l'élève. Facultatif, et absent tant qu'il n'a
+   * rien planifié.
+   */
+  plan?: RevisionPlan | null
 }
+
+/**
+ * Plan de reprises espacées d'un thème : quelques rendez-vous à dates fixes,
+ * comptés depuis le jour où l'élève a démarré le plan.
+ *
+ * C'est un objet distinct de la progression carte par carte : celle-ci décide
+ * de *quelles* cartes revoir, le plan décide de *quand* s'y mettre.
+ */
+export interface RevisionPlan {
+  preset: PlanPreset
+  /** Heure du rendez-vous, « HH:MM ». */
+  time: string
+  /** Jour de départ du plan (horodatage). */
+  startedAt: number
+}
+
+export type PlanPreset = 'ebbinghaus' | 'resserre'
 
 /** Rappel de révision programmé pour un thème. */
 export interface Reminder {
