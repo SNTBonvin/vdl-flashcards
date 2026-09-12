@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Icon } from './Icon'
 import { Field, Sheet } from './ui'
+import { normalizeCode } from '../io/catalog'
 
 /**
  * Ouvrir un lien de partage reçu, en le collant.
@@ -15,11 +16,12 @@ import { Field, Sheet } from './ui'
 export function PasteLinkSheet({
   open,
   onClose,
-  onToken,
+  onResolved,
 }: {
   open: boolean
   onClose: () => void
-  onToken: (token: string) => void
+  /** Un lien porte son jeu ; un code désigne un jeu publié. */
+  onResolved: (result: { token: string } | { code: string }) => void
 }) {
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -31,12 +33,14 @@ export function PasteLinkSheet({
   }, [open])
 
   const submit = () => {
-    const token = extractToken(value)
-    if (!token) {
-      setError('Ce lien ne contient pas de jeu de cartes. Vérifiez qu’il a été copié en entier.')
+    const found = resolveInput(value)
+    if (!found) {
+      setError(
+        'Ni lien ni code reconnu. Collez le lien entier, ou tapez le code donné par votre professeur.',
+      )
       return
     }
-    onToken(token)
+    onResolved(found)
   }
 
   const paste = async () => {
@@ -52,7 +56,7 @@ export function PasteLinkSheet({
   return (
     <Sheet
       open={open}
-      title="Ouvrir un lien reçu"
+      title="Ouvrir un lien ou un code"
       onClose={onClose}
       footer={
         <button
@@ -62,14 +66,14 @@ export function PasteLinkSheet({
           onClick={submit}
         >
           <Icon name="inbox" size={18} />
-          Ouvrir le lien
+          Ouvrir
         </button>
       }
     >
       <div className="stack stack-5">
         <p className="meta" style={{ lineHeight: 1.6 }}>
-          Collez ici le lien reçu de votre professeur. Vous verrez un aperçu des cartes avant
-          d’ajouter quoi que ce soit.
+          Collez le lien reçu de votre professeur, ou tapez le code qu’il vous a donné. Vous
+          verrez un aperçu des cartes avant d’ajouter quoi que ce soit.
         </p>
 
         <button type="button" className="btn btn--ghost btn--block" onClick={paste}>
@@ -77,7 +81,7 @@ export function PasteLinkSheet({
           Coller depuis le presse-papiers
         </button>
 
-        <Field label="Lien" hint="Le lien entier, ou seulement le code qui suit « #/p/ ».">
+        <Field label="Lien ou code" hint="Le lien entier, ou un code du genre « SVT-2DE-BIO1 ».">
           <textarea
             className="textarea mono"
             style={{ minHeight: 90, fontSize: 11.5 }}
@@ -86,7 +90,7 @@ export function PasteLinkSheet({
               setValue(e.target.value)
               setError(null)
             }}
-            placeholder="https://…/vdl-flashcards/#/p/…"
+            placeholder="https://…/#/p/…    ou    SVT-2DE-BIO1"
           />
         </Field>
 
@@ -113,16 +117,27 @@ export function PasteLinkSheet({
   )
 }
 
-/** Retrouve le jeton, que l'on ait collé le lien entier ou le seul code. */
-export function extractToken(input: string): string | null {
+/**
+ * Reconnaît ce qui a été collé : un lien de partage, un jeton seul, un lien
+ * vers un jeu publié, ou un code. L'utilisateur n'a pas à savoir laquelle des
+ * deux mécaniques s'applique — un seul champ, une seule touche.
+ */
+export function resolveInput(input: string): { token: string } | { code: string } | null {
   const text = input.trim()
   if (!text) return null
 
-  const inUrl = text.match(/#\/?p\/([A-Za-z0-9_-]+)/)
-  if (inUrl) return inUrl[1]
+  const link = text.match(/#\/?p\/([A-Za-z0-9_-]+)/)
+  if (link) return { token: link[1] }
 
-  // Jeton seul : base64url, et assez long pour ne pas confondre avec un mot.
-  if (/^[A-Za-z0-9_-]{16,}$/.test(text)) return text
+  const published = text.match(/#\/?c\/([A-Za-z0-9-]+)/)
+  if (published) {
+    const code = normalizeCode(published[1])
+    return code ? { code } : null
+  }
 
-  return null
+  // Jeton seul : base64url, assez long pour ne pas être confondu avec un code.
+  if (/^[A-Za-z0-9_-]{40,}$/.test(text)) return { token: text }
+
+  const code = normalizeCode(text)
+  return code ? { code } : null
 }

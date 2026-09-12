@@ -64,9 +64,24 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
-        // Aucune règle de cache réseau : l'application ne contacte aucun
-        // service tiers, tout est précaché (polices comprises).
-        runtimeCaching: []
+        // L'application ne contacte aucun service tiers : tout est précaché,
+        // polices comprises. Seule exception, les jeux publiés sous un code,
+        // qui vivent à côté du site et changent sans qu'on republie
+        // l'application. Réseau d'abord, pour qu'une correction arrive ; cache
+        // ensuite, pour qu'un jeu déjà consulté reste lisible hors ligne.
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }: { url: URL }) =>
+              url.origin === self.location.origin &&
+              url.pathname.includes('/c/') &&
+              url.pathname.endsWith('.json'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'jeux-publies',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 180 }
+            }
+          }
+        ]
       },
       devOptions: { enabled: false }
     })

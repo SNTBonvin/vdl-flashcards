@@ -54,6 +54,13 @@ export interface Deck {
    * mais sortent de la révision, des compteurs et des statistiques.
    */
   reserve?: boolean
+  /**
+   * Code du jeu publié dont ce thème provient, quand il a été reçu ainsi.
+   * Permet d'en vérifier les mises à jour sans le retaper.
+   */
+  setCode?: string
+  /** Code sous lequel ce thème a été publié, côté enseignant. */
+  publishedAs?: string
 }
 
 /**
@@ -187,6 +194,8 @@ export interface Settings {
   maxInterval: number
   /** Nom affiché sur les liens de partage que l'on émet. */
   sharedBy: string
+  /** Dépôt de la forge où déposer les jeux publiés. Côté enseignant. */
+  publishRepo: string
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -197,6 +206,7 @@ export const DEFAULT_SETTINGS: Settings = {
   notificationsEnabled: false,
   maxInterval: 365,
   sharedBy: '',
+  publishRepo: '',
 }
 
 /** Format du fichier d'export/import JSON. */

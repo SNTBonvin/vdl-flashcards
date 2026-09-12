@@ -22,6 +22,9 @@ pages:
         console.log(url ? new URL(url).pathname.replace(/\/?$/, '/') : '/')
       ")"
     - echo "Publication sous $VITE_BASE"
+    # Un code mort ne se voit qu'au moment où la classe le tape : mieux vaut
+    # faire échouer la publication.
+    - node scripts/check-sets.mjs
     - npm ci
     - npm run build
     # GitLab Pages exige un dossier nommé « public », or le dépôt en contient

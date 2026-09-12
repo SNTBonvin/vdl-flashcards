@@ -94,6 +94,9 @@ sauvegarde JSON reste le filet.
   (CSV ou JSON) exportable depuis un thème, une matière, un lot ou les réglages.
 - **Import** — CSV, TSV, texte collé ou paquet JSON, dans le thème de son
   choix : les cartes s'ajoutent, rien n'est remplacé.
+- **Publication sous un code court** — un jeu déposé sur la forge est joignable
+  par un code dicté en classe (« SVT-2DE-BIO1 ») : ni lien, ni QR code, et le
+  seul chemin qui atteigne une application installée sur iPhone.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
 - **Reprendre une carte** — une carte déjà écrite se recopie dans un autre
@@ -174,6 +177,36 @@ d'affectation. Le magasin expose `reserveIds`, `studyDecks` et `studyCards` :
 tout ce qui relève de la révision — files, compteurs, pastille, rappels,
 reprise spiralaire, statistiques — se calcule sur ces derniers, tandis que la
 recherche et la reprise voient toutes les cartes.
+
+## Codes courts et jeux publiés
+
+Le lien porte les cartes ; le **code** les désigne. Un jeu publié est un fichier
+`public/c/<CODE>.json` (`PublishedSet`, `src/io/catalog.ts`), servi tel quel à
+côté du site et lu par l'application à la demande.
+
+Les deux chemins se rejoignent volontairement : `setToPayload()` produit la même
+charge utile qu'un lien, de sorte qu'un code passe par les **mêmes règles de
+réception** — aperçu avant ajout, appariement sur le recto, mise à jour sans
+doublon, progression conservée. Le fichier porte le `shareId` du thème : un jeu
+reçu par code et un lot reçu par lien se rejoignent donc chez l'élève.
+
+Trois points méritent l'attention :
+
+- **un hébergement qui répond la page d'accueil** pour une adresse inconnue
+  (réécriture SPA) ferait passer un code faux pour un fichier abîmé : `fetchSet`
+  contrôle le type de la réponse avant de conclure, pour dire « code inconnu » ;
+- **un `shareId` vide ferait confondre deux jeux** : il est exigé à la lecture
+  comme à la publication, et le thème en reçoit un à l'ouverture de la feuille ;
+- le service worker met les jeux en cache **réseau d'abord** : une correction
+  arrive, et un jeu déjà consulté reste lisible hors ligne.
+
+L'application ne peut pas écrire dans le dépôt — elle en est servie, sans droits
+sur lui, et un jeton d'écriture dans un bundle public serait un jeton public. La
+publication est donc **assistée** : l'application prépare le fichier, son nom et
+son contenu, et ouvre la page de dépôt de la forge au bon endroit. Le pipeline
+valide ensuite chaque jeu (`scripts/check-sets.mjs`, `npm run check-sets`) :
+nom de fichier, format, identifiant de partage, cartes — sinon la publication
+échoue plutôt que de laisser un code mort.
 
 ## Rappels et agenda
 

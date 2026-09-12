@@ -199,7 +199,7 @@ export function ShareSheet({
               <p className="meta" style={{ lineHeight: 1.55 }}>
                 À dire aux élèves sur iPhone : un lien ouvert depuis un message va dans Safari, qui
                 ne partage pas ses données avec l’application installée. Ils doivent copier le lien,
-                ouvrir l’application depuis l’écran d’accueil, puis « Matières › Lien reçu ».
+                ouvrir l’application depuis l’écran d’accueil, puis « Matières › Lien ou code ».
               </p>
             </div>
           </>

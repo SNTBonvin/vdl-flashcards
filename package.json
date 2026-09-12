@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "icons": "node scripts/generate-icons.mjs",
-    "fonts": "node scripts/sync-fonts.mjs"
+    "fonts": "node scripts/sync-fonts.mjs",
+    "check-sets": "node scripts/check-sets.mjs"
   },
   "dependencies": {
     "qrcode-generator": "^2.0.4",
