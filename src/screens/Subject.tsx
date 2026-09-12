@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { hasUpdate } from '../io/updates'
 import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { requestSession } from '../state/session'
@@ -154,6 +155,9 @@ export function SubjectScreen({ id }: { id: string }) {
                           ) : deckCounts.nextDue ? (
                             <span className="chip chip--ok">{formatDue(deckCounts.nextDue)}</span>
                           ) : null}
+                          {hasUpdate(deck) && (
+                            <span className="chip chip--accent">mise à jour</span>
+                          )}
                           {deck.reminder?.enabled && (
                             <span className="chip chip--warn">
                               <Icon name="bell" size={12} />

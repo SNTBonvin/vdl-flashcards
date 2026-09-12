@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { StoreProvider, useStore } from './state/store'
 import { ToastProvider } from './components/ui'
 import { Icon, type IconName } from './components/Icon'
 import { useRoute, type Route } from './lib/router'
 import { claimPersistIfSilent } from './lib/storage'
+import { checkSets } from './io/updates'
 import { countCards, isDue, isNew } from './srs/queue'
 import { fireDueReminders, isReminderPending } from './reminders/reminders'
 import { UpdateBanner } from './components/UpdateBanner'
@@ -49,11 +50,50 @@ function Shell() {
 
   useReminderTicker()
 
+  // Le magasin change à chaque écriture ; les effets ci-dessous veulent sa
+  // version du moment, sans se réinstaller pour autant.
+  const storeRef = useRef(store)
+  storeRef.current = store
+
   // Stockage durable : on ne prend que ce que le navigateur accorde sans rien
   // afficher. La demande qui ouvre une fenêtre reste dans les réglages.
   useEffect(() => {
     void claimPersistIfSilent()
   }, [])
+
+  // Jeux reçus par code : on regarde si le professeur a redéposé quelque chose,
+  // pour pouvoir le signaler. Rien n'est importé sans geste de l'élève, et
+  // l'échec est silencieux (voir io/updates).
+  //
+  // Au démarrage, mais aussi au retour au premier plan : une application
+  // installée sur un téléphone n'est jamais « relancée », elle est mise de côté
+  // et reprise. Sans cela, celui qui ne ferme jamais l'application ne verrait
+  // jamais rien. Le délai d'une heure par jeu, lui, évite la rafale.
+  const running = useRef(false)
+  useEffect(() => {
+    if (!store.ready) return
+
+    const look = async () => {
+      if (running.current) return
+      running.current = true
+      try {
+        await checkSets(storeRef.current.decks, storeRef.current.updateDeck)
+      } finally {
+        running.current = false
+      }
+    }
+
+    // Quelques secondes de retard : le premier écran d'abord, le réseau ensuite.
+    const timer = window.setTimeout(() => void look(), 2500)
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void look()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      window.clearTimeout(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [store.ready])
 
   if (!store.ready) return <Booting />
 

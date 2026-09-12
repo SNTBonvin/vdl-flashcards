@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { hasUpdate } from '../io/updates'
 import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { requestSession } from '../state/session'
@@ -256,16 +257,36 @@ export function DeckScreen({ id }: { id: string }) {
         </button>
       </div>
 
-      {deck.setCode && (
-        <button
-          type="button"
-          className="btn btn--ghost btn--block"
-          onClick={() => navigate({ name: 'set', code: deck.setCode! })}
-        >
-          <Icon name="reset" size={18} />
-          Vérifier les mises à jour · {deck.setCode}
-        </button>
-      )}
+      {deck.setCode &&
+        (hasUpdate(deck) ? (
+          // Repéré par la vérification silencieuse : on le dit, on ne le fait
+          // pas. L'aperçu et la décision restent à celui qui a reçu le jeu.
+          <button
+            type="button"
+            className="card card--pad card--tap row"
+            data-status="run"
+            style={{ gap: 12 }}
+            onClick={() => navigate({ name: 'set', code: deck.setCode! })}
+          >
+            <span className="glyph glyph--warm">
+              <Icon name="download" size={18} />
+            </span>
+            <span className="grow stack" style={{ gap: 1, minWidth: 0, textAlign: 'left' }}>
+              <span className="listrow__title">Mise à jour disponible</span>
+              <span className="listrow__sub truncate mono">{deck.setCode}</span>
+            </span>
+            <Icon name="chevron-right" size={18} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => navigate({ name: 'set', code: deck.setCode! })}
+          >
+            <Icon name="reset" size={18} />
+            Vérifier les mises à jour · {deck.setCode}
+          </button>
+        ))}
 
       {counts.total > 0 && !deck.reserve && (
         <button type="button" className="btn btn--ghost btn--block" onClick={() => setPlanOpen(true)}>

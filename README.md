@@ -38,6 +38,12 @@ service tiers**, y compris au chargement de la page.
   de révision ne quittent l'appareil que si l'utilisateur exporte lui-même une
   sauvegarde.
 - Les notifications de rappel sont générées localement par le navigateur.
+- La seule requête faite sans geste de l'utilisateur est la **vérification
+  silencieuse des jeux reçus par code** : l'application demande au site qui la
+  sert déjà si le fichier public correspondant a changé. Elle n'envoie rien —
+  ni identité, ni progression, ni réponse — ne contacte aucun tiers, et se tait
+  quand la requête échoue. Elle n'a lieu que pour un thème effectivement reçu
+  sous un code, au plus une fois par heure.
 
 Vérification : `document` ne charge que des ressources de son propre domaine —
 un contrôle automatisé compte les requêtes sortantes au démarrage et doit
@@ -105,6 +111,10 @@ sauvegarde JSON reste le filet.
 - **Publication sous un code court** — un jeu déposé sur la forge est joignable
   par un code dicté en classe (« SVT-2DE-BIO1 ») : ni lien, ni QR code, et le
   seul chemin qui atteigne une application installée sur iPhone.
+- **Mise à jour signalée** — un thème reçu sous un code est vérifié
+  silencieusement au lancement et au retour au premier plan ; quand le
+  professeur a redéposé son fichier, une pastille l'annonce sur l'accueil et
+  sur le thème. Rien n'est importé sans l'aperçu et l'accord de l'élève.
 - **Catalogue** — les jeux publiés et listés se parcourent dans l'application,
   par niveau puis par matière, l'index étant reconstruit à chaque publication.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté

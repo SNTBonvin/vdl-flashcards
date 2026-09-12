@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { pendingUpdates } from '../io/updates'
 import { useStore } from '../state/store'
 import { requestSession } from '../state/session'
 import { useRoute } from '../lib/router'
@@ -38,6 +39,10 @@ export function TodayScreen() {
     () => store.studyDecks.filter((deck) => isReminderPending(deck, now)),
     [store.studyDecks, now],
   )
+
+  // Tous les thèmes, réserve comprise : une mise à jour reçue se signale même
+  // si le thème est mis de côté pour la révision.
+  const updates = useMemo(() => pendingUpdates(store.decks), [store.decks])
 
   const spiral = useMemo(
     () => spiralSuggestion(store.studyDecks, store.cardsByDeck, now),
@@ -162,6 +167,36 @@ export function TodayScreen() {
           </>
         )}
       </section>
+
+      {/* Vérification silencieuse : le professeur a redéposé un jeu reçu. On le
+          signale ici parce que c'est le seul écran que l'élève ouvre tous les
+          jours — mais rien n'est importé sans qu'il l'ait vu et voulu. */}
+      {updates.length > 0 && (
+        <section className="stack stack-3">
+          <SectionHead title={updates.length > 1 ? 'Mises à jour disponibles' : 'Mise à jour disponible'} />
+          <div className="card">
+            {updates.map((deck) => (
+              <button
+                key={deck.id}
+                type="button"
+                className="listrow"
+                onClick={() => navigate({ name: 'set', code: deck.setCode! })}
+              >
+                <span className="glyph glyph--warm">
+                  <Icon name="download" size={18} />
+                </span>
+                <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                  <span className="listrow__title truncate">{deck.name}</span>
+                  <span className="listrow__sub truncate">
+                    Ton professeur a mis ce thème à jour
+                  </span>
+                </span>
+                <Icon name="chevron-right" size={18} />
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       {reminders.length > 0 && (
         <section className="stack stack-3">

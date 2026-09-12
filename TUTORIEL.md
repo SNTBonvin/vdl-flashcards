@@ -300,6 +300,16 @@ puis collez le lien, ou tapez le code donné par le professeur. Un aperçu s'aff
 tout ajout. Un thème reçu par code garde son code : le bouton « Vérifier les
 mises à jour » suffit ensuite, sans rien retaper.
 
+### Les mises à jour se signalent toutes seules
+
+L'élève n'a plus à y penser. Quand vous redéposez un fichier sous le même code,
+l'application s'en aperçoit d'elle-même — au lancement, ou au retour au premier
+plan — et affiche **« Mise à jour disponible »** sur l'accueil et sur le thème.
+
+Elle ne l'importe pas pour autant : un appui, l'aperçu habituel, et c'est
+l'élève qui valide. Ce qu'elle demande au site tient en une question — « ce
+fichier a-t-il changé ? » — et n'envoie rien de lui. Hors ligne, elle se tait.
+
 Un thème reçu n'est pas figé :
 
 - il peut y **ajouter ses propres cartes** ;

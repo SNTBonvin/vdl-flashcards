@@ -59,6 +59,14 @@ export interface Deck {
    * Permet d'en vérifier les mises à jour sans le retaper.
    */
   setCode?: string
+  /**
+   * Révision trouvée en ligne lors de la dernière vérification silencieuse.
+   * Plus grande que `shareRev`, elle signale une mise à jour disponible — que
+   * l'élève prend quand il veut, avec l'aperçu habituel.
+   */
+  setUpdateRev?: number
+  /** Date de la dernière vérification, pour ne pas y revenir à chaque ouverture. */
+  setCheckedAt?: number
   /** Code sous lequel ce thème a été publié, côté enseignant. */
   publishedAs?: string
   /** Nom sous lequel le jeu est publié, s'il diffère du nom de travail. */
