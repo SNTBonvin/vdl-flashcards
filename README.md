@@ -89,8 +89,11 @@ sauvegarde JSON reste le filet.
   laissé de côté depuis trois semaines.
 - **Import** — CSV, TSV ou texte collé (`recto ; verso`), avec aperçu avant
   validation.
-- **Export** — sauvegarde JSON intégrale (cartes + historique + lots + réglages)
-  pour changer d'appareil, ou CSV pour un tableur.
+- **Export** — deux fichiers distincts : la sauvegarde JSON intégrale (cartes,
+  historique, lots, réglages) pour changer d'appareil, et le *paquet de cartes*
+  (CSV ou JSON) exportable depuis un thème, une matière, un lot ou les réglages.
+- **Import** — CSV, TSV, texte collé ou paquet JSON, dans le thème de son
+  choix : les cartes s'ajoutent, rien n'est remplacé.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
 - **Reprendre une carte** — une carte déjà écrite se recopie dans un autre
@@ -135,6 +138,21 @@ bruit, pas un signal.
 Aucune de ces lignes n'est un simple affichage — toutes lancent une session sur
 le thème concerné. Une statistique qui ne mène pas à une action est un bulletin
 de notes de plus.
+
+## Deux formats de fichier
+
+La confusion à éviter : une **sauvegarde** (`Backup`) porte tout — matières,
+thèmes, cartes, progression, lots, réglages — et sa restauration **remplace**
+l'existant ; c'est le fichier du changement d'appareil. Un **paquet de cartes**
+(`CardsFile`, `format: 'vdl-flashcards-cards'`) ne porte que des cartes, sans
+progression ni réglages, et **s'ajoute** au thème choisi.
+
+`parseCardsText` accepte indifféremment un paquet, une sauvegarde (dont il ne
+retient alors que les cartes), un tableau JSON brut, ou du CSV, du TSV et du
+texte collé — et lève une erreur explicite plutôt que de produire un import vide.
+
+Un paquet s'exporte depuis un thème, une matière (entière ou thème par thème),
+un lot, ou les réglages (tout, ou une matière), en CSV comme en JSON.
 
 ## Réserve et reprise de cartes
 

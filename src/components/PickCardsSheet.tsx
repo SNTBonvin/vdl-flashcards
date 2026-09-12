@@ -5,8 +5,8 @@ import { EmptyState, Sheet, plural } from './ui'
 import { cardKey } from '../io/share'
 import type { Card, ID } from '../db/types'
 
-/** Au-delà, on ne déroule plus : on demande d'affiner. */
-const MAX_ROWS = 50
+/** Lignes affichées d'un coup ; « Afficher plus » en ajoute autant. */
+const PAGE = 50
 /** Cartes récentes proposées tant qu'aucune recherche n'est lancée. */
 const SUGGESTIONS = 15
 
@@ -36,6 +36,9 @@ export function PickCardsSheet({
   const [sourceDeckId, setSourceDeckId] = useState<ID | null>(null)
   const [tag, setTag] = useState<string | null>(null)
   const [picked, setPicked] = useState<Set<ID>>(new Set())
+  const [limit, setLimit] = useState(PAGE)
+  /** Parcourir toute la bibliothèque, au lieu des seules dernières cartes. */
+  const [browseAll, setBrowseAll] = useState(false)
 
   useEffect(() => {
     if (!open) return
@@ -44,6 +47,8 @@ export function PickCardsSheet({
     setSourceDeckId(null)
     setTag(null)
     setPicked(new Set())
+    setLimit(PAGE)
+    setBrowseAll(false)
   }, [open])
 
   // Rectos déjà présents dans le thème : reprendre un doublon n'aurait pas de sens.
@@ -71,6 +76,10 @@ export function PickCardsSheet({
 
   const search = query.trim().toLowerCase()
 
+  useEffect(() => {
+    setLimit(PAGE)
+  }, [search, subjectId, sourceDeckId, tag, browseAll])
+
   const results = useMemo(() => {
     let list = pool
     if (subjectId) {
@@ -86,15 +95,19 @@ export function PickCardsSheet({
           c.back.toLowerCase().includes(search) ||
           c.tags.some((t) => t.toLowerCase().includes(search)),
       )
-    } else if (!subjectId && !sourceDeckId && !tag) {
+    } else if (!subjectId && !sourceDeckId && !tag && !browseAll) {
       // Ni recherche ni filtre : on montre les dernières écrites, pas tout.
-      list = list.slice().sort((a, b) => b.createdAt - a.createdAt).slice(0, SUGGESTIONS)
+      return list.slice().sort((a, b) => b.createdAt - a.createdAt).slice(0, SUGGESTIONS)
     }
-    return list
-  }, [pool, store.decksBySubject, subjectId, sourceDeckId, tag, search])
+    return list.slice().sort((a, b) => b.createdAt - a.createdAt)
+  }, [pool, store.decksBySubject, subjectId, sourceDeckId, tag, search, browseAll])
 
-  const shown = results.slice(0, MAX_ROWS)
-  const browsing = search.length >= 2 || subjectId !== null || sourceDeckId !== null || tag !== null
+  const shown = results.slice(0, limit)
+  const browsing =
+    search.length >= 2 || subjectId !== null || sourceDeckId !== null || tag !== null || browseAll
+  /** Cartes affichées qu'il reste à cocher — celles déjà présentes exceptées. */
+  const selectable = shown.filter((c) => !alreadyHere.has(cardKey(c.front)))
+  const allShownPicked = selectable.length > 0 && selectable.every((c) => picked.has(c.id))
 
   const toggle = (card: Card) =>
     setPicked((current) => {
@@ -104,7 +117,12 @@ export function PickCardsSheet({
       return next
     })
 
-  const subjectDecks = subjectId ? (store.decksBySubject.get(subjectId) ?? []) : []
+  // Sans matière choisie, on propose tout de même les thèmes : c'est le seul
+  // chemin praticable quand il n'y a qu'une matière. Le thème de destination
+  // est écarté, ses cartes ne figurant pas dans le choix.
+  const subjectDecks = (subjectId ? (store.decksBySubject.get(subjectId) ?? []) : store.decks).filter(
+    (d) => d.id !== deckId,
+  )
 
   return (
     <Sheet
@@ -218,11 +236,35 @@ export function PickCardsSheet({
           </div>
         )}
 
-        <span className="eyebrow">
-          {browsing
-            ? `${results.length} ${plural(results.length, 'carte trouvée', 'cartes trouvées')}`
-            : 'Mes dernières cartes'}
-        </span>
+        <div className="row row--between">
+          <span className="eyebrow">
+            {browsing
+              ? `${results.length} ${plural(results.length, 'carte trouvée', 'cartes trouvées')}`
+              : 'Mes dernières cartes'}
+          </span>
+          {browsing ? (
+            selectable.length > 0 && (
+              <button
+                type="button"
+                className="btn btn--quiet"
+                onClick={() =>
+                  setPicked((current) => {
+                    const next = new Set(current)
+                    if (allShownPicked) for (const c of selectable) next.delete(c.id)
+                    else for (const c of selectable) next.add(c.id)
+                    return next
+                  })
+                }
+              >
+                {allShownPicked ? 'Aucune' : 'Tout'}
+              </button>
+            )
+          ) : (
+            <button type="button" className="btn btn--quiet" onClick={() => setBrowseAll(true)}>
+              Tout parcourir
+            </button>
+          )}
+        </div>
 
         {shown.length === 0 ? (
           <EmptyState
@@ -264,11 +306,15 @@ export function PickCardsSheet({
           </div>
         )}
 
-        {results.length > MAX_ROWS && (
-          <p className="meta" style={{ lineHeight: 1.55 }}>
-            {results.length - MAX_ROWS} autres cartes correspondent. Affinez votre recherche ou
-            choisissez un thème pour les voir.
-          </p>
+        {results.length > shown.length && (
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => setLimit((current) => current + PAGE)}
+          >
+            Afficher {Math.min(PAGE, results.length - shown.length)} cartes de plus
+            <span className="chip mono">{results.length - shown.length} restantes</span>
+          </button>
         )}
       </div>
     </Sheet>
