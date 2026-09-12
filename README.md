@@ -97,6 +97,8 @@ sauvegarde JSON reste le filet.
 - **Publication sous un code court** — un jeu déposé sur la forge est joignable
   par un code dicté en classe (« SVT-2DE-BIO1 ») : ni lien, ni QR code, et le
   seul chemin qui atteigne une application installée sur iPhone.
+- **Catalogue** — les jeux publiés et listés se parcourent dans l'application,
+  par niveau puis par matière, l'index étant reconstruit à chaque publication.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
 - **Reprendre une carte** — une carte déjà écrite se recopie dans un autre
@@ -199,6 +201,13 @@ Trois points méritent l'attention :
   comme à la publication, et le thème en reçoit un à l'ouverture de la feuille ;
 - le service worker met les jeux en cache **réseau d'abord** : une correction
   arrive, et un jeu déjà consulté reste lisible hors ligne.
+
+Un site statique ne sait pas lister un dossier : sans index, un jeu ne serait
+joignable qu'en connaissant son code. `scripts/build-catalogue.mjs` lit donc les
+fichiers de `public/c`, retient ceux qui se déclarent `listed`, et écrit
+`public/catalogue.json` — automatiquement, à chaque construction (`npm run
+build` l'appelle). L'index est **produit et non tenu à la main** : il ne peut ni
+annoncer un jeu disparu, ni oublier un jeu déposé. Il n'est pas versionné.
 
 L'application ne peut pas écrire dans le dépôt — elle en est servie, sans droits
 sur lui, et un jeton d'écriture dans un bundle public serait un jeton public. La

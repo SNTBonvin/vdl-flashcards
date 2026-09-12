@@ -6,12 +6,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run catalogue && tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "icons": "node scripts/generate-icons.mjs",
     "fonts": "node scripts/sync-fonts.mjs",
-    "check-sets": "node scripts/check-sets.mjs"
+    "check-sets": "node scripts/check-sets.mjs",
+    "catalogue": "node scripts/build-catalogue.mjs"
   },
   "dependencies": {
     "qrcode-generator": "^2.0.4",

@@ -37,6 +37,25 @@ export interface PublishedSet {
   cards: [string, string, string?][]
 }
 
+/** Index des jeux visibles, reconstruit à chaque publication. */
+export interface Catalogue {
+  format: 'vdl-flashcards-catalogue'
+  version: 1
+  builtAt: string
+  sets: CatalogueEntry[]
+}
+
+export interface CatalogueEntry {
+  code: string
+  subject: string
+  deck: string
+  level?: string
+  by?: string
+  description?: string
+  cards: number
+  publishedAt: string | null
+}
+
 export class CatalogError extends Error {}
 
 /**
@@ -94,6 +113,38 @@ export function setToPayload(set: PublishedSet): SharePayload {
     t: set.deck,
     d: set.description,
     c: set.cards,
+  }
+}
+
+export function catalogueUrl(): string {
+  return `${window.location.origin}${baseDir()}catalogue.json`
+}
+
+/**
+ * Lit l'index des jeux visibles. Un catalogue vide n'est pas une erreur : rien
+ * n'a encore été publié, ou tout a été publié sans être listé.
+ */
+export async function fetchCatalogue(): Promise<CatalogueEntry[]> {
+  let response: Response
+  try {
+    response = await fetch(catalogueUrl(), { cache: 'no-cache' })
+  } catch {
+    throw new CatalogError(
+      'Impossible de joindre le site. Le catalogue demande une connexion ; les cartes déjà reçues, non.',
+    )
+  }
+  if (response.status === 404) return []
+  if (!response.ok) throw new CatalogError('Le site a répondu une erreur. Réessayez dans un moment.')
+
+  const type = response.headers.get('content-type') ?? ''
+  const text = await response.text()
+  if (!type.includes('json') && !text.trimStart().startsWith('{')) return []
+
+  try {
+    const data = JSON.parse(text) as Partial<Catalogue>
+    return Array.isArray(data.sets) ? data.sets : []
+  } catch {
+    throw new CatalogError('Le catalogue est illisible.')
   }
 }
 

@@ -17,6 +17,7 @@ import { StatsScreen } from './screens/Stats'
 import { SettingsScreen } from './screens/Settings'
 import { ShareScreen } from './screens/Share'
 import { HelpScreen } from './screens/Help'
+import { CatalogueScreen } from './screens/Catalogue'
 
 export function App() {
   return (
@@ -71,6 +72,7 @@ function Shell() {
       {route.name === 'settings' && <SettingsScreen />}
       {route.name === 'share' && <ShareScreen token={route.token} />}
       {route.name === 'set' && <ShareScreen code={route.code} />}
+      {route.name === 'catalogue' && <CatalogueScreen />}
       {route.name === 'help' && <HelpScreen />}
 
       {/* Masqué pendant une session : on n'interrompt pas une révision en cours. */}
@@ -81,7 +83,10 @@ function Shell() {
           {TABS.map((tab) => {
             const active =
               route.name === tab.name ||
-              (tab.name === 'library' && (route.name === 'subject' || route.name === 'deck')) ||
+              (tab.name === 'library' &&
+                (route.name === 'subject' ||
+                  route.name === 'deck' ||
+                  route.name === 'catalogue')) ||
               (tab.name === 'settings' && (route.name === 'stats' || route.name === 'help'))
             return (
               <button
@@ -121,7 +126,11 @@ function AppBar({ route }: { route: Route }) {
   const deckSubject = deck ? store.subjects.find((s) => s.id === deck.subjectId) : null
 
   const nested =
-    route.name === 'subject' || route.name === 'deck' || route.name === 'stats' || route.name === 'help'
+    route.name === 'subject' ||
+    route.name === 'deck' ||
+    route.name === 'stats' ||
+    route.name === 'help' ||
+    route.name === 'catalogue'
 
   const titles: Record<string, string> = {
     today: 'Aujourd’hui',
@@ -130,6 +139,8 @@ function AppBar({ route }: { route: Route }) {
     stats: 'Statistiques',
     settings: 'Réglages',
     share: 'Thème partagé',
+    set: 'Jeu publié',
+    catalogue: 'Catalogue',
     help: 'Prise en main',
   }
 

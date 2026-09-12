@@ -7,3 +7,6 @@ dev-dist/
 .env.*
 !.env.example
 .netlify/
+
+# Index des jeux publiés : produit à la construction, jamais tenu à la main.
+public/catalogue.json

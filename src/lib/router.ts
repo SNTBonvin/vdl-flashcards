@@ -15,6 +15,8 @@ export type Route =
   | { name: 'share'; token: string }
   /** Réception par code court : le jeu est publié à côté du site. */
   | { name: 'set'; code: string }
+  /** Liste des jeux publiés et visibles. */
+  | { name: 'catalogue' }
 
 export function parseHash(hash: string): Route {
   const path = hash.replace(/^#\/?/, '').split('?')[0]
@@ -38,6 +40,8 @@ export function parseHash(hash: string): Route {
       return param ? { name: 'share', token: param } : { name: 'today' }
     case 'c':
       return param ? { name: 'set', code: param.toUpperCase() } : { name: 'today' }
+    case 'catalogue':
+      return { name: 'catalogue' }
     default:
       return { name: 'today' }
   }

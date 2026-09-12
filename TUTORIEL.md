@@ -193,6 +193,23 @@ code est vivant : `…/vdl-flashcards/c/LECODE.json`.
   Ensuite les cartes sont sur son appareil et tout redevient autonome. Le
   partage par lien, lui, fonctionne sans réseau : les deux coexistent.
 
+### Le catalogue
+
+Les jeux publiés avec « Afficher dans le catalogue » apparaissent dans une
+liste, consultable dans l'application : **Matières → Parcourir le catalogue**.
+On y filtre par niveau puis par matière, et l'on ouvre un jeu comme on ouvrirait
+un code — avec le même aperçu avant d'ajouter. Les jeux déjà reçus y portent la
+mention « reçu ».
+
+Le catalogue est **reconstruit à chaque publication**, à partir des fichiers
+réellement en ligne : il ne peut donc pas annoncer un jeu qui n'existe plus, ni
+oublier un jeu déposé. Un jeu publié sans être listé n'y figure pas, mais son
+code fonctionne.
+
+Il est **public** : toute personne ouvrant l'application le voit. C'est
+l'intérêt pour mutualiser entre collègues ; c'est à savoir avant de cocher la
+case.
+
 ### Sur iPhone : une consigne à donner
 
 Sur iPhone, une application installée sur l'écran d'accueil possède **son propre

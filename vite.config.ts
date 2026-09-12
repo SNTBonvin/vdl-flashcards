@@ -67,7 +67,7 @@ export default defineConfig({
         // navigateur est une navigation, que le repli renverrait vers
         // l'application. On verrait la page d'accueil à la place du fichier,
         // et l'on croirait le jeu absent alors qu'il est bien publié.
-        navigateFallbackDenylist: [/\/c\/[^/]+\.json$/],
+        navigateFallbackDenylist: [/\/c\/[^/]+\.json$/, /\/catalogue\.json$/],
         cleanupOutdatedCaches: true,
         // L'application ne contacte aucun service tiers : tout est précaché,
         // polices comprises. Seule exception, les jeux publiés sous un code,
@@ -78,8 +78,8 @@ export default defineConfig({
           {
             urlPattern: ({ url }: { url: URL }) =>
               url.origin === self.location.origin &&
-              url.pathname.includes('/c/') &&
-              url.pathname.endsWith('.json'),
+              (url.pathname.endsWith('/catalogue.json') ||
+                (url.pathname.includes('/c/') && url.pathname.endsWith('.json'))),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'jeux-publies',

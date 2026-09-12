@@ -123,6 +123,14 @@ export function LibraryScreen() {
                 <Icon name="inbox" size={18} />
                 Lien ou code reçu
               </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--block"
+                onClick={() => navigate({ name: 'catalogue' })}
+              >
+                <Icon name="library" size={18} />
+                Parcourir le catalogue
+              </button>
             </div>
           }
         />
@@ -172,6 +180,15 @@ export function LibraryScreen() {
               Lien ou code
             </button>
           </div>
+
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => navigate({ name: 'catalogue' })}
+          >
+            <Icon name="library" size={18} />
+            Parcourir le catalogue
+          </button>
         </>
       )}
 
