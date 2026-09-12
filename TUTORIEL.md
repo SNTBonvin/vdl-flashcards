@@ -36,6 +36,13 @@ Trois niveaux : une **matière** contient des **thèmes**, un thème contient de
 2. Dans la matière → **Nouveau thème** (un par chapitre).
 3. Dans le thème → **Ajouter une carte**.
 
+### Une idée par carte
+
+Une flashcard porte **une seule notion**, formulée court. C'est ce qui la rend
+efficace : la carte qui contient deux idées n'en fixe aucune. L'éditeur le
+rappelle, et signale les cartes devenues trop longues — deux cartes valent
+souvent mieux qu'une.
+
 ## Créer beaucoup de cartes d'un coup
 
 **Importer** accepte une liste collée : une carte par ligne, recto et verso
@@ -127,13 +134,43 @@ Un thème reçu n'est pas figé :
 - s'il **modifie** une carte reçue, elle devient la sienne et cesse de suivre
   les corrections de l'auteur. L'application le prévient avant.
 
-## Rappels
+## Se faire rappeler de réviser
 
-Chaque thème peut avoir son rappel : une heure et des jours de la semaine.
+### Planifier ses reprises, et les mettre dans son agenda
 
-Le web n'autorise pas de véritable planification en arrière-plan : le rappel est
-évalué à l'ouverture de l'application et tant qu'elle est au premier plan. À
-défaut, la pastille de l'onglet « Aujourd'hui » signale les thèmes en attente.
+Dans un thème → **Planifier mes révisions**. Choisissez un rythme et une heure,
+l'application affiche les rendez-vous, puis **Ajouter à mon agenda** les dépose
+dans le calendrier du téléphone.
+
+Deux rythmes :
+
+- **Courbe de l'oubli** — demain, dans une semaine, dans un mois, dans six mois.
+  C'est le rythme conseillé : l'oubli est massif dans les premiers jours, et
+  chaque rappel aplatit la courbe.
+- **Resserré** — cinq reprises en un mois, pour un contrôle proche.
+
+Pourquoi passer par l'agenda : une application web ne peut pas programmer une
+notification à l'avance. La notification de l'application ne part qu'à son
+ouverture — c'est-à-dire jamais pour celui qui oublie justement de l'ouvrir.
+L'agenda du téléphone, lui, sonne seul, application fermée. Rien ne sort de
+l'appareil : le fichier est fabriqué sur place.
+
+Sur iPhone, ouvrez le fichier téléchargé puis « Tout ajouter ». Sur Android, il
+s'ouvre directement dans l'agenda. Réimporter un plan modifié met à jour les
+rendez-vous au lieu de les dupliquer.
+
+### Rappel hebdomadaire
+
+Chaque thème peut aussi avoir son rappel : une heure et des jours de la semaine,
+avec le même bouton pour le recopier dans l'agenda. À défaut, la pastille de
+l'onglet « Aujourd'hui » signale les thèmes en attente.
+
+### Reprise spiralaire
+
+Quand un thème déjà travaillé n'a pas été rouvert depuis trois semaines,
+l'écran « Aujourd'hui » propose de le reprendre. Réviser le chapitre en cours
+ne suffit pas : ce sont les retours sur les chapitres antérieurs qui installent
+les connaissances pour de bon.
 
 ## Sauvegarder et changer d'appareil
 

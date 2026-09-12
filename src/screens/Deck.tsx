@@ -23,6 +23,10 @@ import { DAY_SHORT, formatDue } from '../lib/date'
 import { ImportError, parseRows, readFile } from '../io/transfer'
 import { ShareSheet } from '../components/ShareSheet'
 import { DistributionSheet } from '../components/DistributionSheet'
+import { PlanSheet } from '../components/PlanSheet'
+import { nextPlanDate } from '../reminders/plan'
+import { buildIcs, icsFilename } from '../io/ics'
+import { download } from '../io/transfer'
 import type { Distribution, ID } from '../db/types'
 
 /**
@@ -59,6 +63,7 @@ export function DeckScreen({ id }: { id: string }) {
   const [openLotId, setOpenLotId] = useState<ID | null>(null)
   const [sharingLotId, setSharingLotId] = useState<ID | null>(null)
   const [movingTo, setMovingTo] = useState(false)
+  const [planOpen, setPlanOpen] = useState(false)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -67,6 +72,8 @@ export function DeckScreen({ id }: { id: string }) {
   const cards = useMemo(() => store.cardsByDeck.get(id) ?? [], [store.cardsByDeck, id])
   const counts = countCards(cards)
   const lots = useMemo(() => store.distributionsByDeck.get(id) ?? [], [store.distributionsByDeck, id])
+
+  const nextReprise = deck?.plan ? nextPlanDate(deck.plan) : null
 
   const selected = selection?.ids ?? new Set<ID>()
   const selecting = selection !== null
@@ -192,6 +199,15 @@ export function DeckScreen({ id }: { id: string }) {
           <Icon name="trash" size={18} />
         </button>
       </div>
+
+      {counts.total > 0 && (
+        <button type="button" className="btn btn--ghost btn--block" onClick={() => setPlanOpen(true)}>
+          <Icon name="today" size={18} />
+          {nextReprise
+            ? `Prochaine reprise ${formatDue(nextReprise.getTime())}`
+            : 'Planifier mes révisions'}
+        </button>
+      )}
 
       <div className="row" style={{ gap: 10 }}>
         <button type="button" className="btn btn--ghost grow" onClick={() => setEditingCard('new')}>
@@ -514,6 +530,7 @@ export function DeckScreen({ id }: { id: string }) {
 
       <ReminderSheet
         open={reminderOpen}
+        deckId={deck.id}
         deckName={deck.name}
         reminder={deck.reminder}
         onClose={() => setReminderOpen(false)}
@@ -555,6 +572,20 @@ export function DeckScreen({ id }: { id: string }) {
           toast('Carte modifiée — elle est désormais la vôtre.')
           setEditingCard(null)
           setClaiming(null)
+        }}
+      />
+
+      <PlanSheet
+        open={planOpen}
+        deck={deck}
+        onClose={() => setPlanOpen(false)}
+        onSave={async (plan) => {
+          await store.updateDeck(deck.id, { plan })
+          setPlanOpen(false)
+        }}
+        onRemove={async () => {
+          await store.updateDeck(deck.id, { plan: null })
+          toast('Plan retiré.')
         }}
       />
 
@@ -789,6 +820,9 @@ export function CardSheet({
     }
   }
 
+  /** Seuil indicatif : au-delà, la carte porte presque toujours deux idées. */
+  const longCard = front.trim().length > 180 || back.trim().length > 180
+
   const submit = () => {
     if (!front.trim() || !back.trim()) return
     onSubmit({
@@ -831,7 +865,10 @@ export function CardSheet({
         }
       >
         <div className="stack stack-5">
-          <Field label="Recto — la question">
+          <Field
+            label="Recto — la question"
+            hint="Une seule notion par carte : c’est ce qui rend la mémorisation efficace."
+          >
             <textarea
               className="textarea"
               value={front}
@@ -848,6 +885,18 @@ export function CardSheet({
               placeholder="1958"
             />
           </Field>
+
+          {longCard && (
+            <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+              <span className="glyph glyph--warm">
+                <Icon name="info" size={18} />
+              </span>
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                Carte longue. Une carte se retient d’autant mieux qu’elle tient en une idée et une
+                formulation courte : deux cartes valent souvent mieux qu’une.
+              </p>
+            </div>
+          )}
           <Field label="Note" hint="Précision affichée après la réponse. Facultatif.">
             <textarea
               className="textarea"
@@ -918,14 +967,47 @@ export function CardSheet({
 
 /* -------------------------------- Rappels -------------------------------- */
 
+/**
+ * Recopie le rappel hebdomadaire dans l'agenda, pour un an. Une répétition
+ * sans fin finirait par encombrer l'agenda bien après l'année scolaire.
+ */
+function exportWeekly(deckId: string, deckName: string, time: string, days: number[]) {
+  const [hours, minutes] = time.split(':').map(Number)
+  const start = new Date()
+  start.setHours(hours || 18, minutes || 0, 0, 0)
+  // Premier jour coché à venir, pour que la série démarre au bon endroit.
+  while (!days.includes(start.getDay()) || start.getTime() < Date.now()) {
+    start.setDate(start.getDate() + 1)
+  }
+  const until = new Date(start)
+  until.setFullYear(until.getFullYear() + 1)
+
+  download(
+    icsFilename(`${deckName}-rappel`),
+    buildIcs([
+      {
+        uid: `${deckId}-hebdo@vdl-flashcards`,
+        start,
+        durationMinutes: 15,
+        summary: `Réviser : ${deckName}`,
+        description: 'Rappel de révision. Quinze minutes suffisent.',
+        weekly: { days, until },
+      },
+    ]),
+    'text/calendar',
+  )
+}
+
 function ReminderSheet({
   open,
+  deckId,
   deckName,
   reminder,
   onClose,
   onSubmit,
 }: {
   open: boolean
+  deckId: string
   deckName: string
   reminder: Reminder | null
   onClose: () => void
@@ -1002,13 +1084,24 @@ function ReminderSheet({
               </div>
             </div>
 
+            <button
+              type="button"
+              className="btn btn--ghost btn--block"
+              disabled={days.length === 0}
+              onClick={() => exportWeekly(deckId, deckName, time, days)}
+            >
+              <Icon name="today" size={17} />
+              Ajouter ce rappel à mon agenda
+            </button>
+
             <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
               <span className="glyph glyph--warm">
                 <Icon name="info" size={18} />
               </span>
               <p className="meta" style={{ lineHeight: 1.55 }}>
-                Le rappel se déclenche à l’ouverture de l’application ou lorsqu’elle est active. Sur iPhone,
-                installez-la sur l’écran d’accueil pour recevoir les notifications.
+                La notification de l’application ne part qu’à son ouverture : elle rappelle ce qui
+                est dû, elle ne réveille pas le téléphone. Pour être prévenu même application
+                fermée, ajoutez le rappel à votre agenda.
               </p>
             </div>
           </>

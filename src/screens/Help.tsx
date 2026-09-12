@@ -130,6 +130,12 @@ export function HelpScreen() {
       />
 
       <Step
+        icon="today"
+        title="Planifier ses révisions"
+        text="Dans un thème, « Planifier mes révisions » propose des rendez-vous suivant la courbe de l’oubli — demain, dans une semaine, dans un mois, dans six mois — et les dépose dans l’agenda du téléphone. C’est le seul rappel qui sonne même application fermée : une page web ne peut pas programmer une notification à l’avance."
+      />
+
+      <Step
         icon="bell"
         title="Se faire rappeler"
         text="Chaque thème peut avoir son rappel : une heure et des jours de la semaine. Sur iPhone, l’application doit être installée sur l’écran d’accueil pour que les notifications fonctionnent."

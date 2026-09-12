@@ -67,9 +67,14 @@ sauvegarde JSON reste le filet.
   jamais interrompre une révision en cours ; les cartes et la progression sont
   conservées (voir « Mises à jour » plus bas).
 - **Répétition espacée** — variante simplifiée de SM-2 : une carte ratée revient
-  une minute plus tard, dans la séance en cours ; une carte acquise que l'on
-  oublie repart avec un intervalle divisé par deux ; une carte sue s'espace de
-  plus en plus (intervalle × facteur de facilité, 2,5 au départ).
+  une minute plus tard puis dix minutes plus tard, dans la séance en cours ; une
+  carte acquise que l'on oublie repart avec un intervalle divisé par deux ; une
+  carte sue s'espace de plus en plus (intervalle × facteur de facilité, 2,5 au
+  départ). Une carte neuve sue d'emblée rejoint directement le cycle long.
+- **Plan de reprises et agenda** — chaque thème peut recevoir un plan de
+  révision (courbe de l'oubli : demain, une semaine, un mois, six mois) exporté
+  vers l'agenda du téléphone, seul dispositif capable de sonner application
+  fermée (voir « Rappels et agenda »).
 - **Trois modes de session**
   - *Programmé* : les cartes échues du jour, plus un quota de cartes neuves ;
   - *Interrogation* : toutes les cartes des thèmes cochés, échues ou non,
@@ -78,7 +83,10 @@ sauvegarde JSON reste le filet.
   - *Difficiles* : uniquement les cartes déjà ratées.
 - **Réponses** — « Raté », « Difficile », « Su », avec l'échéance calculée
   affichée sur chaque bouton avant de répondre.
-- **Rappels** — horaire et jours de la semaine par thème.
+- **Rappels** — horaire et jours de la semaine par thème, recopiables dans
+  l'agenda du téléphone.
+- **Reprise spiralaire** — l'écran « Aujourd'hui » propose de rouvrir un thème
+  laissé de côté depuis trois semaines.
 - **Import** — CSV, TSV ou texte collé (`recto ; verso`), avec aperçu avant
   validation.
 - **Export** — sauvegarde JSON intégrale (cartes + historique + lots + réglages)
@@ -121,6 +129,39 @@ bruit, pas un signal.
 Aucune de ces lignes n'est un simple affichage — toutes lancent une session sur
 le thème concerné. Une statistique qui ne mène pas à une action est un bulletin
 de notes de plus.
+
+## Rappels et agenda
+
+Une application web ne sait pas programmer une notification à l'avance : l'API
+qui le permettrait (*Notification Triggers*) n'a jamais dépassé l'expérimentation
+chez Chromium, et n'existe ni sur WebKit ni sur Gecko. La notification locale ne
+part donc qu'à l'ouverture de l'application — inutile, précisément, pour qui
+oublie de l'ouvrir.
+
+D'où le détour par l'agenda du téléphone, seul dispositif capable de sonner
+application fermée sans serveur : `src/io/ics.ts` fabrique un fichier iCalendar
+(RFC 5545) que l'appareil remet à son calendrier. Rien n'est envoyé nulle part,
+aucun compte n'est nécessaire, et aucune donnée d'élève n'existe ailleurs que
+sur son téléphone — ce qu'un service de notifications push aurait imposé.
+
+Deux détails d'implémentation méritent d'être signalés :
+
+- Les heures sont écrites en **heure locale flottante**, sans fuseau : le
+  rendez-vous tombe à 18 h sur l'appareil qui l'affiche. Cela évite d'embarquer
+  une définition de fuseau, et c'est le bon sens pour un rappel de révision.
+- Les `UID` sont **stables par rang** (`<thème>-reprise-<n>`) : réimporter un
+  plan modifié met à jour les rendez-vous existants au lieu de les dupliquer.
+
+Le **plan de reprises** (`src/reminders/plan.ts`) propose deux rythmes : la
+courbe de l'oubli (demain, une semaine, un mois, six mois) et un rythme resserré
+(1, 3, 7, 15 et 30 jours) pour un contrôle proche. Il ne remplace pas la
+répétition espacée carte par carte : celle-ci décide de *quelles* cartes revoir,
+le plan dit *quand* s'y mettre.
+
+La **reprise spiralaire** (`src/srs/spiral.ts`) complète le dispositif : dès
+qu'un thème déjà travaillé est resté trois semaines sans être rouvert, l'écran
+« Aujourd'hui » propose de le reprendre. Réviser le chapitre courant ne suffit
+pas ; ce sont les retours sur les chapitres antérieurs qui ancrent.
 
 ## Partage d'un thème
 

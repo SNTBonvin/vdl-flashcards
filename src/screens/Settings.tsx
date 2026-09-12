@@ -448,8 +448,8 @@ export function SettingsScreen() {
             <div className="listrow" style={{ cursor: 'default' }}>
               <span className="dot dot--err" />
               <span className="grow">
-                <strong style={{ color: 'var(--ink)' }}>Raté</strong> — la carte repart en apprentissage et
-                revient dans la minute, puis dans la séance suivante.
+                <strong style={{ color: 'var(--ink)' }}>Raté</strong> — la carte repart en apprentissage :
+                elle revient dans la minute, puis dix minutes plus tard, avant de rejoindre le cycle long.
               </span>
             </div>
             <div className="listrow" style={{ cursor: 'default' }}>
