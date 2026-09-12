@@ -191,6 +191,17 @@ export function ShareSheet({
                 mis à jour au lieu d’être dupliqué, et sa progression sera conservée.
               </p>
             </div>
+
+            <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+              <span className="glyph glyph--warm">
+                <Icon name="info" size={18} />
+              </span>
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                À dire aux élèves sur iPhone : un lien ouvert depuis un message va dans Safari, qui
+                ne partage pas ses données avec l’application installée. Ils doivent copier le lien,
+                ouvrir l’application depuis l’écran d’accueil, puis « Matières › Lien reçu ».
+              </p>
+            </div>
           </>
         )}
       </div>

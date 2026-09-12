@@ -226,6 +226,22 @@ nombre de modules du QR code et non du nombre de cartes :
 | ≤ 5 000 caractères | lien seulement — certains ENT tronquent les liens longs |
 | au-delà | l'application renvoie vers l'export JSON |
 
+### Recevoir un lien sur iPhone
+
+Une application iOS installée sur l'écran d'accueil possède un **stockage propre**,
+distinct de celui de Safari, et WebKit ne sait pas confier un lien à une
+application web — la capture de lien existe sur Chromium, pas ici, et les
+mécanismes équivalents sont réservés aux applications natives. Un lien ouvert
+depuis un message atterrit donc dans Safari, et les cartes reçues restent
+invisibles pour l'application installée.
+
+Rien ne permet de corriger cela côté web. L'application fait donc deux choses :
+elle offre un point d'entrée **« Matières › Lien reçu »** où l'on colle le lien
+(ou le seul jeton), seul chemin fiable sur iPhone ; et `isIosBrowser()`
+(`src/lib/storage.ts`) détecte le cas — iOS, hors mode autonome — pour afficher
+sur l'écran de réception un avertissement et un bouton de copie, plutôt que de
+laisser deux jeux de cartes diverger sans que personne comprenne pourquoi.
+
 Cinq règles gouvernent la réception (`importShare` dans `src/state/store.tsx`),
 et toutes protègent le travail de celui qui reçoit :
 

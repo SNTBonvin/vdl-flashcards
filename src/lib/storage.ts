@@ -95,3 +95,22 @@ export function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} Ko`
   return `${(bytes / (1024 * 1024)).toFixed(1).replace('.', ',')} Mo`
 }
+
+/**
+ * Sur iPhone, une application ajoutée à l'écran d'accueil possède son propre
+ * stockage, distinct de celui de Safari — et le système ne sait pas confier un
+ * lien à une application web. Un lien ouvert depuis un message atterrit donc
+ * dans Safari, où les cartes reçues resteront invisibles pour l'application
+ * installée. On ne peut pas l'empêcher : on peut prévenir.
+ */
+export function isIosBrowser(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent
+  // iPadOS 13+ se présente comme un Mac : le tactile le trahit.
+  const ios = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
+  if (!ios) return false
+  const standalone =
+    (navigator as Navigator & { standalone?: boolean }).standalone === true ||
+    (typeof matchMedia === 'function' && matchMedia('(display-mode: standalone)').matches)
+  return !standalone
+}

@@ -4,6 +4,7 @@ import { useRoute } from '../lib/router'
 import { Icon } from '../components/Icon'
 import { EmptyState, SectionHead, plural, useToast } from '../components/ui'
 import { decodeShare, ShareError, type SharePayload } from '../io/share'
+import { isIosBrowser } from '../lib/storage'
 
 /**
  * Réception d'un thème partagé.
@@ -100,6 +101,36 @@ export function ShareScreen({ token }: { token: string }) {
         <span className="eyebrow">{payload.by ? `Partagé par ${payload.by}` : 'Thème partagé'}</span>
         <h1>{payload.t}</h1>
       </div>
+
+      {isIosBrowser() && (
+        <div className="card card--pad stack stack-3" data-status="warn">
+          <div className="row" style={{ gap: 12 }}>
+            <span className="glyph glyph--warm">
+              <Icon name="info" size={18} />
+            </span>
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              Vous êtes dans Safari. Si l’application est installée sur votre écran d’accueil,
+              <strong> ces cartes n’y arriveront pas</strong> : sur iPhone, les deux ne partagent pas
+              leurs données. Copiez ce lien, ouvrez l’application, puis « Matières › Lien reçu ».
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(window.location.href)
+                toast('Lien copié.')
+              } catch {
+                toast('Copie impossible : sélectionnez le lien dans la barre d’adresse.', 'error')
+              }
+            }}
+          >
+            <Icon name="upload" size={17} />
+            Copier le lien
+          </button>
+        </div>
+      )}
 
       <section className="card card--pad stack stack-4" data-status={existing ? 'run' : 'ok'}>
         <div className="row">

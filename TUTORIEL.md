@@ -160,7 +160,28 @@ Ce qu'il faut savoir :
 L'intitulé n'apparaît nulle part chez l'élève, et aucune information sur qui a
 reçu quoi n'est enregistrée : l'application ne suit personne.
 
+### Sur iPhone : une consigne à donner
+
+Sur iPhone, une application installée sur l'écran d'accueil possède **son propre
+stockage**, distinct de celui de Safari — et le système ne sait pas confier un
+lien à une application web. Un élève qui ouvre le lien depuis un message ou
+l'ENT reçoit donc les cartes **dans Safari**, où l'application installée ne les
+verra jamais.
+
+La consigne à donner à la classe tient en une phrase :
+
+> Copiez le lien, ouvrez l'application depuis l'écran d'accueil, puis
+> **Matières → Lien reçu**, et collez.
+
+C'est vrai aussi après avoir scanné un QR code. L'application prévient d'elle-même
+quand elle détecte ce cas, et propose un bouton « Copier le lien ».
+
+Sur Android, rien de tout cela : le lien ouvre directement l'application installée.
+
 ## Côté élève
+
+Pour ouvrir un lien reçu : **Matières → Lien reçu**, puis collez le lien (ou
+seulement le code qui suit `#/p/`). Un aperçu s'affiche avant tout ajout.
 
 Un thème reçu n'est pas figé :
 
