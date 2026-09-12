@@ -126,7 +126,7 @@ export function HelpScreen() {
       <Step
         icon="move"
         title="Partager un thème"
-        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si vous corrigez une faute plus tard, rediffusez le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée."
+        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si vous corrigez une faute plus tard, rediffusez le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée. Pour ouvrir un lien reçu : « Matières › Lien reçu », et collez-le — sur iPhone, c’est le seul chemin qui mène à l’application installée."
       />
 
       <Step

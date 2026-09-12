@@ -3,6 +3,7 @@ import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { countCards } from '../srs/queue'
 import { Icon } from '../components/Icon'
+import { PasteLinkSheet } from '../components/PasteLinkSheet'
 import { EmptyState, Field, SectionHead, Sheet, plural, useToast } from '../components/ui'
 
 export function LibraryScreen() {
@@ -10,6 +11,7 @@ export function LibraryScreen() {
   const { navigate } = useRoute()
   const toast = useToast()
   const [creating, setCreating] = useState(false)
+  const [pasting, setPasting] = useState(false)
   const [query, setQuery] = useState('')
 
   const rows = useMemo(
@@ -104,10 +106,24 @@ export function LibraryScreen() {
           title="Aucune matière"
           text="Les matières regroupent vos thèmes : Histoire, Anglais, Biologie… Commencez par en créer une."
           action={
-            <button type="button" className="btn btn--primary" onClick={() => setCreating(true)}>
-              <Icon name="plus" size={18} />
-              Nouvelle matière
-            </button>
+            <div className="stack stack-2" style={{ width: '100%', maxWidth: 280 }}>
+              <button
+                type="button"
+                className="btn btn--primary btn--block"
+                onClick={() => setCreating(true)}
+              >
+                <Icon name="plus" size={18} />
+                Nouvelle matière
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--block"
+                onClick={() => setPasting(true)}
+              >
+                <Icon name="inbox" size={18} />
+                Ouvrir un lien reçu
+              </button>
+            </div>
           }
         />
       ) : (
@@ -146,12 +162,27 @@ export function LibraryScreen() {
             })}
           </section>
 
-          <button type="button" className="btn btn--ghost btn--block" onClick={() => setCreating(true)}>
-            <Icon name="plus" size={18} />
-            Nouvelle matière
-          </button>
+          <div className="row" style={{ gap: 10 }}>
+            <button type="button" className="btn btn--ghost grow" onClick={() => setCreating(true)}>
+              <Icon name="plus" size={18} />
+              Nouvelle matière
+            </button>
+            <button type="button" className="btn btn--ghost grow" onClick={() => setPasting(true)}>
+              <Icon name="inbox" size={18} />
+              Lien reçu
+            </button>
+          </div>
         </>
       )}
+
+      <PasteLinkSheet
+        open={pasting}
+        onClose={() => setPasting(false)}
+        onToken={(token) => {
+          setPasting(false)
+          navigate({ name: 'share', token })
+        }}
+      />
 
       <SubjectSheet
         open={creating}
