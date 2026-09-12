@@ -1,0 +1,50 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SVT-BIODIV1",
+  "publishedAt": "2026-09-12T21:33:40.882Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences de la Vie et de la Terre",
+  "deck": "Biodiversité - Lot 1",
+  "description": "Thème 1 classe de seconde",
+  "shareId": "sh1d4v2j0k562u1o",
+  "rev": 1789248820882,
+  "cards": [
+    [
+      "Qu'est-ce qu'un écosystème ?",
+      "Un écosystème = une biocénose (êtres vivants) + un biotope (milieu de vie : température pH, salinité...)",
+      null
+    ],
+    [
+      "Quels sont les 3 niveaux de biodiversité ?",
+      "1. Diversité des écosystèmes 2. Diversité des espèces 3. Diversité génétique (ou intraspécifique).",
+      null
+    ],
+    [
+      "Comment estimer la richesse biologique ?",
+      "On réalise des comptages d'espèce et d'effectifs pour chaque espèce.",
+      null
+    ],
+    [
+      "Quels sont les indicateurs qui servent à estimer la biodiversité dans un milieu ?",
+      "Le nombre d'espèce et l'hétérogénéité.",
+      null
+    ],
+    [
+      "Qu'est-ce que la biocénose ?",
+      "L'ensemble des êtres vivants qui peuplent un écosystème.",
+      null
+    ],
+    [
+      "Qu'est-ce que le biotope ?",
+      "Le milieu de vie d'un écosystème (conditions physico-chimiques : température pH salinité humidité...).",
+      null
+    ],
+    [
+      "L'apparition d'une nouvelle espèce dans un milieu enrichit-elle forcément la biodiversité ?",
+      "Non car si c'est une espèce envahissante il peut y avoir une surabondance d'une espèce par rapport aux autres, ce qui appauvrit la biodiversité.",
+      null
+    ]
+  ]
+}
