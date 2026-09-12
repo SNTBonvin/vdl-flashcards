@@ -26,6 +26,18 @@ function uploadUrl(repo: string): string {
     : `${base}/-/new/main/public/c`
 }
 
+/**
+ * Page de modification du fichier déjà déposé : on atterrit dans l'éditeur, il
+ * ne reste qu'à tout sélectionner, coller et valider. Redéposer sous le même
+ * code met le jeu à jour chez ceux qui l'ont reçu ; en changer en créerait un
+ * second.
+ */
+function editUrl(repo: string, code: string): string {
+  const base = repo.trim().replace(/\/+$/, '')
+  const path = `main/public/c/${code}.json`
+  return /github\.com/.test(base) ? `${base}/edit/${path}` : `${base}/-/edit/${path}`
+}
+
 /** Niveaux proposés, du collège au lycée. « Tous niveaux » reste possible. */
 const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle']
 
@@ -58,6 +70,8 @@ export function PublishSheet({
 
   const [code, setCode] = useState('')
   const [level, setLevel] = useState('')
+  /** Nom vu par l'élève. Par défaut celui du thème, mais on peut le rhabiller. */
+  const [label, setLabel] = useState('')
   const [listed, setListed] = useState(true)
   const [repo, setRepo] = useState(store.settings.publishRepo)
   /**
@@ -70,6 +84,7 @@ export function PublishSheet({
   useEffect(() => {
     if (!open) return
     setCode(deck.publishedAs ?? suggestCode(subject?.name ?? '', deck.name))
+    setLabel(deck.publishedName ?? deck.name)
     setListed(true)
     setRepo(store.settings.publishRepo)
     setShareId(null)
@@ -85,6 +100,11 @@ export function PublishSheet({
 
   const live = cards.filter((c) => !c.suspended)
   const ready = shareId !== null
+  /** Déjà publié sous ce code, et modifié depuis : il faut redéposer. */
+  const published = deck.publishedAs === normalizeCode(code) && deck.publishedAt != null
+  const stale =
+    published &&
+    (live.length !== deck.publishedCount || live.some((c) => c.updatedAt > (deck.publishedAt ?? 0)))
   const valid = CODE_PATTERN.test(code.trim().toUpperCase()) && ready
 
   const file = useMemo<PublishedSet | null>(() => {
@@ -99,7 +119,7 @@ export function PublishSheet({
       ...(level ? { level } : {}),
       ...(store.settings.sharedBy ? { by: store.settings.sharedBy } : {}),
       subject: subject.name,
-      deck: deck.name,
+      deck: label.trim() || deck.name,
       ...(deck.description ? { description: deck.description } : {}),
       // Le même identifiant que le partage par lien : chez l'élève, un jeu reçu
       // par code et un lot reçu par lien se rejoignent dans le même thème.
@@ -107,7 +127,7 @@ export function PublishSheet({
       rev: Date.now(),
       cards: live.map((c) => [c.front, c.back, c.notes || undefined] as [string, string, string?]),
     }
-  }, [code, level, listed, subject, deck, live, shareId, store.settings.sharedBy])
+  }, [code, label, level, listed, subject, deck, live, shareId, store.settings.sharedBy])
 
   const content = file ? JSON.stringify(file, null, 2) : ''
   const normalized = normalizeCode(code)
@@ -124,15 +144,20 @@ export function PublishSheet({
   const openRepo = async () => {
     if (!repo.trim() || !normalized) return
     if (repo !== store.settings.publishRepo) await store.saveSettings({ publishRepo: repo.trim() })
-    await store.updateDeck(deck.id, { publishedAs: normalized })
+    await store.updateDeck(deck.id, {
+      publishedAs: normalized,
+      publishedName: label.trim() || deck.name,
+      publishedAt: Date.now(),
+      publishedCount: live.length,
+    })
     onPublished(normalized)
-    window.open(uploadUrl(repo), '_blank', 'noopener')
+    window.open(published ? editUrl(repo, normalized) : uploadUrl(repo), '_blank', 'noopener')
   }
 
   return (
     <Sheet
       open={open}
-      title="Publier sous un code"
+      title={published ? 'Republier ce jeu' : 'Publier sous un code'}
       onClose={onClose}
       footer={
         <button
@@ -163,6 +188,18 @@ export function PublishSheet({
             placeholder="SVT-2DE-BIO1"
             autoCapitalize="characters"
             spellCheck={false}
+          />
+        </Field>
+
+        <Field
+          label="Nom affiché"
+          hint="Ce que l’élève verra. Votre thème garde son nom de travail."
+        >
+          <input
+            className="input"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder={deck.name}
           />
         </Field>
 
@@ -213,6 +250,19 @@ export function PublishSheet({
               {normalized ? setUrl(normalized) : '—'}
             </span>
           </div>
+          {published && (
+            <>
+              <hr className="rule" />
+              <div className="row row--between">
+                <span className="meta">Dernier dépôt</span>
+                <span className={`chip ${stale ? 'chip--warn' : 'chip--ok'} mono`}>
+                  {stale
+                    ? 'modifié depuis'
+                    : new Date(deck.publishedAt ?? 0).toLocaleDateString('fr-FR')}
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         <button
@@ -246,7 +296,7 @@ export function PublishSheet({
           onClick={openRepo}
         >
           <Icon name="move" size={17} />
-          Ouvrir la page de dépôt
+          {published ? 'Ouvrir le fichier à remplacer' : 'Ouvrir la page de dépôt'}
         </button>
 
         <div className="card card--pad row" data-status="run" style={{ gap: 12 }}>
@@ -254,9 +304,10 @@ export function PublishSheet({
             <Icon name="info" size={18} />
           </span>
           <p className="meta" style={{ lineHeight: 1.55 }}>
-            Sur la page qui s’ouvre : nommez le fichier <span className="mono">{normalized || '…'}.json</span>,
-            collez le contenu, validez. La publication prend environ deux minutes. Republier sous le
-            même code met le jeu à jour chez ceux qui l’ont déjà reçu, sans doublon.
+            {published
+              ? 'Sur la page qui s’ouvre : tout sélectionner, coller, valider. Deux minutes plus tard, le jeu est à jour chez ceux qui l’ont reçu — sans doublon et sans toucher à leur progression.'
+              : 'Sur la page qui s’ouvre : nommez le fichier, collez le contenu, validez. La publication prend environ deux minutes.'}{' '}
+            Gardez le même code : en changer créerait un second jeu.
           </p>
         </div>
       </div>

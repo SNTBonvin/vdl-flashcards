@@ -82,6 +82,17 @@ export function DeckScreen({ id }: { id: string }) {
 
   const nextReprise = deck?.plan ? nextPlanDate(deck.plan) : null
 
+  /**
+   * Le jeu publié ne suit pas les modifications : c'est une photographie. On
+   * signale donc quand le thème a changé depuis le dernier dépôt — une carte
+   * retouchée, ajoutée ou retirée.
+   */
+  const publicationStale = useMemo(() => {
+    if (!deck?.publishedAs || deck.publishedAt == null) return false
+    const live = cards.filter((c) => !c.suspended)
+    return live.length !== deck.publishedCount || live.some((c) => c.updatedAt > deck.publishedAt!)
+  }, [deck, cards])
+
   const selected = selection?.ids ?? new Set<ID>()
   const selecting = selection !== null
   const openLot = lots.find((l) => l.id === openLotId) ?? null
@@ -291,7 +302,7 @@ export function DeckScreen({ id }: { id: string }) {
           </button>
           <button type="button" className="btn btn--ghost grow" onClick={() => setPublishing(true)}>
             <Icon name="upload" size={18} />
-            {deck.publishedAs ? `Code ${deck.publishedAs}` : 'Publier'}
+            {!deck.publishedAs ? 'Publier' : publicationStale ? 'Republier' : `Code ${deck.publishedAs}`}
           </button>
         </div>
       )}

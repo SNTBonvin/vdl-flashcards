@@ -202,6 +202,17 @@ Trois points méritent l'attention :
 - le service worker met les jeux en cache **réseau d'abord** : une correction
   arrive, et un jeu déjà consulté reste lisible hors ligne.
 
+Le nom publié est distinct du nom de travail (`publishedName`) : un thème
+s'appelle « Biodiversité - Lot 2 » chez son auteur et « Biodiversité » chez
+l'élève, sans qu'il faille renommer l'un pour l'autre.
+
+Le fichier publié est une photographie, non un miroir du thème : le thème
+retient donc la date de son dernier dépôt et le nombre de cartes déposées
+(`publishedAt`, `publishedCount`). Dès qu'une carte est retouchée, ajoutée ou
+retirée, le bouton devient « Republier » et la feuille ouvre la page de
+modification du fichier existant plutôt que celle d'un nouveau dépôt — l'oubli
+de republier est l'erreur la plus facile à commettre, autant qu'elle se voie.
+
 Un site statique ne sait pas lister un dossier : sans index, un jeu ne serait
 joignable qu'en connaissant son code. `scripts/build-catalogue.mjs` lit donc les
 fichiers de `public/c`, retient ceux qui se déclarent `listed`, et écrit

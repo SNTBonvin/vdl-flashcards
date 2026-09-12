@@ -166,8 +166,9 @@ Un lien est long, et sur iPhone il n'atteint pas l'application installée. Un
 **code court** — « SVT-2DE-BIO1 » — se dicte en classe, s'écrit au tableau, et
 se tape dans l'application déjà ouverte. Plus de lien, plus de QR code.
 
-Dans un thème → **Publier**. Choisissez le code, éventuellement le niveau, et
-décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
+Dans un thème → **Publier**. Choisissez le code, le **nom affiché** — ce que
+verront vos élèves, votre thème gardant son nom de travail —, éventuellement le
+niveau, et décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
 fichier exact à déposer :
 
 1. **Copier le contenu du fichier** ;
@@ -180,6 +181,23 @@ La publication prend environ deux minutes, le temps du pipeline.
 miroir : un fichier ajouté directement sur le miroir fait diverger les deux
 dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
+
+### Mettre à jour un jeu publié
+
+Le fichier déposé est une **photographie** : modifier vos cartes dans
+l'application ne change rien en ligne. Quand un thème publié a changé, son
+bouton devient **Republier** — c'est votre rappel, vous n'avez rien à retenir.
+
+Republier, c'est trois gestes : **Republier** → **Copier le contenu du
+fichier** → **Ouvrir le fichier à remplacer**, qui vous dépose directement dans
+l'éditeur du fichier existant. Tout sélectionner, coller, valider.
+
+Deux minutes plus tard, le jeu est à jour : le catalogue se régénère seul, et
+chez l'élève qui rouvre le code, les cartes se mettent à jour **sans doublon et
+sans toucher à sa progression**.
+
+**Gardez le même code.** En changer créerait un second jeu, et vos élèves
+verraient deux entrées pour le même chapitre.
 
 À savoir :
 

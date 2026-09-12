@@ -61,6 +61,12 @@ export interface Deck {
   setCode?: string
   /** Code sous lequel ce thème a été publié, côté enseignant. */
   publishedAs?: string
+  /** Nom sous lequel le jeu est publié, s'il diffère du nom de travail. */
+  publishedName?: string
+  /** Date du dernier dépôt, pour savoir ce qui a changé depuis. */
+  publishedAt?: number
+  /** Nombre de cartes déposées : une suppression ne se voit pas autrement. */
+  publishedCount?: number
 }
 
 /**
