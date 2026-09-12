@@ -16,6 +16,7 @@ import {
   useToast,
 } from '../components/ui'
 import { SubjectSheet } from './Library'
+import { ExportSheet, exportRows } from '../components/ExportSheet'
 import { formatDue } from '../lib/date'
 
 export function SubjectScreen({ id }: { id: string }) {
@@ -25,6 +26,7 @@ export function SubjectScreen({ id }: { id: string }) {
   const [creating, setCreating] = useState(false)
   const [editing, setEditing] = useState(false)
   const [confirming, setConfirming] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const subject = store.subjects.find((s) => s.id === id)
   const decks = useMemo(() => store.decksBySubject.get(id) ?? [], [store.decksBySubject, id])
@@ -81,6 +83,15 @@ export function SubjectScreen({ id }: { id: string }) {
         >
           <Icon name="review" size={18} />
           {waiting > 0 ? `Réviser ${waiting}` : 'Interrogation'}
+        </button>
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => setExporting(true)}
+          disabled={allCards.length === 0 && decks.length === 0}
+          aria-label="Exporter la matière"
+        >
+          <Icon name="download" size={18} />
         </button>
         <button type="button" className="icon-btn" onClick={() => setEditing(true)} aria-label="Renommer la matière">
           <Icon name="edit" size={18} />
@@ -164,6 +175,27 @@ export function SubjectScreen({ id }: { id: string }) {
           </>
         )}
       </section>
+
+      <ExportSheet
+        open={exporting}
+        scopes={[
+          {
+            id: subject.id,
+            label: subject.name,
+            rows: exportRows(
+              decks.flatMap((d) => store.cardsByDeck.get(d.id) ?? []),
+              store.decks,
+              store.subjects,
+            ),
+          },
+          ...decks.map((deck) => ({
+            id: deck.id,
+            label: deck.name,
+            rows: exportRows(store.cardsByDeck.get(deck.id) ?? [], store.decks, store.subjects),
+          })),
+        ]}
+        onClose={() => setExporting(false)}
+      />
 
       <DeckSheet
         open={creating}

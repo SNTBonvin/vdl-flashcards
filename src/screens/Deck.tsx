@@ -20,11 +20,12 @@ import { DeckSheet } from './Subject'
 import { DEFAULT_REMINDER_TIME, WEEKDAYS, requestPermission } from '../reminders/reminders'
 import type { Card, Reminder } from '../db/types'
 import { DAY_SHORT, formatDue } from '../lib/date'
-import { ImportError, parseRows, readFile } from '../io/transfer'
+import { ImportError, parseCardsText, readFile, type ParsedRow } from '../io/transfer'
 import { ShareSheet } from '../components/ShareSheet'
 import { DistributionSheet } from '../components/DistributionSheet'
 import { PlanSheet } from '../components/PlanSheet'
 import { PickCardsSheet } from '../components/PickCardsSheet'
+import { ExportSheet, exportRows } from '../components/ExportSheet'
 import { nextPlanDate } from '../reminders/plan'
 import { buildIcs, icsFilename } from '../io/ics'
 import { download } from '../io/transfer'
@@ -66,6 +67,7 @@ export function DeckScreen({ id }: { id: string }) {
   const [movingTo, setMovingTo] = useState(false)
   const [planOpen, setPlanOpen] = useState(false)
   const [picking, setPicking] = useState(false)
+  const [exporting, setExporting] = useState(false)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -256,6 +258,15 @@ export function DeckScreen({ id }: { id: string }) {
         <button type="button" className="btn btn--ghost grow" onClick={() => setImportOpen(true)}>
           <Icon name="upload" size={18} />
           Importer
+        </button>
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => setExporting(true)}
+          disabled={counts.total === 0}
+          aria-label="Exporter ce thème"
+        >
+          <Icon name="download" size={18} />
         </button>
       </div>
 
@@ -658,6 +669,18 @@ export function DeckScreen({ id }: { id: string }) {
           setEditingCard(null)
           setClaiming(null)
         }}
+      />
+
+      <ExportSheet
+        open={exporting}
+        scopes={[
+          {
+            id: deck.id,
+            label: `${store.subjects.find((s) => s.id === deck.subjectId)?.name ?? ''} › ${deck.name}`.trim(),
+            rows: exportRows(cards, store.decks, store.subjects),
+          },
+        ]}
+        onClose={() => setExporting(false)}
       />
 
       <PickCardsSheet
@@ -1243,7 +1266,18 @@ export function ImportSheet({
   const [error, setError] = useState<string | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
-  const rows = useMemo(() => (text.trim() ? parseRows(text) : []), [text])
+  // Lecture et diagnostic dans le même calcul : un état dérivé mis à jour
+  // pendant le rendu serait fragile pour rien.
+  const parsed = useMemo(() => {
+    if (!text.trim()) return { rows: [] as ParsedRow[], error: null as string | null }
+    try {
+      return { rows: parseCardsText(text), error: null }
+    } catch (e) {
+      return { rows: [], error: e instanceof ImportError ? e.message : 'Fichier illisible.' }
+    }
+  }, [text])
+  const rows = parsed.rows
+  const parseError = parsed.error
 
   const pickFile = async (file: File | undefined) => {
     if (!file) return
@@ -1280,8 +1314,9 @@ export function ImportSheet({
     >
       <div className="stack stack-5">
         <p className="meta" style={{ lineHeight: 1.6 }}>
-          Collez une liste ou choisissez un fichier CSV / TSV. Une carte par ligne, le recto puis le verso,
-          séparés par une tabulation, un point-virgule ou une virgule. Les cartes iront dans « {deckName} ».
+          Collez une liste, ou choisissez un fichier CSV, TSV ou JSON exporté depuis l’application.
+          Pour une liste collée : une carte par ligne, le recto puis le verso, séparés par une
+          tabulation, un point-virgule ou une virgule. Les cartes iront dans « {deckName} ».
         </p>
 
         <button type="button" className="btn btn--ghost btn--block" onClick={() => fileInput.current?.click()}>
@@ -1291,7 +1326,7 @@ export function ImportSheet({
         <input
           ref={fileInput}
           type="file"
-          accept=".csv,.tsv,.txt,text/plain,text/csv"
+          accept=".csv,.tsv,.txt,.json,text/plain,text/csv,application/json"
           hidden
           onChange={(e) => void pickFile(e.target.files?.[0])}
         />
@@ -1309,10 +1344,10 @@ export function ImportSheet({
           />
         </Field>
 
-        {error && (
+        {(error || parseError) && (
           <div className="card card--pad" data-status="err">
             <span className="meta" style={{ color: 'var(--err)' }}>
-              {error}
+              {error ?? parseError}
             </span>
           </div>
         )}

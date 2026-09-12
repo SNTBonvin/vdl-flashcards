@@ -46,9 +46,11 @@ souvent mieux qu'une.
 ### Reprendre une carte déjà écrite
 
 Dans un thème → **Ajouter une carte** → **Reprendre une carte que j'ai déjà**.
-La feuille s'ouvre sur une recherche : tapez deux lettres, filtrez par matière,
-par thème ou par étiquette, cochez ce que vous voulez, validez une seule fois à
-la fin.
+La feuille s'ouvre sur vos quinze dernières cartes. Pour aller plus loin :
+**Tout parcourir**, ou bien une recherche (deux lettres suffisent), ou encore un
+filtre par matière, par thème ou par étiquette. La liste se déroule par
+cinquantaines — « Afficher 50 cartes de plus » — et **Tout** coche d'un coup ce
+qui est affiché. Cochez en plusieurs passes, validez une seule fois à la fin.
 
 Les cartes choisies sont **copiées** dans le thème, avec une progression neuve ;
 l'originale reste où elle est. Une carte dont le recto existe déjà dans le thème
@@ -207,6 +209,33 @@ Quand un thème déjà travaillé n'a pas été rouvert depuis trois semaines,
 l'écran « Aujourd'hui » propose de le reprendre. Réviser le chapitre en cours
 ne suffit pas : ce sont les retours sur les chapitres antérieurs qui installent
 les connaissances pour de bon.
+
+## Exporter et réimporter des cartes
+
+Deux fichiers différents, deux usages qu'il ne faut pas confondre.
+
+**La sauvegarde** (*Réglages → Exporter la sauvegarde*) contient tout : cartes,
+progression, lots et réglages. C'est le fichier pour **changer d'appareil**, et
+sa restauration **remplace** ce qui est sur le téléphone.
+
+**Un paquet de cartes** ne contient que des cartes — ni progression, ni
+réglages. C'est ce qu'on exporte pour donner, archiver ou retravailler dans un
+tableur, et il **s'ajoute** à un thème sans rien écraser.
+
+On exporte un paquet depuis trois endroits :
+
+- **un thème** → l'icône de téléchargement, à côté d'« Importer » ;
+- **une matière** → l'icône de téléchargement, en haut ; la feuille propose la
+  matière entière ou n'importe lequel de ses thèmes ;
+- **un lot** → « Exporter ce lot » dans sa fiche ;
+- et **Réglages → Cartes** pour tout, ou une matière au choix.
+
+Chaque fois, deux formats : **CSV** pour le tableur, **JSON** pour réimporter
+dans l'application sans perdre les notes ni les étiquettes.
+
+Pour réimporter : dans le thème de destination, **Importer**, puis choisissez le
+fichier — CSV, TSV ou JSON, l'application reconnaît les trois. Les cartes
+s'ajoutent, rien n'est remplacé.
 
 ## Sauvegarder et changer d'appareil
 

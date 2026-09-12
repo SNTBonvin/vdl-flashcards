@@ -1,9 +1,13 @@
 /**
  * Import et export des données.
  *
- * Trois formats :
- *  - JSON  : sauvegarde intégrale (matières, thèmes, cartes, historique,
- *            réglages) — c'est le format à utiliser pour changer de téléphone.
+ * Quatre formats :
+ *  - JSON sauvegarde : intégrale (matières, thèmes, cartes, historique,
+ *            réglages) — c'est le format pour changer de téléphone. À la
+ *            restauration, il remplace tout.
+ *  - JSON paquet : un jeu de cartes seul, sans progression ni réglages. C'est
+ *            ce qu'on exporte d'une matière, d'un thème ou d'un lot, et ce qui
+ *            s'importe *dans* un thème sans rien écraser.
  *  - CSV   : tableur, une carte par ligne.
  *  - Texte : collage rapide « recto ; verso », compatible avec un export Anki
  *            en tabulations ou une liste rédigée à la main.
@@ -31,6 +35,45 @@ export function buildBackup(data: {
     logs: data.logs,
     distributions: data.distributions,
     settings: data.settings,
+  }
+}
+
+/** Paquet de cartes : un export partiel, qui s'importe dans un thème. */
+export interface CardsFile {
+  format: 'vdl-flashcards-cards'
+  version: 1
+  exportedAt: string
+  /** D'où vient le paquet, à titre indicatif : « SVT › Biodiversité ». */
+  label: string
+  cards: {
+    front: string
+    back: string
+    notes?: string
+    tags?: string[]
+    subject?: string
+    deck?: string
+  }[]
+}
+
+export function buildCardsFile(
+  label: string,
+  rows: { subject: string; deck: string; card: Card }[],
+): CardsFile {
+  return {
+    format: 'vdl-flashcards-cards',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    label,
+    // La progression n'est volontairement pas exportée : elle appartient à
+    // celui qui a révisé, et un paquet est fait pour être donné.
+    cards: rows.map(({ subject, deck, card }) => ({
+      front: card.front,
+      back: card.back,
+      notes: card.notes || undefined,
+      tags: card.tags.length > 0 ? card.tags : undefined,
+      subject,
+      deck,
+    })),
   }
 }
 
@@ -81,6 +124,49 @@ export interface ParsedRow {
   back: string
   notes?: string
   tags?: string[]
+}
+
+/**
+ * Lit un fichier de cartes, quel que soit son format : paquet JSON, sauvegarde
+ * intégrale (on n'en retient alors que les cartes), tableau JSON brut, ou bien
+ * CSV, TSV et texte collé. Renvoie toujours des lignes prêtes à importer.
+ *
+ * Rien n'est deviné en silence : un JSON qu'on ne sait pas lire lève une
+ * erreur explicite plutôt que de produire un import vide.
+ */
+export function parseCardsText(text: string): ParsedRow[] {
+  const trimmed = text.trim()
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return parseRows(text)
+
+  let data: unknown
+  try {
+    data = JSON.parse(trimmed)
+  } catch {
+    throw new ImportError('Ce fichier JSON est illisible.')
+  }
+
+  const list = Array.isArray(data)
+    ? data
+    : typeof data === 'object' && data !== null && Array.isArray((data as { cards?: unknown }).cards)
+      ? (data as { cards: unknown[] }).cards
+      : null
+  if (!list) throw new ImportError('Ce fichier JSON ne contient pas de cartes.')
+
+  const rows: ParsedRow[] = []
+  for (const item of list) {
+    if (typeof item !== 'object' || item === null) continue
+    const card = item as { front?: unknown; back?: unknown; notes?: unknown; tags?: unknown }
+    if (typeof card.front !== 'string' || typeof card.back !== 'string') continue
+    if (!card.front.trim() || !card.back.trim()) continue
+    rows.push({
+      front: card.front,
+      back: card.back,
+      notes: typeof card.notes === 'string' ? card.notes : undefined,
+      tags: Array.isArray(card.tags) ? card.tags.filter((t): t is string => typeof t === 'string') : [],
+    })
+  }
+  if (rows.length === 0) throw new ImportError('Aucune carte lisible dans ce fichier.')
+  return rows
 }
 
 /** Analyse une ligne CSV en tenant compte des guillemets doublés. */

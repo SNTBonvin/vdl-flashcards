@@ -4,6 +4,7 @@ import { Icon } from './Icon'
 import { ConfirmSheet, Field, Sheet, plural, useToast } from './ui'
 import { formatSize, measure, shareUrl, encodeShare, buildPayload } from '../io/share'
 import { qrModuleCount } from './QrCode'
+import { ExportSheet, exportRows } from './ExportSheet'
 import type { Distribution } from '../db/types'
 
 /**
@@ -35,6 +36,7 @@ export function DistributionSheet({
   const [size, setSize] = useState<string | null>(null)
   const [fit, setFit] = useState<string>('chip')
   const [confirming, setConfirming] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const deck = lot ? store.decks.find((d) => d.id === lot.deckId) : null
   const subject = deck ? store.subjects.find((s) => s.id === deck.subjectId) : null
@@ -148,6 +150,16 @@ export function DistributionSheet({
           <button
             type="button"
             className="btn btn--ghost btn--block"
+            disabled={cards.length === 0}
+            onClick={() => setExporting(true)}
+          >
+            <Icon name="download" size={18} />
+            Exporter ce lot
+          </button>
+
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
             onClick={async () => {
               const copy = await store.duplicateDistribution(lot.id)
               toast(`« ${copy.name} » créé.`)
@@ -179,6 +191,18 @@ export function DistributionSheet({
           </button>
         </div>
       </Sheet>
+
+      <ExportSheet
+        open={exporting}
+        scopes={[
+          {
+            id: lot.id,
+            label: `${deck?.name ?? ''} — ${lot.name}`.trim(),
+            rows: exportRows(cards, store.decks, store.subjects),
+          },
+        ]}
+        onClose={() => setExporting(false)}
+      />
 
       <ConfirmSheet
         open={confirming}

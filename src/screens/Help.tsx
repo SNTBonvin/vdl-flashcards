@@ -150,7 +150,7 @@ export function HelpScreen() {
       <Step
         icon="download"
         title="Vos données"
-        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exportez la sauvegarde depuis les réglages, puis restaurez-la sur le nouvel appareil."
+        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exportez la sauvegarde depuis les réglages. Pour donner ou retravailler un jeu de cartes, exportez plutôt un paquet — depuis un thème, une matière ou un lot, en CSV pour le tableur ou en JSON pour le réimporter ici."
       />
 
       <Step

@@ -13,7 +13,6 @@ import {
 import {
   ImportError,
   buildBackup,
-  buildCsv,
   download,
   parseBackup,
   readFile,
@@ -23,6 +22,7 @@ import { notificationSupport, requestPermission } from '../reminders/reminders'
 import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
 import { useTheme, type ThemeMode } from '../theme/theme'
 import { useRoute } from '../lib/router'
+import { ExportSheet, exportRows } from '../components/ExportSheet'
 import {
   formatBytes,
   readPersist,
@@ -46,6 +46,7 @@ export function SettingsScreen() {
   const [pendingRestore, setPendingRestore] = useState<ReturnType<typeof parseBackup> | null>(null)
   const [wiping, setWiping] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const [persist, setPersist] = useState<PersistState | null>(null)
   const [usage, setUsage] = useState<number | null>(null)
 
@@ -73,16 +74,6 @@ export function SettingsScreen() {
     })
     download(`flashcards-${stamp()}.json`, JSON.stringify(backup, null, 2), 'application/json')
     toast('Sauvegarde exportée.')
-  }
-
-  const exportCsv = () => {
-    const rows = store.cards.map((card) => {
-      const deck = store.decks.find((d) => d.id === card.deckId)
-      const subject = deck ? store.subjects.find((s) => s.id === deck.subjectId) : undefined
-      return { subject: subject?.name ?? '', deck: deck?.name ?? '', card }
-    })
-    download(`flashcards-${stamp()}.csv`, buildCsv(rows), 'text/csv')
-    toast('Cartes exportées en CSV.')
   }
 
   const pickBackup = async (file: File | undefined) => {
@@ -264,11 +255,11 @@ export function SettingsScreen() {
             <button
               type="button"
               className="btn btn--ghost grow"
-              onClick={exportCsv}
+              onClick={() => setExporting(true)}
               disabled={store.cards.length === 0}
             >
               <Icon name="download" size={17} />
-              CSV
+              Cartes
             </button>
             <button type="button" className="btn btn--ghost grow" onClick={() => fileInput.current?.click()}>
               <Icon name="upload" size={17} />
@@ -408,6 +399,29 @@ export function SettingsScreen() {
       </section>
 
       {/* ---------------- Feuilles ---------------- */}
+
+      <ExportSheet
+        open={exporting}
+        scopes={[
+          {
+            id: 'tout',
+            label: 'Toutes mes cartes',
+            rows: exportRows(store.cards, store.decks, store.subjects),
+          },
+          ...store.subjects.map((subject) => ({
+            id: subject.id,
+            label: subject.name,
+            rows: exportRows(
+              (store.decksBySubject.get(subject.id) ?? []).flatMap(
+                (d) => store.cardsByDeck.get(d.id) ?? [],
+              ),
+              store.decks,
+              store.subjects,
+            ),
+          })),
+        ]}
+        onClose={() => setExporting(false)}
+      />
 
       <ConfirmSheet
         open={pendingRestore !== null}
