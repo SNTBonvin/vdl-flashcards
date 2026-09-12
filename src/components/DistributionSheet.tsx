@@ -19,12 +19,15 @@ export function DistributionSheet({
   onClose,
   onShare,
   onEditSelection,
+  onDuplicated,
 }: {
   open: boolean
   lot: Distribution | null
   onClose: () => void
   onShare: () => void
   onEditSelection: () => void
+  /** Le lot copié devient celui affiché : on enchaîne sur sa modification. */
+  onDuplicated: (copy: Distribution) => void
 }) {
   const store = useStore()
   const toast = useToast()
@@ -127,6 +130,12 @@ export function DistributionSheet({
                     {new Date(lot.lastSharedAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
+                {lot.updatedAt > lot.lastSharedAt && (
+                  <div className="row row--between">
+                    <span className="meta">Depuis</span>
+                    <span className="chip chip--warn">modifié depuis la diffusion</span>
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -134,6 +143,19 @@ export function DistributionSheet({
           <button type="button" className="btn btn--ghost btn--block" onClick={onEditSelection}>
             <Icon name="edit" size={18} />
             Modifier les cartes du lot
+          </button>
+
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={async () => {
+              const copy = await store.duplicateDistribution(lot.id)
+              toast(`« ${copy.name} » créé.`)
+              onDuplicated(copy)
+            }}
+          >
+            <Icon name="layers" size={18} />
+            Dupliquer ce lot
           </button>
 
           <div className="card card--pad row" data-status="run" style={{ gap: 12 }}>

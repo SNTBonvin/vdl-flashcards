@@ -11,6 +11,7 @@ import {
   SectionHead,
   Sheet,
   StatRow,
+  Toggle,
   plural,
   useToast,
 } from '../components/ui'
@@ -27,8 +28,10 @@ export function SubjectScreen({ id }: { id: string }) {
 
   const subject = store.subjects.find((s) => s.id === id)
   const decks = useMemo(() => store.decksBySubject.get(id) ?? [], [store.decksBySubject, id])
+  // Les compteurs de la matière ignorent les thèmes de réserve : ce sont des
+  // viviers, pas du travail en attente.
   const allCards = useMemo(
-    () => decks.flatMap((d) => store.cardsByDeck.get(d.id) ?? []),
+    () => decks.filter((d) => !d.reserve).flatMap((d) => store.cardsByDeck.get(d.id) ?? []),
     [decks, store.cardsByDeck],
   )
   const counts = countCards(allCards)
@@ -117,7 +120,15 @@ export function SubjectScreen({ id }: { id: string }) {
                     key={deck.id}
                     type="button"
                     className="card card--pad card--tap"
-                    data-status={deckWaiting > 0 ? 'run' : deckCounts.total === 0 ? 'idle' : 'ok'}
+                    data-status={
+                      deck.reserve
+                        ? 'idle'
+                        : deckWaiting > 0
+                          ? 'run'
+                          : deckCounts.total === 0
+                            ? 'idle'
+                            : 'ok'
+                    }
                     onClick={() => navigate({ name: 'deck', id: deck.id })}
                   >
                     <div className="row">
@@ -125,7 +136,9 @@ export function SubjectScreen({ id }: { id: string }) {
                         <span className="listrow__title truncate">{deck.name}</span>
                         <span className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
                           <span className="chip">{deckCounts.total} cartes</span>
-                          {deckWaiting > 0 ? (
+                          {deck.reserve ? (
+                            <span className="chip mono">réserve</span>
+                          ) : deckWaiting > 0 ? (
                             <span className="chip chip--accent">{deckWaiting} dues</span>
                           ) : deckCounts.nextDue ? (
                             <span className="chip chip--ok">{formatDue(deckCounts.nextDue)}</span>
@@ -155,8 +168,8 @@ export function SubjectScreen({ id }: { id: string }) {
       <DeckSheet
         open={creating}
         onClose={() => setCreating(false)}
-        onSubmit={async (name, description) => {
-          const deck = await store.createDeck(subject.id, name, description)
+        onSubmit={async (name, description, reserve) => {
+          const deck = await store.createDeck(subject.id, name, description, reserve)
           setCreating(false)
           toast(`Thème « ${deck.name} » créé.`)
           navigate({ name: 'deck', id: deck.id })
@@ -199,18 +212,20 @@ export function DeckSheet({
 }: {
   open: boolean
   onClose: () => void
-  onSubmit: (name: string, description: string) => void
-  initial?: { name: string; description: string }
+  onSubmit: (name: string, description: string, reserve: boolean) => void
+  initial?: { name: string; description: string; reserve?: boolean }
   title?: string
 }) {
   const [name, setName] = useState(initial?.name ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
+  const [reserve, setReserve] = useState(initial?.reserve ?? false)
 
   const submit = () => {
     if (!name.trim()) return
-    onSubmit(name.trim(), description.trim())
+    onSubmit(name.trim(), description.trim(), reserve)
     setName(initial?.name ?? '')
     setDescription(initial?.description ?? '')
+    setReserve(initial?.reserve ?? false)
   }
 
   return (
@@ -242,6 +257,15 @@ export function DeckSheet({
             placeholder="Institutions, dates clés, personnages"
           />
         </Field>
+
+        <hr className="rule" />
+
+        <Toggle
+          checked={reserve}
+          onChange={setReserve}
+          label="Thème de réserve"
+          hint="Un vivier de cartes mises de côté : elles restent cherchables et reprenables, mais sortent des révisions, des compteurs et des statistiques."
+        />
       </div>
     </Sheet>
   )

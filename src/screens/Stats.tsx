@@ -24,7 +24,7 @@ export function StatsScreen() {
   const { navigate } = useRoute()
   const now = Date.now()
 
-  const totals = useMemo(() => countCards(store.cards, now), [store.cards, now])
+  const totals = useMemo(() => countCards(store.studyCards, now), [store.studyCards, now])
 
   const perDay = useMemo(() => {
     const map = new Map<string, number>()
@@ -61,7 +61,7 @@ export function StatsScreen() {
     let review = 0
     let relearning = 0
     let suspended = 0
-    for (const card of store.cards) {
+    for (const card of store.studyCards) {
       if (card.suspended) suspended += 1
       else if (card.srs.state === 'new') fresh += 1
       else if (card.srs.state === 'learning') learning += 1
@@ -69,7 +69,7 @@ export function StatsScreen() {
       else review += 1
     }
     return { fresh, learning, review, relearning, suspended }
-  }, [store.cards])
+  }, [store.studyCards])
 
   /**
    * Thèmes à retravailler, classés par taux d'échec sur la fenêtre.
@@ -89,7 +89,7 @@ export function StatsScreen() {
       tally.set(log.deckId, current)
     }
 
-    return store.decks
+    return store.studyDecks
       .map((deck) => {
         const stat = tally.get(deck.id) ?? { answers: 0, failed: 0 }
         const counts = countCards(store.cardsByDeck.get(deck.id) ?? [], now)
@@ -104,13 +104,13 @@ export function StatsScreen() {
       .filter((row) => row.answers >= MIN_ANSWERS && row.rate > 0)
       .sort((a, b) => b.rate - a.rate || b.hard - a.hard)
       .slice(0, 6)
-  }, [store.logs, store.decks, store.subjects, store.cardsByDeck, now])
+  }, [store.logs, store.studyDecks, store.subjects, store.cardsByDeck, now])
 
   const bySubject = useMemo(
     () =>
       store.subjects
         .map((subject) => {
-          const decks = store.decksBySubject.get(subject.id) ?? []
+          const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
           const cards = decks.flatMap((d) => store.cardsByDeck.get(d.id) ?? [])
           const logs = store.logs.filter((l) => decks.some((d) => d.id === l.deckId))
           const good = logs.filter((l) => l.grade !== 'again').length
@@ -141,7 +141,7 @@ export function StatsScreen() {
     <main className="screen stack stack-5">
       <StatRow
         items={[
-          { value: store.cards.length, label: plural(store.cards.length, 'carte') },
+          { value: store.studyCards.length, label: plural(store.studyCards.length, 'carte') },
           { value: store.logs.length, label: 'révisions' },
           { value: `${last30.rate} %`, label: 'réussite 30 j', accent: true },
         ]}

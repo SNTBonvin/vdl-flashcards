@@ -106,6 +106,12 @@ export function HelpScreen() {
       />
 
       <Step
+        icon="inbox"
+        title="Réserve et reprise"
+        text="« Ajouter une carte » puis « Reprendre une carte que j’ai déjà » recopie une carte écrite ailleurs, sans ressaisie. Et un thème coché « de réserve » sert de vivier : ses cartes attendent d’être affectées, sans jamais être proposées en révision."
+      />
+
+      <Step
         icon="review"
         title="3. Réviser"
         text="Répondez « Raté », « Difficile » ou « Su ». Une carte ratée revient tout de suite ; une carte sue s’espace de plus en plus. L’échéance calculée est affichée sur chaque bouton avant que vous répondiez."

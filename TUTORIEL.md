@@ -43,6 +43,33 @@ efficace : la carte qui contient deux idées n'en fixe aucune. L'éditeur le
 rappelle, et signale les cartes devenues trop longues — deux cartes valent
 souvent mieux qu'une.
 
+### Reprendre une carte déjà écrite
+
+Dans un thème → **Ajouter une carte** → **Reprendre une carte que j'ai déjà**.
+La feuille s'ouvre sur une recherche : tapez deux lettres, filtrez par matière,
+par thème ou par étiquette, cochez ce que vous voulez, validez une seule fois à
+la fin.
+
+Les cartes choisies sont **copiées** dans le thème, avec une progression neuve ;
+l'originale reste où elle est. Une carte dont le recto existe déjà dans le thème
+est signalée « déjà ici » et ne peut pas être reprise deux fois.
+
+Si vous étiez en train de composer un lot, les cartes reprises y entrent
+directement : inutile de revenir en arrière.
+
+### Un thème de réserve
+
+Certaines cartes sont écrites avant de savoir dans quel chapitre elles iront.
+Pour cela, cochez **Thème de réserve** à la création d'un thème (une réserve par
+matière est un bon usage, par exemple « SVT › Sans thème »).
+
+Un thème de réserve est un vivier : ses cartes **ne sont jamais proposées en
+révision**, ne comptent ni dans « à réviser » ni dans les statistiques, et n'ont
+ni rappel ni plan de reprises. Mais elles restent entièrement disponibles : la
+recherche les trouve, et « Reprendre une carte » y puise comme ailleurs.
+
+Pour y mettre une carte de côté : **Sélectionner → Déplacer → votre réserve**.
+
 ## Créer beaucoup de cartes d'un coup
 
 **Importer** accepte une liste collée : une carte par ligne, recto et verso
@@ -107,8 +134,17 @@ La fiche d'un lot affiche le nombre de cartes, la longueur du lien qu'il
 produira et la date de sa dernière diffusion. Trois boutons : **Diffuser ce
 lot** (lien + QR code), **Modifier les cartes du lot**, **Supprimer le lot**.
 
+Au-delà d'une vingtaine de cartes, un champ de recherche apparaît au-dessus de
+la liste. Il se combine avec la sélection : cherchez « littoral », appuyez sur
+**Tout**, puis sur **Créer un lot** — le lot est fait en trois gestes à partir
+de cartes disséminées dans le thème.
+
 Ce qu'il faut savoir :
 
+- **Dupliquer ce lot** en fait une variante, l'original intact — pratique pour
+  remanier un lot sans perdre sa composition d'origine ;
+- un lot déjà diffusé que vous modifiez ensuite porte la mention **« modifié
+  depuis la diffusion »** : ce que vos élèves ont reçu n'est plus à jour ;
 - un lot est **évolutif** : ajoutez ou retirez des cartes quand vous voulez, le
   lien est recalculé à la diffusion suivante ;
 - un lot **resservira** tel quel à une autre classe : rien n'y est attaché, ni

@@ -14,7 +14,7 @@ export function TodayScreen() {
   const { navigate } = useRoute()
   const now = Date.now()
 
-  const totals = useMemo(() => countCards(store.cards, now), [store.cards, now])
+  const totals = useMemo(() => countCards(store.studyCards, now), [store.studyCards, now])
 
   const doneToday = useMemo(() => {
     const from = startOfDay(now)
@@ -26,7 +26,8 @@ export function TodayScreen() {
   const subjectRows = useMemo(() => {
     return store.subjects
       .map((subject) => {
-        const decks = store.decksBySubject.get(subject.id) ?? []
+        // Les thèmes de réserve ne comptent pas : ils ne se révisent pas.
+        const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
         const cards = decks.flatMap((d) => store.cardsByDeck.get(d.id) ?? [])
         return { subject, decks, counts: countCards(cards, now) }
       })
@@ -34,17 +35,17 @@ export function TodayScreen() {
   }, [store.subjects, store.decksBySubject, store.cardsByDeck, now])
 
   const reminders = useMemo(
-    () => store.decks.filter((deck) => isReminderPending(deck, now)),
-    [store.decks, now],
+    () => store.studyDecks.filter((deck) => isReminderPending(deck, now)),
+    [store.studyDecks, now],
   )
 
   const spiral = useMemo(
-    () => spiralSuggestion(store.decks, store.cardsByDeck, now),
-    [store.decks, store.cardsByDeck, now],
+    () => spiralSuggestion(store.studyDecks, store.cardsByDeck, now),
+    [store.studyDecks, store.cardsByDeck, now],
   )
 
   const pending = totals.due + totals.fresh
-  const allDeckIds = store.decks.map((d) => d.id)
+  const allDeckIds = store.studyDecks.map((d) => d.id)
 
   const startDaily = () => {
     requestSession({ deckIds: allDeckIds, mode: 'due', label: 'Révision du jour' })

@@ -24,6 +24,7 @@ import { ImportError, parseRows, readFile } from '../io/transfer'
 import { ShareSheet } from '../components/ShareSheet'
 import { DistributionSheet } from '../components/DistributionSheet'
 import { PlanSheet } from '../components/PlanSheet'
+import { PickCardsSheet } from '../components/PickCardsSheet'
 import { nextPlanDate } from '../reminders/plan'
 import { buildIcs, icsFilename } from '../io/ics'
 import { download } from '../io/transfer'
@@ -64,9 +65,11 @@ export function DeckScreen({ id }: { id: string }) {
   const [sharingLotId, setSharingLotId] = useState<ID | null>(null)
   const [movingTo, setMovingTo] = useState(false)
   const [planOpen, setPlanOpen] = useState(false)
+  const [picking, setPicking] = useState(false)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
+  const [query, setQuery] = useState('')
 
   const deck = store.decks.find((d) => d.id === id)
   const cards = useMemo(() => store.cardsByDeck.get(id) ?? [], [store.cardsByDeck, id])
@@ -97,7 +100,16 @@ export function DeckScreen({ id }: { id: string }) {
 
   const visible = useMemo(() => {
     const now = Date.now()
-    const sorted = cards.slice().sort((a, b) => a.createdAt - b.createdAt)
+    const search = query.trim().toLowerCase()
+    const matching = search
+      ? cards.filter(
+          (c) =>
+            c.front.toLowerCase().includes(search) ||
+            c.back.toLowerCase().includes(search) ||
+            c.tags.some((t) => t.toLowerCase().includes(search)),
+        )
+      : cards
+    const sorted = matching.slice().sort((a, b) => a.createdAt - b.createdAt)
     if (filter === 'archived') return sorted.filter((c) => c.suspended)
 
     const live = sorted.filter((c) => !c.suspended)
@@ -115,7 +127,7 @@ export function DeckScreen({ id }: { id: string }) {
       default:
         return live
     }
-  }, [cards, filter])
+  }, [cards, filter, query])
 
   if (!deck) {
     return (
@@ -155,6 +167,21 @@ export function DeckScreen({ id }: { id: string }) {
         </div>
       )}
 
+      {deck.reserve && (
+        <div className="card card--pad row" data-status="idle" style={{ gap: 12 }}>
+          <span className="glyph glyph--warm">
+            <Icon name="inbox" size={18} />
+          </span>
+          <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+            <span className="listrow__title truncate">Thème de réserve</span>
+            <span className="meta">
+              Ces cartes attendent d’être affectées : elles ne sont pas révisées et ne comptent
+              nulle part, mais restent cherchables et reprenables.
+            </span>
+          </span>
+        </div>
+      )}
+
       {deck.description && (
         <p style={{ color: 'var(--ink-2)', fontSize: 14.5, lineHeight: 1.6, padding: '0 2px' }}>
           {deck.description}
@@ -162,31 +189,43 @@ export function DeckScreen({ id }: { id: string }) {
       )}
 
       <StatRow
-        items={[
-          { value: counts.total, label: plural(counts.total, 'carte') },
-          { value: waiting, label: 'à réviser', accent: waiting > 0 },
-          { value: counts.hard, label: 'difficiles' },
-        ]}
+        items={
+          deck.reserve
+            ? [
+                { value: counts.total, label: plural(counts.total, 'carte') },
+                { value: counts.archived, label: 'archivées' },
+              ]
+            : [
+                { value: counts.total, label: plural(counts.total, 'carte') },
+                { value: waiting, label: 'à réviser', accent: waiting > 0 },
+                { value: counts.hard, label: 'difficiles' },
+              ]
+        }
       />
 
       <div className="row" style={{ gap: 10 }}>
-        <button
-          type="button"
-          className="btn btn--primary grow"
-          disabled={counts.total === 0}
-          onClick={() => start(waiting > 0 ? 'due' : 'quiz')}
-        >
-          <Icon name="review" size={18} />
-          {waiting > 0 ? `Réviser ${waiting}` : 'Interrogation'}
-        </button>
-        <button
-          type="button"
-          className={`icon-btn${deck.reminder?.enabled ? ' chip--accent' : ''}`}
-          onClick={() => setReminderOpen(true)}
-          aria-label="Rappel"
-        >
-          <Icon name={deck.reminder?.enabled ? 'bell' : 'bell-off'} size={18} />
-        </button>
+        {!deck.reserve && (
+          <>
+            <button
+              type="button"
+              className="btn btn--primary grow"
+              disabled={counts.total === 0}
+              onClick={() => start(waiting > 0 ? 'due' : 'quiz')}
+            >
+              <Icon name="review" size={18} />
+              {waiting > 0 ? `Réviser ${waiting}` : 'Interrogation'}
+            </button>
+            <button
+              type="button"
+              className={`icon-btn${deck.reminder?.enabled ? ' chip--accent' : ''}`}
+              onClick={() => setReminderOpen(true)}
+              aria-label="Rappel"
+            >
+              <Icon name={deck.reminder?.enabled ? 'bell' : 'bell-off'} size={18} />
+            </button>
+          </>
+        )}
+        {deck.reserve && <span className="grow" />}
         <button type="button" className="icon-btn" onClick={() => setEditingDeck(true)} aria-label="Modifier">
           <Icon name="edit" size={18} />
         </button>
@@ -200,7 +239,7 @@ export function DeckScreen({ id }: { id: string }) {
         </button>
       </div>
 
-      {counts.total > 0 && (
+      {counts.total > 0 && !deck.reserve && (
         <button type="button" className="btn btn--ghost btn--block" onClick={() => setPlanOpen(true)}>
           <Icon name="today" size={18} />
           {nextReprise
@@ -220,14 +259,14 @@ export function DeckScreen({ id }: { id: string }) {
         </button>
       </div>
 
-      {counts.total > 0 && (
+      {counts.total > 0 && !deck.reserve && (
         <button type="button" className="btn btn--ghost btn--block" onClick={() => setSharing(true)}>
           <Icon name="move" size={18} />
           Partager ce thème
         </button>
       )}
 
-      {(lots.length > 0 || counts.total > 0) && (
+      {!deck.reserve && (lots.length > 0 || counts.total > 0) && (
         <section className="stack stack-3">
           <SectionHead
             title="Lots de distribution"
@@ -297,6 +336,32 @@ export function DeckScreen({ id }: { id: string }) {
           }
         />
 
+        {cards.length > 20 && (
+          <div style={{ position: 'relative' }}>
+            <span
+              style={{
+                position: 'absolute',
+                left: 12,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--ink-4)',
+                display: 'flex',
+              }}
+            >
+              <Icon name="search" size={17} />
+            </span>
+            <input
+              className="input"
+              style={{ paddingLeft: 38 }}
+              placeholder="Rechercher dans ce thème…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              type="search"
+              inputMode="search"
+            />
+          </div>
+        )}
+
         <div className="seg seg--scroll">
           {(
             [
@@ -333,10 +398,26 @@ export function DeckScreen({ id }: { id: string }) {
             }
             action={
               filter === 'all' ? (
-                <button type="button" className="btn btn--primary" onClick={() => setEditingCard('new')}>
-                  <Icon name="plus" size={18} />
-                  Ajouter une carte
-                </button>
+                <div className="stack stack-2" style={{ width: '100%', maxWidth: 280 }}>
+                  <button
+                    type="button"
+                    className="btn btn--primary btn--block"
+                    onClick={() => setEditingCard('new')}
+                  >
+                    <Icon name="plus" size={18} />
+                    Ajouter une carte
+                  </button>
+                  {store.cards.length > cards.length && (
+                    <button
+                      type="button"
+                      className="btn btn--ghost btn--block"
+                      onClick={() => setPicking(true)}
+                    >
+                      <Icon name="search" size={18} />
+                      Reprendre une carte
+                    </button>
+                  )}
+                </div>
               ) : undefined
             }
           />
@@ -479,6 +560,10 @@ export function DeckScreen({ id }: { id: string }) {
         open={editingCard !== null}
         card={editingCard === 'new' ? null : editingCard}
         onClose={() => setEditingCard(null)}
+        onPickExisting={() => {
+          setEditingCard(null)
+          setPicking(true)
+        }}
         onSubmit={async (values) => {
           if (editingCard && editingCard !== 'new') {
             // Modifier une carte reçue, c'est se l'approprier : elle cesse de
@@ -519,10 +604,10 @@ export function DeckScreen({ id }: { id: string }) {
       <DeckSheet
         open={editingDeck}
         title="Modifier le thème"
-        initial={{ name: deck.name, description: deck.description }}
+        initial={{ name: deck.name, description: deck.description, reserve: deck.reserve }}
         onClose={() => setEditingDeck(false)}
-        onSubmit={async (name, description) => {
-          await store.updateDeck(deck.id, { name, description })
+        onSubmit={async (name, description, reserve) => {
+          await store.updateDeck(deck.id, { name, description, reserve })
           setEditingDeck(false)
           toast('Thème mis à jour.')
         }}
@@ -572,6 +657,24 @@ export function DeckScreen({ id }: { id: string }) {
           toast('Carte modifiée — elle est désormais la vôtre.')
           setEditingCard(null)
           setClaiming(null)
+        }}
+      />
+
+      <PickCardsSheet
+        open={picking}
+        deckId={deck.id}
+        onClose={() => setPicking(false)}
+        onPick={async (ids) => {
+          const copies = await store.copyCards(ids, deck.id)
+          setPicking(false)
+          // Si un lot est en cours de composition, les cartes reprises y entrent
+          // directement : on ne fait pas revenir l'utilisateur en arrière.
+          setSelection((current) =>
+            current
+              ? { ...current, ids: new Set([...current.ids, ...copies.map((c) => c.id)]) }
+              : current,
+          )
+          toast(`${copies.length} ${plural(copies.length, 'carte reprise', 'cartes reprises')}.`)
         }}
       />
 
@@ -645,6 +748,7 @@ export function DeckScreen({ id }: { id: string }) {
           setFilter('all')
           setOpenLotId(null)
         }}
+        onDuplicated={(copy) => setOpenLotId(copy.id)}
       />
 
       {sharingLot && (
@@ -763,6 +867,7 @@ function MoveSheet({
                     <span className="listrow__title truncate">{target.name}</span>
                     <span className="listrow__sub truncate">{subject?.name ?? 'Sans matière'}</span>
                   </span>
+                  {target.reserve && <span className="chip mono">réserve</span>}
                   <Icon name="chevron-right" size={18} />
                 </button>
               )
@@ -791,6 +896,7 @@ export function CardSheet({
   onSubmit,
   onDelete,
   onReset,
+  onPickExisting,
 }: {
   open: boolean
   card: Card | null
@@ -798,6 +904,8 @@ export function CardSheet({
   onSubmit: (values: CardValues) => void
   onDelete?: () => void
   onReset?: () => void
+  /** Ouvre la reprise d'une carte existante, à la place d'une saisie. */
+  onPickExisting?: () => void
 }) {
   const [front, setFront] = useState('')
   const [back, setBack] = useState('')
@@ -865,6 +973,13 @@ export function CardSheet({
         }
       >
         <div className="stack stack-5">
+          {!card && onPickExisting && (
+            <button type="button" className="btn btn--ghost btn--block" onClick={onPickExisting}>
+              <Icon name="search" size={17} />
+              Reprendre une carte que j’ai déjà
+            </button>
+          )}
+
           <Field
             label="Recto — la question"
             hint="Une seule notion par carte : c’est ce qui rend la mémorisation efficace."
