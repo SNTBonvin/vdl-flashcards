@@ -1,14 +1,13 @@
 {
   "format": "vdl-flashcards-set",
   "version": 1,
-  "code": "SVT-BODIV3",
-  "publishedAt": "2026-09-12T21:32:33.752Z",
+  "code": "SVT-BIODIV3",
+  "publishedAt": "2026-09-12T21:38:05.949Z",
   "listed": true,
-  "level": "2de",
   "subject": "Sciences de la Vie et de la Terre",
   "deck": "Bodiversité - Lot 3",
   "shareId": "sh4v1a2m071l3y2p",
-  "rev": 1789248753752,
+  "rev": 1789249085949,
   "cards": [
     [
       "D'où proviennent les différents allèles présents dans une population ?",
