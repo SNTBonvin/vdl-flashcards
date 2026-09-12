@@ -13,6 +13,19 @@ import {
 } from '../io/catalog'
 import type { Card, Deck } from '../db/types'
 
+/**
+ * Page de dépôt d'un fichier, selon l'hébergeur du dépôt **source**.
+ *
+ * Le fichier se dépose là où vit le code, pas sur un éventuel miroir : un
+ * dépôt fait sur le miroir fait diverger les deux et bloque la recopie.
+ */
+function uploadUrl(repo: string): string {
+  const base = repo.trim().replace(/\/+$/, '')
+  return /github\.com/.test(base)
+    ? `${base}/upload/main/public/c`
+    : `${base}/-/new/main/public/c`
+}
+
 /** Niveaux proposés, du collège au lycée. « Tous niveaux » reste possible. */
 const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle']
 
@@ -108,13 +121,12 @@ export function PublishSheet({
     }
   }
 
-  const openForge = async () => {
+  const openRepo = async () => {
     if (!repo.trim() || !normalized) return
     if (repo !== store.settings.publishRepo) await store.saveSettings({ publishRepo: repo.trim() })
     await store.updateDeck(deck.id, { publishedAs: normalized })
     onPublished(normalized)
-    // Page « nouveau fichier » de la forge, ouverte sur le bon dossier.
-    window.open(`${repo.trim().replace(/\/+$/, '')}/-/new/main/public/c`, '_blank', 'noopener')
+    window.open(uploadUrl(repo), '_blank', 'noopener')
   }
 
   return (
@@ -213,13 +225,16 @@ export function PublishSheet({
           Télécharger le fichier
         </button>
 
-        <Field label="Dépôt de la forge" hint="Adresse du projet, sans barre oblique finale.">
+        <Field
+          label="Dépôt du projet"
+          hint="Là où vit le code — et non un miroir, sous peine de bloquer la recopie."
+        >
           <input
             className="input mono"
             style={{ fontSize: 12 }}
             value={repo}
             onChange={(e) => setRepo(e.target.value)}
-            placeholder="https://forge.apps.education.fr/prenom/projet"
+            placeholder="https://github.com/compte/projet"
             spellCheck={false}
           />
         </Field>
@@ -228,7 +243,7 @@ export function PublishSheet({
           type="button"
           className="btn btn--ghost btn--block"
           disabled={!repo.trim() || !normalized || !ready}
-          onClick={openForge}
+          onClick={openRepo}
         >
           <Icon name="move" size={17} />
           Ouvrir la page de dépôt

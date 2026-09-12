@@ -12,6 +12,10 @@
 #      n'est affichée qu'une fois.
 #   2. Sur GitHub : Settings → Secrets and variables → Actions → New repository
 #      secret, nommé exactement FORGE_TOKEN, contenant ce jeton.
+#
+# Règle d'usage : les fichiers se déposent **ici**, sur GitHub. La Forge est un
+# miroir ; un dépôt fait directement sur elle fait diverger les deux dépôts et
+# bloque la recopie jusqu'à ce qu'on la force.
 
 name: Miroir vers la Forge
 
@@ -20,6 +24,14 @@ on:
     branches: [main]
   # Permet aussi de relancer la recopie à la main depuis l'onglet Actions.
   workflow_dispatch:
+    inputs:
+      forcer:
+        description: >-
+          Écraser l'état de la Forge. À n'utiliser qu'après un dépôt fait
+          directement sur elle : le commit correspondant sera perdu, son
+          contenu devant être présent ici.
+        type: boolean
+        default: false
 
 # Deux recopies simultanées se marcheraient dessus.
 concurrency:
@@ -43,6 +55,7 @@ jobs:
       - name: Pousser vers la Forge
         env:
           FORGE_TOKEN: ${{ secrets.FORGE_TOKEN }}
+          FORCER: ${{ inputs.forcer }}
         run: |
           set -euo pipefail
           if [ -z "${FORGE_TOKEN}" ]; then
@@ -52,5 +65,14 @@ jobs:
           # Volontairement sans « --force » : si les deux dépôts divergeaient,
           # mieux vaut un échec visible que l'écrasement silencieux d'une
           # modification faite directement sur la Forge.
-          git push "https://oauth2:${FORGE_TOKEN}@${FORGE_REPO}" HEAD:main
+          #
+          # Le forçage reste possible à la main, pour le seul cas où un fichier
+          # a été déposé sur la Forge par mégarde : on le remet d'abord ici,
+          # puis on relance ce travail avec « forcer » coché.
+          if [ "${FORCER}" = "true" ]; then
+            echo "Recopie forcée : l'état de la Forge va être remplacé."
+            git push --force "https://oauth2:${FORGE_TOKEN}@${FORGE_REPO}" HEAD:main
+          else
+            git push "https://oauth2:${FORGE_TOKEN}@${FORGE_REPO}" HEAD:main
+          fi
           echo "Branche main recopiée sur la Forge — le pipeline de publication va suivre."

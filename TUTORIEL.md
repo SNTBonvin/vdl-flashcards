@@ -171,10 +171,14 @@ décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
 fichier exact à déposer :
 
 1. **Copier le contenu du fichier** ;
-2. **Ouvrir la page de dépôt** — la forge s'ouvre au bon endroit ;
+2. **Ouvrir la page de dépôt** — votre dépôt s'ouvre sur le dossier `public/c/` ;
 3. nommez le fichier `LECODE.json`, collez, validez.
 
-La publication prend environ deux minutes, le temps du pipeline. Ensuite, le
+La publication prend environ deux minutes, le temps du pipeline.
+
+**Déposez toujours sur le dépôt où vit le code** (ici, GitHub), jamais sur un
+miroir : un fichier ajouté directement sur le miroir fait diverger les deux
+dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
 
 À savoir :
