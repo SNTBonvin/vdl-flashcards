@@ -1,13 +1,14 @@
 {
   "format": "vdl-flashcards-set",
   "version": 1,
-  "code": "SCIE-BIODIVER",
-  "publishedAt": "2026-09-12T20:43:51.616Z",
+  "code": "SVT-BIODIV2",
+  "publishedAt": "2026-09-12T21:39:02.466Z",
   "listed": true,
+  "level": "2de",
   "subject": "Sciences de la Vie et de la Terre",
   "deck": "Biodiversité - Lot 2",
   "shareId": "sh5w4j3i076b2h06",
-  "rev": 1789245831616,
+  "rev": 1789249142466,
   "cards": [
     [
       "La biodiversité est-elle figée dans le temps ?",
