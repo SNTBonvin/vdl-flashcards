@@ -82,7 +82,7 @@ export function SubjectScreen({ id }: { id: string }) {
           }}
         >
           <Icon name="review" size={18} />
-          {waiting > 0 ? `Réviser ${waiting}` : 'Interrogation'}
+          {waiting > 0 ? `Réviser ${waiting}` : 'Tout revoir'}
         </button>
         <button
           type="button"

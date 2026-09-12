@@ -99,12 +99,19 @@ Trois réponses possibles, et l'échéance calculée est affichée sur chaque bo
 | **Difficile** | L'intervalle avance peu |
 | **Su** | L'intervalle est multiplié par le facteur de facilité |
 
-Trois modes de séance :
+Trois modes de séance, nommés par ce qu'ils font :
 
-- **Programmé** — les cartes échues du jour, plus un quota de cartes neuves ;
-- **Interrogation** — tout un thème, échéances ou non, et l'on peut mélanger
-  plusieurs thèmes et plusieurs matières ;
-- **Difficiles** — uniquement les cartes déjà ratées.
+- **À revoir** — les cartes échues du jour, plus un quota de cartes neuves.
+  C'est la séance quotidienne : la plus courte, et la plus efficace ;
+- **Tout revoir** — tout un thème, échéances ou non, et l'on peut mélanger
+  plusieurs thèmes et plusieurs matières. À faire avant un contrôle : cela ne
+  dérègle pas le programme ;
+- **Mes difficultés** — uniquement les cartes déjà ratées, les plus fautives
+  d'abord.
+
+Un encart rappelle la différence au-dessus du sélecteur. La croix le ferme pour
+de bon ; **Réglages → Réviser → Expliquer les modes de séance** le fait
+revenir.
 
 ## Partager un thème à ses élèves
 
@@ -278,8 +285,18 @@ Sur Android, rien de tout cela : le lien ouvre directement l'application install
 
 ## Côté élève
 
-Pour ouvrir un lien ou un code reçu : **Matières → Lien ou code**, puis collez
-le lien, ou tapez le code donné par le professeur. Un aperçu s'affiche avant
+L'écran **Aujourd'hui** ne montre que la séance du jour. Quand il n'y a rien
+d'échu, il ne laisse pas l'élève devant une page vide : il propose un défi sur
+un thème, et la reprise de ses cartes difficiles. Le détail matière par matière
+n'apparaît qu'avec les outils d'enseignant activés — un élève n'a pas besoin de
+ce tableau de bord.
+
+L'écran **Matières** sépare deux gestes : au-dessus, *Mes matières*, ce qu'on
+consulte ; au-dessous, *Ajouter des cartes*, avec les trois seules entrées
+possibles — un lien ou un code reçu, le catalogue, une matière à soi.
+
+Pour ouvrir un lien ou un code reçu : **Matières → Un lien ou un code reçu**,
+puis collez le lien, ou tapez le code donné par le professeur. Un aperçu s'affiche avant
 tout ajout. Un thème reçu par code garde son code : le bouton « Vérifier les
 mises à jour » suffit ensuite, sans rien retaper.
 
@@ -357,6 +374,31 @@ dans l'application sans perdre les notes ni les étiquettes.
 Pour réimporter : dans le thème de destination, **Importer**, puis choisissez le
 fichier — CSV, TSV ou JSON, l'application reconnaît les trois. Les cartes
 s'ajoutent, rien n'est remplacé.
+
+## Pourquoi ça marche
+
+Rubrique **Prise en main → Pourquoi ça marche**, dans l'application. À donner à
+lire aux élèves : elle explique ce qu'ils font, et non comment cliquer.
+
+Relire donne le sentiment de savoir sans le savoir — on reconnaît le texte, on
+ne le retrouve pas. Une flashcard fait l'inverse : elle oblige à *retrouver*, et
+c'est cet effort qui fixe. Quatre principes, et ce que l'application en fait :
+
+| Principe | Dans l'application |
+|---|---|
+| **Se tester plutôt que relire** | Chaque carte pose une question et cache la réponse |
+| **Espacer plutôt que masser** | Les intervalles sont calculés carte par carte : demain si elle a résisté, dans un mois si elle est acquise |
+| **Revenir sur l'ancien** | « Aujourd'hui » propose de rouvrir un thème laissé de côté depuis trois semaines |
+| **Une idée par carte** | L'éditeur signale les cartes devenues trop longues |
+
+Fabriquer ses cartes est en soi un travail d'apprentissage : reformuler, c'est
+déjà mémoriser. Recevoir un jeu du professeur **et y ajouter les siennes** est
+le meilleur des deux mondes.
+
+Sources : DRANE de Bourgogne-Franche-Comté, « Travailler la mémorisation active
+avec des flashcards » ; académie de Lille, « Processus de mémorisation et
+flashcards ». Le rythme de reprises proposé — demain, une semaine, un mois, six
+mois — reprend celui de la courbe de l'oubli qu'elles décrivent.
 
 ## Les courbes d'apprentissage
 

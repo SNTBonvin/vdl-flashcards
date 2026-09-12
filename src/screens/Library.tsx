@@ -136,7 +136,9 @@ export function LibraryScreen() {
         />
       ) : (
         <>
-          <section className="stack stack-2">
+          <section className="stack stack-3">
+            <SectionHead title="Mes matières" />
+            <div className="stack stack-2">
             {rows.map(({ subject, decks, counts }) => {
               const waiting = counts.due + counts.fresh
               return (
@@ -168,27 +170,52 @@ export function LibraryScreen() {
                 </button>
               )
             })}
+            </div>
           </section>
 
-          <div className="row" style={{ gap: 10 }}>
-            <button type="button" className="btn btn--ghost grow" onClick={() => setCreating(true)}>
-              <Icon name="plus" size={18} />
-              Nouvelle matière
-            </button>
-            <button type="button" className="btn btn--ghost grow" onClick={() => setPasting(true)}>
-              <Icon name="inbox" size={18} />
-              Lien ou code
-            </button>
-          </div>
-
-          <button
-            type="button"
-            className="btn btn--ghost btn--block"
-            onClick={() => navigate({ name: 'catalogue' })}
-          >
-            <Icon name="library" size={18} />
-            Parcourir le catalogue
-          </button>
+          {/* Deux gestes distincts, deux blocs distincts : au-dessus on
+              consulte ce qu'on a, ici on en ajoute. */}
+          <section className="stack stack-3">
+            <SectionHead title="Ajouter des cartes" />
+            <div className="card">
+              <button type="button" className="listrow" onClick={() => setPasting(true)}>
+                <span className="glyph glyph--warm">
+                  <Icon name="inbox" size={18} />
+                </span>
+                <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                  <span className="listrow__title">Un lien ou un code reçu</span>
+                  <span className="listrow__sub truncate">
+                    Ce que votre professeur vous a donné
+                  </span>
+                </span>
+                <Icon name="chevron-right" size={18} />
+              </button>
+              <button
+                type="button"
+                className="listrow"
+                onClick={() => navigate({ name: 'catalogue' })}
+              >
+                <span className="glyph glyph--warm">
+                  <Icon name="library" size={18} />
+                </span>
+                <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                  <span className="listrow__title">Le catalogue</span>
+                  <span className="listrow__sub truncate">Les jeux publiés, à parcourir</span>
+                </span>
+                <Icon name="chevron-right" size={18} />
+              </button>
+              <button type="button" className="listrow" onClick={() => setCreating(true)}>
+                <span className="glyph glyph--warm">
+                  <Icon name="plus" size={18} />
+                </span>
+                <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                  <span className="listrow__title">Une matière à moi</span>
+                  <span className="listrow__sub truncate">Pour écrire mes propres cartes</span>
+                </span>
+                <Icon name="chevron-right" size={18} />
+              </button>
+            </div>
+          </section>
         </>
       )}
 

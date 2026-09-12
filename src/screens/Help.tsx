@@ -120,7 +120,7 @@ export function HelpScreen() {
       <Step
         icon="shuffle"
         title="Trois modes de séance"
-        text="« Programmé » ne propose que les cartes échues du jour. « Interrogation » interroge sur tout un thème, échéances ou non, et peut mélanger plusieurs thèmes. « Difficiles » ne reprend que les cartes déjà ratées."
+        text="« À revoir » ne propose que les cartes mûres du jour, plus quelques neuves : c’est la séance quotidienne. « Tout revoir » interroge sur tout un thème, échéances ou non, et peut en mélanger plusieurs — utile avant un contrôle. « Mes difficultés » ne reprend que les cartes déjà ratées."
       />
 
       <Step
@@ -165,12 +165,95 @@ export function HelpScreen() {
         text="Android : menu du navigateur, puis « Installer l’application ». iPhone : Partager, puis « Sur l’écran d’accueil ». Une fois installée, elle fonctionne sans réseau."
       />
 
+      {/* ---- Pourquoi ça marche : la méthode avant l'outil ---- */}
+      <section className="stack stack-3">
+        <SectionHead title="Pourquoi ça marche" />
+
+        <div className="card card--pad stack stack-4" style={{ lineHeight: 1.65 }}>
+          <p style={{ color: 'var(--ink-2)', fontSize: 14.5 }}>
+            Relire ses cours donne le sentiment de savoir, sans le savoir : on reconnaît le texte,
+            on ne le retrouve pas. C’est ce que les neurosciences appellent l’illusion de
+            l’apprentissage. Une flashcard fait l’inverse — elle oblige à <strong>retrouver</strong>{' '}
+            la réponse, et c’est cet effort qui fixe.
+          </p>
+
+          <hr className="rule" />
+
+          <div className="stack stack-3">
+            <span className="eyebrow">Quatre principes, et ce que l’application en fait</span>
+
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--ink)' }}>Se tester plutôt que relire.</strong> Chaque
+              carte pose une question et cache la réponse : impossible de survoler. C’est l’effet
+              de test, l’un des plus solidement établis en psychologie cognitive.
+            </p>
+
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--ink)' }}>Espacer plutôt que masser.</strong> On oublie
+              massivement dans les premiers jours — c’est la courbe de l’oubli d’Ebbinghaus. Chaque
+              rappel l’aplatit. L’application calcule donc quand chaque carte doit revenir :
+              demain si elle a résisté, dans un mois si elle est acquise. Une heure étalée sur
+              quatre séances vaut mieux que quatre heures d’affilée.
+            </p>
+
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--ink)' }}>Revenir sur l’ancien.</strong> Réviser le
+              seul chapitre en cours ne suffit pas : ce sont les retours sur les chapitres
+              antérieurs qui installent durablement. L’écran « Aujourd’hui » propose de lui-même de
+              rouvrir un thème laissé de côté depuis trois semaines.
+            </p>
+
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--ink)' }}>Une idée par carte.</strong> Une carte qui
+              contient deux notions n’en fixe aucune. Recto court, verso précis : l’éditeur le
+              rappelle et signale les cartes devenues trop longues.
+            </p>
+          </div>
+
+          <hr className="rule" />
+
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            Fabriquer soi-même ses cartes est en soi un travail d’apprentissage : reformuler, c’est
+            déjà mémoriser. Recevoir un jeu de son professeur et y ajouter les siennes est le
+            meilleur des deux mondes — et c’est exactement ce que l’application permet.
+          </p>
+        </div>
+
+        <div className="card card--pad stack stack-3">
+          <span className="eyebrow">Voir sa propre courbe</span>
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            L’écran Statistiques trace, à partir de vos révisions, votre taux de réussite selon le
+            temps écoulé depuis la dernière reprise. Là où la barre s’effondre, l’intervalle est
+            devenu trop long : c’est le signal qu’il faut resserrer le rythme.
+          </p>
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => navigate({ name: 'stats' })}
+          >
+            <Icon name="chart" size={18} />
+            Voir mes courbes
+          </button>
+        </div>
+
+        <div className="card card--pad stack stack-3">
+          <span className="eyebrow">Sources</span>
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            Ces principes sont ceux exposés par la DRANE de Bourgogne-Franche-Comté, «&nbsp;Travailler
+            la mémorisation active avec des flashcards&nbsp;», et par l’académie de Lille,
+            «&nbsp;Processus de mémorisation et flashcards&nbsp;». Le rythme des reprises proposé par
+            l’application — demain, une semaine, un mois, six mois — reprend celui de la courbe de
+            l’oubli qu’elles décrivent.
+          </p>
+        </div>
+      </section>
+
       <section className="stack stack-3">
         <SectionHead title="Aller plus loin" />
         <div className="card card--pad">
           <p className="meta" style={{ lineHeight: 1.6 }}>
-            Le fonctionnement de la répétition espacée est détaillé dans les réglages, à la rubrique
-            « La répétition espacée ».
+            Le détail du calcul des intervalles est dans les réglages, à la rubrique « La
+            répétition espacée ».
           </p>
         </div>
       </section>

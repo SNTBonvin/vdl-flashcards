@@ -216,6 +216,8 @@ export interface Settings {
    * n'agissent que sur l'appareil de qui les utilise.
    */
   teacherTools: boolean
+  /** Encart « quel mode choisir ? » sur l'écran Réviser. */
+  showReviewHelp: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -228,6 +230,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sharedBy: '',
   publishRepo: '',
   teacherTools: false,
+  showReviewHelp: true,
 }
 
 /** Format du fichier d'export/import JSON. */

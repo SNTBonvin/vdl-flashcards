@@ -7,10 +7,30 @@ import { Icon } from '../components/Icon'
 import { EmptyState, SectionHead, Toggle, plural, useToast } from '../components/ui'
 import type { Card, Grade, ID } from '../db/types'
 
-const MODES: { value: SessionMode; label: string; hint: string }[] = [
-  { value: 'due', label: 'Programmé', hint: 'Les cartes échues du jour, plus les nouvelles.' },
-  { value: 'quiz', label: 'Interrogation', hint: 'Toutes les cartes des thèmes choisis, mélangées.' },
-  { value: 'hard', label: 'Difficiles', hint: 'Uniquement les cartes déjà ratées au moins une fois.' },
+/**
+ * Les libellés disent ce que la séance contient, et non comment elle est
+ * calculée : « Programmé » et « Interrogation » supposaient de connaître le
+ * fonctionnement pour choisir.
+ */
+const MODES: { value: SessionMode; label: string; hint: string; help: string }[] = [
+  {
+    value: 'due',
+    label: 'À revoir',
+    hint: 'Les cartes échues du jour, plus quelques nouvelles.',
+    help: 'Les cartes que l’application juge mûres pour aujourd’hui, plus quelques neuves. C’est la séance à faire tous les jours : la plus courte, et la plus efficace.',
+  },
+  {
+    value: 'quiz',
+    label: 'Tout revoir',
+    hint: 'Toutes les cartes des thèmes choisis, mélangées.',
+    help: 'Toutes les cartes des thèmes cochés, échues ou non, dans le désordre. À faire avant un contrôle, ou pour se tester d’un coup sur un chapitre entier. Cela ne dérègle pas le programme.',
+  },
+  {
+    value: 'hard',
+    label: 'Mes difficultés',
+    hint: 'Uniquement les cartes déjà ratées.',
+    help: 'Uniquement les cartes déjà ratées au moins une fois, les plus fautives d’abord. Quand il reste dix minutes et qu’on veut qu’elles servent.',
+  },
 ]
 
 export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: boolean) => void }) {
@@ -127,6 +147,36 @@ function ReviewSetup({
         <p className="meta" style={{ padding: '0 2px', lineHeight: 1.55 }}>
           {MODES.find((m) => m.value === mode)?.hint}
         </p>
+
+        {store.settings.showReviewHelp && (
+          <div className="card card--pad stack stack-3" data-status="run">
+            <div className="row row--between">
+              <span className="eyebrow">Quel mode choisir ?</span>
+              <button
+                type="button"
+                className="icon-btn icon-btn--bare"
+                onClick={() => void store.saveSettings({ showReviewHelp: false })}
+                aria-label="Masquer ces explications"
+              >
+                <Icon name="close" size={18} />
+              </button>
+            </div>
+            {MODES.map((item) => (
+              <div key={item.value} className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
+                <span
+                  className="dot"
+                  style={{ marginTop: 7, background: 'var(--primary-fill)', flex: 'none' }}
+                />
+                <p className="meta" style={{ lineHeight: 1.55 }}>
+                  <strong style={{ color: 'var(--ink)' }}>{item.label}</strong> — {item.help}
+                </p>
+              </div>
+            ))}
+            <p className="meta" style={{ lineHeight: 1.55, color: 'var(--ink-4)' }}>
+              Ces explications se réaffichent depuis les réglages.
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="stack stack-3">

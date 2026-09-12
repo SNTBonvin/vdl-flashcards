@@ -52,6 +52,11 @@ export function TodayScreen() {
     navigate({ name: 'review' })
   }
 
+  const startHard = () => {
+    requestSession({ deckIds: allDeckIds, mode: 'hard', label: 'Cartes difficiles' })
+    navigate({ name: 'review' })
+  }
+
   const today = new Date(now).toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
@@ -116,7 +121,7 @@ export function TodayScreen() {
             <Icon name={pending > 0 ? 'review' : 'check'} size={21} />
           </span>
           <div className="grow stack" style={{ gap: 2 }}>
-            <h2>{pending > 0 ? 'Séance du jour' : 'Tout est à jour'}</h2>
+            <h2>{pending > 0 ? 'Séance du jour' : 'Rien de programmé'}</h2>
             <span className="meta">
               {pending > 0
                 ? `${totals.due} en attente · ${totals.fresh} ${plural(totals.fresh, 'nouvelle')}`
@@ -132,14 +137,29 @@ export function TodayScreen() {
             Réviser {pending} {plural(pending, 'carte')}
           </button>
         ) : (
-          <button
-            type="button"
-            className="btn btn--ghost btn--block"
-            onClick={() => navigate({ name: 'review' })}
-          >
-            <Icon name="shuffle" size={18} />
-            Lancer une interrogation
-          </button>
+          <>
+            {/* Le tutoiement est réservé à ce qui s'adresse à l'élève : ici,
+                c'est lui qu'on encourage, et « vous » sonnerait comme un
+                bulletin. */}
+            <p style={{ color: 'var(--ink-2)', fontSize: 15, lineHeight: 1.6 }}>
+              Bravo, tu es à jour. Rien ne t’oblige à t’arrêter là — tu peux te lancer un défi sur
+              un thème, ou reprendre les cartes qui te résistent.
+            </p>
+            <button
+              type="button"
+              className="btn btn--primary btn--block"
+              onClick={() => navigate({ name: 'review' })}
+            >
+              <Icon name="shuffle" size={18} />
+              Me lancer un défi
+            </button>
+            {totals.hard > 0 && (
+              <button type="button" className="btn btn--ghost btn--block" onClick={startHard}>
+                <Icon name="flag" size={18} />
+                Reprendre mes {totals.hard} cartes difficiles
+              </button>
+            )}
+          </>
         )}
       </section>
 
@@ -212,6 +232,10 @@ export function TodayScreen() {
         </section>
       )}
 
+      {/* L'élève n'a pas besoin d'un tableau de bord par matière sur l'accueil :
+          il a un onglet pour cela. L'enseignant, qui surveille plusieurs
+          matières, y gagne. */}
+      {store.settings.teacherTools && (
       <section className="stack stack-3">
         <SectionHead
           title="Par matière"
@@ -252,6 +276,7 @@ export function TodayScreen() {
           })}
         </div>
       </section>
+      )}
     </main>
   )
 }

@@ -173,6 +173,13 @@ export function SettingsScreen() {
             label="Inverser recto et verso"
             hint="La réponse devient la question."
           />
+
+          <Toggle
+            checked={store.settings.showReviewHelp}
+            onChange={(v) => void store.saveSettings({ showReviewHelp: v })}
+            label="Expliquer les modes de séance"
+            hint="L’encart « quel mode choisir ? » sur l’écran Réviser, que l’on peut y refermer d’une croix."
+          />
         </div>
       </section>
 
@@ -504,7 +511,7 @@ export function SettingsScreen() {
             Une carte neuve sue du premier coup rejoint directement le cycle long : elle revient le
             lendemain, puis de plus en plus tard. Une carte ratée réapparaît dans la même séance, et une
             carte acquise que l’on oublie repart avec un intervalle divisé par deux. Le mode
-            « Interrogation » interroge sur toutes les cartes choisies, échues ou non, et met la
+            « Tout revoir » interroge sur toutes les cartes choisies, échues ou non, et met la
             planification à jour comme une révision normale.
           </p>
         </div>

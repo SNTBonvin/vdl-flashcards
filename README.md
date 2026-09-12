@@ -63,6 +63,9 @@ sauvegarde JSON reste le filet.
 ## Fonctionnalités
 
 - **Classement** — matières › thèmes › cartes, avec recherche plein texte.
+- **Accueil d'élève** — quand rien n'est échu, l'écran « Aujourd'hui » propose
+  un défi sur un thème ou une reprise des cartes difficiles, en tutoyant ;
+  le détail par matière n'apparaît qu'avec les outils d'enseignant.
 - **Mises à jour** — un bandeau propose d'installer la nouvelle version sans
   jamais interrompre une révision en cours ; les cartes et la progression sont
   conservées (voir « Mises à jour » plus bas).
@@ -75,12 +78,17 @@ sauvegarde JSON reste le filet.
   révision (courbe de l'oubli : demain, une semaine, un mois, six mois) exporté
   vers l'agenda du téléphone, seul dispositif capable de sonner application
   fermée (voir « Rappels et agenda »).
-- **Trois modes de session**
-  - *Programmé* : les cartes échues du jour, plus un quota de cartes neuves ;
-  - *Interrogation* : toutes les cartes des thèmes cochés, échues ou non,
+- **Trois modes de séance**, nommés par ce qu'ils font et non par leur
+  mécanique :
+  - *À revoir* : les cartes échues du jour, plus un quota de cartes neuves ;
+  - *Tout revoir* : toutes les cartes des thèmes cochés, échues ou non,
     mélangées — plusieurs thèmes et plusieurs matières peuvent être
     combinées ;
-  - *Difficiles* : uniquement les cartes déjà ratées.
+  - *Mes difficultés* : uniquement les cartes déjà ratées.
+
+  Un encart explique la différence au-dessus du sélecteur ; une croix le ferme
+  définitivement, et un réglage (« Réviser » → « Expliquer les modes de
+  séance ») le fait revenir.
 - **Réponses** — « Raté », « Difficile », « Su », avec l'échéance calculée
   affichée sur chaque bouton avant de répondre.
 - **Rappels** — horaire et jours de la semaine par thème, recopiables dans
@@ -118,6 +126,10 @@ sauvegarde JSON reste le filet.
   bibliothèque et seulement au-delà de trente réponses.
 - **Outils d'enseignant** — lots et publication masqués par défaut : un élève
   ne voit que ce qui le concerne, sans que rien lui soit interdit.
+- **Rubrique « Pourquoi ça marche »** — l'aide explique en quatre principes ce
+  que l'outil fait faire (se tester, espacer, revenir sur l'ancien, une idée par
+  carte), avec les sources : DRANE de Bourgogne-Franche-Comté et académie de
+  Lille.
 - **Statistiques** — thèmes à retravailler, activité sur 14 semaines, taux de
   réussite, répartition des cartes par état, résultats par matière ; et un bilan
   de fin de session ventilé par thème.

@@ -230,7 +230,7 @@ export function DeckScreen({ id }: { id: string }) {
               onClick={() => start(waiting > 0 ? 'due' : 'quiz')}
             >
               <Icon name="review" size={18} />
-              {waiting > 0 ? `Réviser ${waiting}` : 'Interrogation'}
+              {waiting > 0 ? `Réviser ${waiting}` : 'Tout revoir'}
             </button>
             <button
               type="button"
