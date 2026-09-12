@@ -63,6 +63,11 @@ export default defineConfig({
         clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
         navigateFallback: 'index.html',
+        // ... sauf pour les jeux publiés : ouvrir « /c/CODE.json » dans un
+        // navigateur est une navigation, que le repli renverrait vers
+        // l'application. On verrait la page d'accueil à la place du fichier,
+        // et l'on croirait le jeu absent alors qu'il est bien publié.
+        navigateFallbackDenylist: [/\/c\/[^/]+\.json$/],
         cleanupOutdatedCaches: true,
         // L'application ne contacte aucun service tiers : tout est précaché,
         // polices comprises. Seule exception, les jeux publiés sous un code,
