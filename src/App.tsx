@@ -70,6 +70,7 @@ function Shell() {
       {route.name === 'stats' && <StatsScreen />}
       {route.name === 'settings' && <SettingsScreen />}
       {route.name === 'share' && <ShareScreen token={route.token} />}
+      {route.name === 'set' && <ShareScreen code={route.code} />}
       {route.name === 'help' && <HelpScreen />}
 
       {/* Masqué pendant une session : on n'interrompt pas une révision en cours. */}

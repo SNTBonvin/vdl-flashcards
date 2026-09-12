@@ -185,7 +185,7 @@ export interface Store extends State {
   /** Attribue un identifiant de partage au thème s'il n'en a pas encore. */
   prepareShare(deckId: ID): Promise<string>
   /** Ajoute ou met à jour un thème reçu par lien. */
-  importShare(payload: SharePayload): Promise<ImportResult>
+  importShare(payload: SharePayload, setCode?: string): Promise<ImportResult>
 
   saveSettings(patch: Partial<Settings>): Promise<void>
   restore(backup: Backup): Promise<void>
@@ -627,7 +627,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
    *  - une carte archivée par celui qui l'a reçue reste archivée. Son contenu
    *    est mis à jour, mais elle ne réapparaît pas dans sa liste.
    */
-  const importShare = useCallback(async (payload: SharePayload): Promise<ImportResult> => {
+  const importShare = useCallback(async (payload: SharePayload, setCode?: string): Promise<ImportResult> => {
     const { subjects, decks, cards } = stateRef.current
     const now = Date.now()
 
@@ -656,6 +656,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           description: payload.d?.trim() ?? existing.description,
           shareRev: Math.max(existing.shareRev ?? 0, payload.rev),
           sharedBy: payload.by ?? existing.sharedBy,
+          ...(setCode ? { setCode } : {}),
         }
       : {
           id: uid('d'),
@@ -668,6 +669,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           shareId: payload.id,
           shareRev: payload.rev,
           sharedBy: payload.by,
+          ...(setCode ? { setCode } : {}),
         }
 
     const inDeck = cards.filter((c) => c.deckId === deck.id)

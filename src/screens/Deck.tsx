@@ -26,6 +26,7 @@ import { DistributionSheet } from '../components/DistributionSheet'
 import { PlanSheet } from '../components/PlanSheet'
 import { PickCardsSheet } from '../components/PickCardsSheet'
 import { ExportSheet, exportRows } from '../components/ExportSheet'
+import { PublishSheet } from '../components/PublishSheet'
 import { nextPlanDate } from '../reminders/plan'
 import { buildIcs, icsFilename } from '../io/ics'
 import { download } from '../io/transfer'
@@ -68,6 +69,7 @@ export function DeckScreen({ id }: { id: string }) {
   const [planOpen, setPlanOpen] = useState(false)
   const [picking, setPicking] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const [publishing, setPublishing] = useState(false)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -241,6 +243,17 @@ export function DeckScreen({ id }: { id: string }) {
         </button>
       </div>
 
+      {deck.setCode && (
+        <button
+          type="button"
+          className="btn btn--ghost btn--block"
+          onClick={() => navigate({ name: 'set', code: deck.setCode! })}
+        >
+          <Icon name="reset" size={18} />
+          Vérifier les mises à jour · {deck.setCode}
+        </button>
+      )}
+
       {counts.total > 0 && !deck.reserve && (
         <button type="button" className="btn btn--ghost btn--block" onClick={() => setPlanOpen(true)}>
           <Icon name="today" size={18} />
@@ -271,10 +284,16 @@ export function DeckScreen({ id }: { id: string }) {
       </div>
 
       {counts.total > 0 && !deck.reserve && (
-        <button type="button" className="btn btn--ghost btn--block" onClick={() => setSharing(true)}>
-          <Icon name="move" size={18} />
-          Partager ce thème
-        </button>
+        <div className="row" style={{ gap: 10 }}>
+          <button type="button" className="btn btn--ghost grow" onClick={() => setSharing(true)}>
+            <Icon name="move" size={18} />
+            Partager
+          </button>
+          <button type="button" className="btn btn--ghost grow" onClick={() => setPublishing(true)}>
+            <Icon name="upload" size={18} />
+            {deck.publishedAs ? `Code ${deck.publishedAs}` : 'Publier'}
+          </button>
+        </div>
       )}
 
       {!deck.reserve && (lots.length > 0 || counts.total > 0) && (
@@ -669,6 +688,14 @@ export function DeckScreen({ id }: { id: string }) {
           setEditingCard(null)
           setClaiming(null)
         }}
+      />
+
+      <PublishSheet
+        open={publishing}
+        deck={deck}
+        cards={cards}
+        onClose={() => setPublishing(false)}
+        onPublished={(code) => toast(`Code « ${code} » retenu. Déposez le fichier pour le rendre vivant.`)}
       />
 
       <ExportSheet

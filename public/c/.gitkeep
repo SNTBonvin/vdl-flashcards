@@ -1,0 +1,6 @@
+Les jeux publiés sous un code court se déposent ici, un fichier « CODE.json »
+par jeu. Ils sont servis tels quels à côté du site, à l'adresse « /c/CODE.json ».
+
+Le fichier se prépare dans l'application : un thème → « Publier » → « Copier le
+contenu du fichier ». Le pipeline vérifie ensuite chaque jeu avant publication
+(scripts/check-sets.mjs).

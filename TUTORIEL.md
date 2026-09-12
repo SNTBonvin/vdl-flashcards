@@ -160,6 +160,35 @@ Ce qu'il faut savoir :
 L'intitulé n'apparaît nulle part chez l'élève, et aucune information sur qui a
 reçu quoi n'est enregistrée : l'application ne suit personne.
 
+## Publier sous un code court
+
+Un lien est long, et sur iPhone il n'atteint pas l'application installée. Un
+**code court** — « SVT-2DE-BIO1 » — se dicte en classe, s'écrit au tableau, et
+se tape dans l'application déjà ouverte. Plus de lien, plus de QR code.
+
+Dans un thème → **Publier**. Choisissez le code, éventuellement le niveau, et
+décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
+fichier exact à déposer :
+
+1. **Copier le contenu du fichier** ;
+2. **Ouvrir la page de dépôt** — la forge s'ouvre au bon endroit ;
+3. nommez le fichier `LECODE.json`, collez, validez.
+
+La publication prend environ deux minutes, le temps du pipeline. Ensuite, le
+code est vivant : `…/vdl-flashcards/c/LECODE.json`.
+
+À savoir :
+
+- **republier sous le même code met le jeu à jour** chez ceux qui l'ont déjà
+  reçu, sans doublon et sans toucher à leur progression ;
+- un code **n'est pas un secret** : qui l'a, a les cartes. Pour des flashcards
+  de cours, c'est sans conséquence ;
+- **décoché, « Afficher dans le catalogue »** garde le jeu joignable par son
+  code sans qu'il apparaisse dans aucune liste ;
+- la publication demande du **réseau à la première ouverture** chez l'élève.
+  Ensuite les cartes sont sur son appareil et tout redevient autonome. Le
+  partage par lien, lui, fonctionne sans réseau : les deux coexistent.
+
 ### Sur iPhone : une consigne à donner
 
 Sur iPhone, une application installée sur l'écran d'accueil possède **son propre
@@ -171,7 +200,10 @@ verra jamais.
 La consigne à donner à la classe tient en une phrase :
 
 > Copiez le lien, ouvrez l'application depuis l'écran d'accueil, puis
-> **Matières → Lien reçu**, et collez.
+> **Matières → Lien ou code**, et collez.
+
+Plus simple encore : donnez-leur le **code**, qu'ils tapent au même endroit.
+Rien à copier, rien à ouvrir dans le mauvais navigateur.
 
 C'est vrai aussi après avoir scanné un QR code. L'application prévient d'elle-même
 quand elle détecte ce cas, et propose un bouton « Copier le lien ».
@@ -180,8 +212,10 @@ Sur Android, rien de tout cela : le lien ouvre directement l'application install
 
 ## Côté élève
 
-Pour ouvrir un lien reçu : **Matières → Lien reçu**, puis collez le lien (ou
-seulement le code qui suit `#/p/`). Un aperçu s'affiche avant tout ajout.
+Pour ouvrir un lien ou un code reçu : **Matières → Lien ou code**, puis collez
+le lien, ou tapez le code donné par le professeur. Un aperçu s'affiche avant
+tout ajout. Un thème reçu par code garde son code : le bouton « Vérifier les
+mises à jour » suffit ensuite, sans rien retaper.
 
 Un thème reçu n'est pas figé :
 

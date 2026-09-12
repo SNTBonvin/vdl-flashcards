@@ -4,6 +4,7 @@ import { useRoute } from '../lib/router'
 import { Icon } from '../components/Icon'
 import { EmptyState, SectionHead, plural, useToast } from '../components/ui'
 import { decodeShare, ShareError, type SharePayload } from '../io/share'
+import { CatalogError, fetchSet, setToPayload } from '../io/catalog'
 import { isIosBrowser } from '../lib/storage'
 
 /**
@@ -13,7 +14,7 @@ import { isIosBrowser } from '../lib/storage'
  * aperçu. C'est l'élève qui décide, en connaissance de cause, d'ajouter le jeu
  * à ses propres cartes.
  */
-export function ShareScreen({ token }: { token: string }) {
+export function ShareScreen({ token, code }: { token?: string; code?: string }) {
   const store = useStore()
   const toast = useToast()
   const { navigate } = useRoute()
@@ -22,23 +23,33 @@ export function ShareScreen({ token }: { token: string }) {
   const [error, setError] = useState<string | null>(null)
   const [importing, setImporting] = useState(false)
 
+  // Deux sources, une seule suite : un code produit la même charge utile qu'un
+  // lien, et passe ensuite par les mêmes règles de réception.
   useEffect(() => {
     let cancelled = false
     setPayload(null)
     setError(null)
-    decodeShare(token)
+    const resolve = code
+      ? fetchSet(code).then(setToPayload)
+      : token
+        ? decodeShare(token)
+        : Promise.reject(new ShareError('Aucun jeu à afficher.'))
+    resolve
       .then((result) => {
         if (!cancelled) setPayload(result)
       })
       .catch((e) => {
-        if (!cancelled) {
-          setError(e instanceof ShareError ? e.message : 'Ce lien de partage est illisible.')
-        }
+        if (cancelled) return
+        setError(
+          e instanceof CatalogError || e instanceof ShareError
+            ? e.message
+            : 'Ce partage est illisible.',
+        )
       })
     return () => {
       cancelled = true
     }
-  }, [token])
+  }, [token, code])
 
   if (error) {
     return (
@@ -48,7 +59,7 @@ export function ShareScreen({ token }: { token: string }) {
         </div>
         <EmptyState
           icon="info"
-          title="Lien illisible"
+          title={code ? 'Code introuvable' : 'Lien illisible'}
           text={error}
           action={
             <button type="button" className="btn btn--ghost" onClick={() => navigate({ name: 'today' })}>
@@ -81,7 +92,7 @@ export function ShareScreen({ token }: { token: string }) {
   const add = async () => {
     setImporting(true)
     try {
-      const result = await store.importShare(payload)
+      const result = await store.importShare(payload, code)
       const parts = [
         result.added > 0 ? `${result.added} ${plural(result.added, 'carte ajoutée', 'cartes ajoutées')}` : null,
         result.updated > 0 ? `${result.updated} mise${result.updated > 1 ? 's' : ''} à jour` : null,
@@ -102,7 +113,7 @@ export function ShareScreen({ token }: { token: string }) {
         <h1>{payload.t}</h1>
       </div>
 
-      {isIosBrowser() && (
+      {!code && isIosBrowser() && (
         <div className="card card--pad stack stack-3" data-status="warn">
           <div className="row" style={{ gap: 12 }}>
             <span className="glyph glyph--warm">
@@ -111,7 +122,7 @@ export function ShareScreen({ token }: { token: string }) {
             <p className="meta" style={{ lineHeight: 1.55 }}>
               Vous êtes dans Safari. Si l’application est installée sur votre écran d’accueil,
               <strong> ces cartes n’y arriveront pas</strong> : sur iPhone, les deux ne partagent pas
-              leurs données. Copiez ce lien, ouvrez l’application, puis « Matières › Lien reçu ».
+              leurs données. Copiez ce lien, ouvrez l’application, puis « Matières › Lien ou code ».
             </p>
           </div>
           <button

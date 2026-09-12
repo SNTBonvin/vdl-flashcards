@@ -121,7 +121,7 @@ export function LibraryScreen() {
                 onClick={() => setPasting(true)}
               >
                 <Icon name="inbox" size={18} />
-                Ouvrir un lien reçu
+                Lien ou code reçu
               </button>
             </div>
           }
@@ -169,7 +169,7 @@ export function LibraryScreen() {
             </button>
             <button type="button" className="btn btn--ghost grow" onClick={() => setPasting(true)}>
               <Icon name="inbox" size={18} />
-              Lien reçu
+              Lien ou code
             </button>
           </div>
         </>
@@ -178,9 +178,9 @@ export function LibraryScreen() {
       <PasteLinkSheet
         open={pasting}
         onClose={() => setPasting(false)}
-        onToken={(token) => {
+        onResolved={(result) => {
           setPasting(false)
-          navigate({ name: 'share', token })
+          navigate('token' in result ? { name: 'share', token: result.token } : { name: 'set', code: result.code })
         }}
       />
 
