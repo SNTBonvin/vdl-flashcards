@@ -1,8 +1,16 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { requestSession } from '../state/session'
 import { countCards } from '../srs/queue'
+import { BarChart, LineChart } from '../components/Chart'
+import {
+  MIN_ANSWERS as CURVE_MIN,
+  hasEnough,
+  masteredNow,
+  masteryCurve,
+  retentionCurve,
+} from '../srs/curves'
 import { Icon } from '../components/Icon'
 import { SectionHead, StatRow, EmptyState, plural } from '../components/ui'
 import { DAY_MS, dayKey, startOfDay } from '../lib/date'
@@ -24,7 +32,27 @@ export function StatsScreen() {
   const { navigate } = useRoute()
   const now = Date.now()
 
+  /** Thème observé par les courbes. Nul = tous les thèmes confondus. */
+  const [curveDeck, setCurveDeck] = useState<string | null>(null)
+
   const totals = useMemo(() => countCards(store.studyCards, now), [store.studyCards, now])
+
+  const curveLogs = useMemo(
+    () => (curveDeck ? store.logs.filter((l) => l.deckId === curveDeck) : store.logs),
+    [store.logs, curveDeck],
+  )
+  const retention = useMemo(() => retentionCurve(curveLogs), [curveLogs])
+  const mastery = useMemo(() => masteryCurve(curveLogs, 12, now), [curveLogs, now])
+  const curveCards = useMemo(
+    () => (curveDeck ? (store.cardsByDeck.get(curveDeck) ?? []) : store.studyCards),
+    [store.cardsByDeck, store.studyCards, curveDeck],
+  )
+  /** Thèmes assez travaillés pour mériter une courbe. */
+  const curveDecks = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const log of store.logs) counts.set(log.deckId, (counts.get(log.deckId) ?? 0) + 1)
+    return store.studyDecks.filter((d) => (counts.get(d.id) ?? 0) >= CURVE_MIN)
+  }, [store.logs, store.studyDecks])
 
   const perDay = useMemo(() => {
     const map = new Map<string, number>()
@@ -146,6 +174,89 @@ export function StatsScreen() {
           { value: `${last30.rate} %`, label: 'réussite 30 j', accent: true },
         ]}
       />
+
+      <section className="stack stack-3">
+        <SectionHead title="Courbes d’apprentissage" />
+
+        {curveDecks.length > 0 && (
+          <div className="seg seg--scroll">
+            <button
+              type="button"
+              className="seg__item"
+              aria-pressed={curveDeck === null}
+              onClick={() => setCurveDeck(null)}
+            >
+              Tout
+            </button>
+            {curveDecks.map((deck) => (
+              <button
+                key={deck.id}
+                type="button"
+                className="seg__item"
+                aria-pressed={curveDeck === deck.id}
+                onClick={() => setCurveDeck(deck.id)}
+              >
+                {deck.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {!hasEnough(curveLogs) ? (
+          <div className="card card--pad">
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              Pas encore assez de révisions pour tracer quoi que ce soit de fiable. Il en faut au
+              moins {CURVE_MIN} ; vous en êtes à {curveLogs.length}. Une courbe tracée sur moins que
+              cela ne montrerait que du hasard.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="card card--pad stack stack-3">
+              <div className="row row--between">
+                <span className="eyebrow">Votre courbe de l’oubli</span>
+                <span className="chip mono">% de réussite</span>
+              </div>
+              <BarChart
+                points={retention.map((point) => ({
+                  label: point.label,
+                  value: point.rate,
+                  // Une tranche presque vide serait une illusion d'optique.
+                  muted: point.answers < 5,
+                }))}
+              />
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                Réussite selon le temps écoulé depuis la révision précédente. C’est votre mémoire à
+                vous, mesurée sur vos cartes : là où la barre s’effondre, l’intervalle est devenu
+                trop long. Les barres grises reposent sur trop peu de réponses pour être crues.
+              </p>
+            </div>
+
+            <div className="card card--pad stack stack-3">
+              <div className="row row--between">
+                <span className="eyebrow">La montée de l’acquis</span>
+                <span className="chip mono">
+                  {masteredNow(curveCards)} / {curveCards.filter((c) => !c.suspended).length}
+                </span>
+              </div>
+              <LineChart
+                series={[
+                  { name: 'acquises', values: mastery.map((p) => p.mastered), filled: true },
+                  { name: 'découvertes', values: mastery.map((p) => p.seen) },
+                ]}
+                labels={mastery.map((_, i) =>
+                  i === 0 ? 'il y a 12 sem.' : i === mastery.length - 1 ? 'aujourd’hui' : '',
+                )}
+              />
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                En plein, les cartes devenues solides — revues avec au moins trois semaines
+                d’écart. En pointillé, celles que vous avez découvertes. L’écart entre les deux,
+                c’est le travail qui reste.
+              </p>
+            </div>
+          </>
+        )}
+      </section>
 
       <section className="stack stack-3">
         <SectionHead

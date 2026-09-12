@@ -70,6 +70,8 @@ export function DeckScreen({ id }: { id: string }) {
   const [picking, setPicking] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [publishing, setPublishing] = useState(false)
+  /** Lot en cours de publication, le cas échéant. */
+  const [publishingLot, setPublishingLot] = useState<Distribution | null>(null)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -298,16 +300,22 @@ export function DeckScreen({ id }: { id: string }) {
         <div className="row" style={{ gap: 10 }}>
           <button type="button" className="btn btn--ghost grow" onClick={() => setSharing(true)}>
             <Icon name="move" size={18} />
-            Partager
+            {store.settings.teacherTools ? 'Partager' : 'Partager ce thème'}
           </button>
-          <button type="button" className="btn btn--ghost grow" onClick={() => setPublishing(true)}>
-            <Icon name="upload" size={18} />
-            {!deck.publishedAs ? 'Publier' : publicationStale ? 'Republier' : `Code ${deck.publishedAs}`}
-          </button>
+          {store.settings.teacherTools && (
+            <button type="button" className="btn btn--ghost grow" onClick={() => setPublishing(true)}>
+              <Icon name="upload" size={18} />
+              {!deck.publishedAs
+                ? 'Publier'
+                : publicationStale
+                  ? 'Republier'
+                  : `Code ${deck.publishedAs}`}
+            </button>
+          )}
         </div>
       )}
 
-      {!deck.reserve && (lots.length > 0 || counts.total > 0) && (
+      {store.settings.teacherTools && !deck.reserve && (lots.length > 0 || counts.total > 0) && (
         <section className="stack stack-3">
           <SectionHead
             title="Lots de distribution"
@@ -537,6 +545,7 @@ export function DeckScreen({ id }: { id: string }) {
                 </button>
               </div>
 
+              {(store.settings.teacherTools || selection?.editing) && (
               <button
                 type="button"
                 className="btn btn--primary btn--block"
@@ -557,6 +566,7 @@ export function DeckScreen({ id }: { id: string }) {
                 <Icon name="layers" size={18} />
                 {selection?.editing ? 'Enregistrer le lot' : 'Créer un lot'}
               </button>
+              )}
 
               {!selection?.editing && (
                 <div className="row" style={{ gap: 10 }}>
@@ -709,6 +719,19 @@ export function DeckScreen({ id }: { id: string }) {
         onPublished={(code) => toast(`Code « ${code} » retenu. Déposez le fichier pour le rendre vivant.`)}
       />
 
+      {publishingLot && (
+        <PublishSheet
+          open
+          deck={deck}
+          lot={publishingLot}
+          cards={cards.filter((c) => publishingLot.cardIds.includes(c.id))}
+          onClose={() => setPublishingLot(null)}
+          onPublished={(code) =>
+            toast(`Code « ${code} » retenu. Déposez le fichier pour le rendre vivant.`)
+          }
+        />
+      )}
+
       <ExportSheet
         open={exporting}
         scopes={[
@@ -810,6 +833,11 @@ export function DeckScreen({ id }: { id: string }) {
           setOpenLotId(null)
         }}
         onDuplicated={(copy) => setOpenLotId(copy.id)}
+        onPublish={() => {
+          if (!openLot) return
+          setPublishingLot(openLot)
+          setOpenLotId(null)
+        }}
       />
 
       {sharingLot && (

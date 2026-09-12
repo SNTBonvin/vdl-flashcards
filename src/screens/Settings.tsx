@@ -231,6 +231,25 @@ export function SettingsScreen() {
         </div>
       </section>
 
+      {/* ---------------- Diffusion ---------------- */}
+      <section className="stack stack-3">
+        <SectionHead title="Diffusion" />
+        <div className="card card--pad stack stack-4">
+          <Toggle
+            checked={store.settings.teacherTools}
+            onChange={(v) => void store.saveSettings({ teacherTools: v })}
+            label="Outils d’enseignant"
+            hint="Fait apparaître les lots de distribution et la publication sous un code. Sans eux, l’application reste complète pour réviser, créer et partager ses propres cartes."
+          />
+          {store.settings.teacherTools && (
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              Ces outils n’agissent que sur cet appareil : publier suppose d’avoir les droits sur
+              le dépôt, et rien ici ne les donne.
+            </p>
+          )}
+        </div>
+      </section>
+
       {/* ---------------- Données ---------------- */}
       <section className="stack stack-3">
         <SectionHead title="Données" />

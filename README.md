@@ -113,6 +113,11 @@ sauvegarde JSON reste le filet.
 - **Thème reçu, thème vivant** — celui qui reçoit un thème peut y ajouter ses
   propres cartes, archiver celles dont il ne veut pas, et distinguer d'un coup
   d'œil les cartes reçues des siennes.
+- **Courbes d'apprentissage** — sa propre courbe de l'oubli (réussite selon
+  l'intervalle écoulé) et la montée de l'acquis, par thème, tracées en SVG sans
+  bibliothèque et seulement au-delà de trente réponses.
+- **Outils d'enseignant** — lots et publication masqués par défaut : un élève
+  ne voit que ce qui le concerne, sans que rien lui soit interdit.
 - **Statistiques** — thèmes à retravailler, activité sur 14 semaines, taux de
   réussite, répartition des cartes par état, résultats par matière ; et un bilan
   de fin de session ventilé par thème.
@@ -179,6 +184,25 @@ d'affectation. Le magasin expose `reserveIds`, `studyDecks` et `studyCards` :
 tout ce qui relève de la révision — files, compteurs, pastille, rappels,
 reprise spiralaire, statistiques — se calcule sur ces derniers, tandis que la
 recherche et la reprise voient toutes les cartes.
+
+## Courbes d'apprentissage
+
+`src/srs/curves.ts` calcule deux mesures sur l'historique local :
+
+- la **courbe de l'oubli** — réussite par tranche d'intervalle écoulé (1 j,
+  2-3 j, 4-7 j, 8-15 j, 16-30 j, au-delà), en n'y faisant entrer que les cartes
+  du cycle long : les paliers d'apprentissage se mesurent en minutes et ne
+  disent rien de l'oubli ;
+- la **montée de l'acquis** — cumul hebdomadaire des cartes découvertes et des
+  cartes devenues solides (premier passage à trois semaines d'intervalle).
+
+Un troisième graphique, le taux de réussite dans le temps, a été écarté
+délibérément : il paraît évident mais ment, puisque l'arrivée de cartes neuves
+le fait chuter alors que rien ne s'est dégradé.
+
+En dessous de trente réponses, rien n'est tracé. Les graphiques sont dessinés à
+la main en SVG (`src/components/Chart.tsx`) : le besoin tient en cent lignes, et
+une bibliothèque de plus serait un chargement de plus à précacher.
 
 ## Codes courts et jeux publiés
 

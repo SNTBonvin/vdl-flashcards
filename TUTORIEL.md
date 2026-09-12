@@ -122,6 +122,18 @@ créée lui-même n'est jamais écrasée.
 Ordre de grandeur : environ 70 caractères par carte. Vingt cartes donnent un
 lien d'environ 1,4 Ko, et un QR code encore lisible de près.
 
+## Les outils d'enseignant
+
+Les lots de distribution et la publication sous un code ne servent qu'à celui
+qui diffuse. Ils sont donc **éteints par défaut** : *Réglages → Diffusion →
+**Outils d'enseignant***. Sans eux, l'application reste entière pour réviser,
+créer, modifier et partager ses propres cartes.
+
+Ce n'est pas une serrure — n'importe qui peut les allumer, et ils n'agissent
+que sur l'appareil de qui les utilise. C'est un rangement : un élève n'a pas à
+voir des outils dont il n'a que faire. Publier suppose d'avoir les droits sur
+le dépôt, et aucun réglage ne les donne.
+
 ## Diffuser en plusieurs lots
 
 Un thème de trente cartes tient dans un lien, mais son QR code devient trop
@@ -181,6 +193,21 @@ La publication prend environ deux minutes, le temps du pipeline.
 miroir : un fichier ajouté directement sur le miroir fait diverger les deux
 dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
+
+### Publier un lot sous son propre code
+
+Un lot se publie comme un thème, mais en gardant l'essentiel : **tous les lots
+d'un thème portent le même identifiant de thème**. Chez l'élève, les codes
+successifs se rejoignent donc dans **un seul thème qui grossit**, au lieu de
+s'empiler en chapitres séparés.
+
+Fiche du lot → **Publier ce lot sous un code**. Le code proposé distingue le
+lot (`SVT-BIODIVER-LOT1`), et le nom affiché reprend « thème — lot ». Le reste
+est identique : copier, déposer, deux minutes.
+
+Conséquence pratique : une seule liste de cartes, trois sélections par-dessus,
+trois codes — et une carte peut servir dans deux lots sans être révisée en
+double chez l'élève.
 
 ### Mettre à jour un jeu publié
 
@@ -330,6 +357,25 @@ dans l'application sans perdre les notes ni les étiquettes.
 Pour réimporter : dans le thème de destination, **Importer**, puis choisissez le
 fichier — CSV, TSV ou JSON, l'application reconnaît les trois. Les cartes
 s'ajoutent, rien n'est remplacé.
+
+## Les courbes d'apprentissage
+
+Dans **Statistiques**, deux graphiques par thème — ou sur l'ensemble.
+
+**Votre courbe de l'oubli** montre le taux de réussite selon le temps écoulé
+depuis la révision précédente : un jour, trois jours, une semaine, un mois. Ce
+n'est pas la courbe d'un manuel, c'est la vôtre, mesurée sur vos cartes. Là où
+la barre s'effondre, l'intervalle est devenu trop long — c'est le signal qu'il
+faut resserrer le rythme des reprises.
+
+**La montée de l'acquis** compte, semaine après semaine, les cartes devenues
+solides — revues avec au moins trois semaines d'écart — face à celles que vous
+avez seulement découvertes. L'écart entre les deux courbes, c'est le travail
+qui reste.
+
+En dessous de **trente réponses**, rien n'est tracé : une courbe sur si peu de
+données ne montrerait que du hasard, et l'application le dit plutôt que de
+faire semblant.
 
 ## Sauvegarder et changer d'appareil
 

@@ -21,6 +21,7 @@ export function DistributionSheet({
   onShare,
   onEditSelection,
   onDuplicated,
+  onPublish,
 }: {
   open: boolean
   lot: Distribution | null
@@ -29,6 +30,7 @@ export function DistributionSheet({
   onEditSelection: () => void
   /** Le lot copié devient celui affiché : on enchaîne sur sa modification. */
   onDuplicated: (copy: Distribution) => void
+  onPublish: () => void
 }) {
   const store = useStore()
   const toast = useToast()
@@ -145,6 +147,21 @@ export function DistributionSheet({
           <button type="button" className="btn btn--ghost btn--block" onClick={onEditSelection}>
             <Icon name="edit" size={18} />
             Modifier les cartes du lot
+          </button>
+
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            disabled={cards.length === 0}
+            onClick={onPublish}
+          >
+            <Icon name="upload" size={18} />
+            {!lot.publishedAs
+              ? 'Publier ce lot sous un code'
+              : lot.publishedCount !== cards.length ||
+                  cards.some((c) => c.updatedAt > (lot.publishedAt ?? 0))
+                ? 'Republier ce lot'
+                : `Code ${lot.publishedAs}`}
           </button>
 
           <button

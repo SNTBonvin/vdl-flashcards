@@ -144,7 +144,7 @@ export function HelpScreen() {
       <Step
         icon="upload"
         title="Publier sous un code"
-        text="« Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
+        text="Les lots et la publication sont masqués par défaut : activez « Outils d’enseignant » dans les réglages. « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
       />
 
       <Step

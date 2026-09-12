@@ -11,7 +11,7 @@ import {
   suggestCode,
   type PublishedSet,
 } from '../io/catalog'
-import type { Card, Deck } from '../db/types'
+import type { Card, Deck, Distribution } from '../db/types'
 
 /**
  * Page de dépôt d'un fichier, selon l'hébergeur du dépôt **source**.
@@ -53,12 +53,19 @@ const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle']
 export function PublishSheet({
   open,
   deck,
+  lot,
   cards,
   onClose,
   onPublished,
 }: {
   open: boolean
   deck: Deck
+  /**
+   * Lot publié, le cas échéant. Tous les lots d'un thème portent le même
+   * identifiant de thème : chez l'élève, ils se rejoignent donc dans un seul
+   * thème au lieu de s'empiler en chapitres séparés.
+   */
+  lot?: Distribution | null
   /** Cartes à publier : tout le thème, ou les seules cartes d'un lot. */
   cards: Card[]
   onClose: () => void
@@ -67,6 +74,8 @@ export function PublishSheet({
   const store = useStore()
   const toast = useToast()
   const subject = store.subjects.find((s) => s.id === deck.subjectId)
+  /** L'état de publication appartient à ce qu'on publie : le lot, ou le thème. */
+  const target = lot ?? deck
 
   const [code, setCode] = useState('')
   const [level, setLevel] = useState('')
@@ -83,8 +92,8 @@ export function PublishSheet({
 
   useEffect(() => {
     if (!open) return
-    setCode(deck.publishedAs ?? suggestCode(subject?.name ?? '', deck.name))
-    setLabel(deck.publishedName ?? deck.name)
+    setCode(target.publishedAs ?? suggestCode(subject?.name ?? '', deck.name, lot?.name))
+    setLabel(target.publishedName ?? (lot ? `${deck.name} — ${lot.name}` : deck.name))
     setListed(true)
     setRepo(store.settings.publishRepo)
     setShareId(null)
@@ -96,15 +105,16 @@ export function PublishSheet({
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, deck.id])
+  }, [open, deck.id, lot?.id])
 
   const live = cards.filter((c) => !c.suspended)
   const ready = shareId !== null
   /** Déjà publié sous ce code, et modifié depuis : il faut redéposer. */
-  const published = deck.publishedAs === normalizeCode(code) && deck.publishedAt != null
+  const published = target.publishedAs === normalizeCode(code) && target.publishedAt != null
   const stale =
     published &&
-    (live.length !== deck.publishedCount || live.some((c) => c.updatedAt > (deck.publishedAt ?? 0)))
+    (live.length !== target.publishedCount ||
+      live.some((c) => c.updatedAt > (target.publishedAt ?? 0)))
   const valid = CODE_PATTERN.test(code.trim().toUpperCase()) && ready
 
   const file = useMemo<PublishedSet | null>(() => {
@@ -120,6 +130,7 @@ export function PublishSheet({
       ...(store.settings.sharedBy ? { by: store.settings.sharedBy } : {}),
       subject: subject.name,
       deck: label.trim() || deck.name,
+      ...(lot ? { lot: lot.name } : {}),
       ...(deck.description ? { description: deck.description } : {}),
       // Le même identifiant que le partage par lien : chez l'élève, un jeu reçu
       // par code et un lot reçu par lien se rejoignent dans le même thème.
@@ -127,7 +138,7 @@ export function PublishSheet({
       rev: Date.now(),
       cards: live.map((c) => [c.front, c.back, c.notes || undefined] as [string, string, string?]),
     }
-  }, [code, label, level, listed, subject, deck, live, shareId, store.settings.sharedBy])
+  }, [code, label, level, listed, subject, deck, lot, live, shareId, store.settings.sharedBy])
 
   const content = file ? JSON.stringify(file, null, 2) : ''
   const normalized = normalizeCode(code)
@@ -144,12 +155,14 @@ export function PublishSheet({
   const openRepo = async () => {
     if (!repo.trim() || !normalized) return
     if (repo !== store.settings.publishRepo) await store.saveSettings({ publishRepo: repo.trim() })
-    await store.updateDeck(deck.id, {
+    const marks = {
       publishedAs: normalized,
       publishedName: label.trim() || deck.name,
       publishedAt: Date.now(),
       publishedCount: live.length,
-    })
+    }
+    if (lot) await store.updateDistribution(lot.id, marks)
+    else await store.updateDeck(deck.id, marks)
     onPublished(normalized)
     window.open(published ? editUrl(repo, normalized) : uploadUrl(repo), '_blank', 'noopener')
   }
@@ -175,6 +188,9 @@ export function PublishSheet({
         <p className="meta" style={{ lineHeight: 1.6 }}>
           Un code court se dicte en classe et se tape dans l’application, sans passer par un lien —
           c’est le seul chemin qui atteigne à coup sûr une application installée sur iPhone.
+          {lot
+            ? ' Les lots d’un même thème se rejoignent chez l’élève : il reçoit des cartes dans un seul thème, sans voir le découpage.'
+            : ''}
         </p>
 
         <Field
@@ -258,7 +274,7 @@ export function PublishSheet({
                 <span className={`chip ${stale ? 'chip--warn' : 'chip--ok'} mono`}>
                   {stale
                     ? 'modifié depuis'
-                    : new Date(deck.publishedAt ?? 0).toLocaleDateString('fr-FR')}
+                    : new Date(target.publishedAt ?? 0).toLocaleDateString('fr-FR')}
                 </span>
               </div>
             </>

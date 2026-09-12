@@ -183,6 +183,13 @@ export interface Distribution {
   updatedAt: number
   /** Dernière fois que le lien a été produit. */
   lastSharedAt: number | null
+  /** Code sous lequel ce lot est publié, le cas échéant. */
+  publishedAs?: string
+  /** Nom affiché aux élèves, s'il diffère de celui du lot. */
+  publishedName?: string
+  /** Date du dernier dépôt, et nombre de cartes déposées. */
+  publishedAt?: number
+  publishedCount?: number
 }
 
 export interface Settings {
@@ -202,6 +209,13 @@ export interface Settings {
   sharedBy: string
   /** Dépôt de la forge où déposer les jeux publiés. Côté enseignant. */
   publishRepo: string
+  /**
+   * Outils de diffusion : lots et publication. Éteints par défaut — ils ne
+   * servent qu'à celui qui distribue, et n'encombrent pas celui qui révise.
+   * Ce n'est pas une protection : tout le monde peut les allumer, et ils
+   * n'agissent que sur l'appareil de qui les utilise.
+   */
+  teacherTools: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -213,6 +227,7 @@ export const DEFAULT_SETTINGS: Settings = {
   maxInterval: 365,
   sharedBy: '',
   publishRepo: '',
+  teacherTools: false,
 }
 
 /** Format du fichier d'export/import JSON. */

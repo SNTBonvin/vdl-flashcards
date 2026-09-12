@@ -30,6 +30,8 @@ export interface PublishedSet {
   by?: string
   subject: string
   deck: string
+  /** Nom du lot dont provient ce jeu, à titre indicatif. */
+  lot?: string
   description?: string
   /** Identifiant de partage du thème : c'est lui qui évite les doublons. */
   shareId: string
@@ -73,8 +75,11 @@ export function normalizeCode(input: string): string | null {
   return CODE_PATTERN.test(code) ? code : null
 }
 
-/** Propose un code à partir des noms, sans prétendre qu'il soit libre. */
-export function suggestCode(subject: string, deck: string, level?: string): string {
+/**
+ * Propose un code à partir des noms, sans prétendre qu'il soit libre. Le
+ * troisième fragment distingue les lots d'un même thème.
+ */
+export function suggestCode(subject: string, deck: string, extra?: string): string {
   const part = (value: string, max: number) =>
     value
       .normalize('NFD')
@@ -82,7 +87,7 @@ export function suggestCode(subject: string, deck: string, level?: string): stri
       .toUpperCase()
       .replace(/[^A-Z0-9]+/g, '')
       .slice(0, max)
-  return [part(subject, 4), level ? part(level, 4) : '', part(deck, 8)]
+  return [part(subject, 4), part(deck, 8), extra ? part(extra, 6) : '']
     .filter(Boolean)
     .join('-')
     .slice(0, 24)
