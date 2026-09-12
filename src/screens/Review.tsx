@@ -85,10 +85,10 @@ function ReviewSetup({
       current.includes(deckId) ? current.filter((id) => id !== deckId) : [...current, deckId],
     )
 
-  const allIds = store.decks.map((d) => d.id)
+  const allIds = store.studyDecks.map((d) => d.id)
   const allSelected = selected.length === allIds.length && allIds.length > 0
 
-  if (store.decks.length === 0) {
+  if (store.studyDecks.length === 0) {
     return (
       <main className="screen stack stack-5">
         <div className="page-title">
@@ -145,7 +145,8 @@ function ReviewSetup({
 
         <div className="stack stack-4">
           {store.subjects.map((subject) => {
-            const decks = store.decksBySubject.get(subject.id) ?? []
+            // Les thèmes de réserve ne se révisent pas : ils ne sont pas proposés.
+            const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
             if (decks.length === 0) return null
             return (
               <div key={subject.id} className="stack stack-2">

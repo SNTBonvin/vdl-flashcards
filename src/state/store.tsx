@@ -75,6 +75,7 @@ type Action =
   | { type: 'loaded'; payload: Omit<State, 'ready'> }
   | { type: 'subjects'; payload: Subject[] }
   | { type: 'decks'; payload: Deck[] }
+  | { type: 'deck:patch'; id: ID; patch: Partial<Omit<Deck, 'id'>> }
   | { type: 'cards'; payload: Card[] }
   | { type: 'logs'; payload: ReviewLog[] }
   | { type: 'distributions'; payload: Distribution[] }
@@ -101,6 +102,13 @@ function reducer(state: State, action: Action): State {
       return { ...state, subjects: action.payload }
     case 'decks':
       return { ...state, decks: action.payload }
+    case 'deck:patch':
+      return {
+        ...state,
+        decks: state.decks
+          .map((d) => (d.id === action.id ? { ...d, ...action.patch } : d))
+          .sort(byPosition),
+      }
     case 'cards':
       return { ...state, cards: action.payload }
     case 'logs':
@@ -123,13 +131,19 @@ export interface Store extends State {
   /** Cartes indexées par thème — recalculé à chaque changement. */
   cardsByDeck: Map<ID, Card[]>
   decksBySubject: Map<ID, Deck[]>
+  /** Thèmes de réserve : hors révision, hors compteurs, hors statistiques. */
+  reserveIds: Set<ID>
+  /** Thèmes hors réserve. */
+  studyDecks: Deck[]
+  /** Cartes hors réserve — celles qui comptent pour la révision. */
+  studyCards: Card[]
   distributionsByDeck: Map<ID, Distribution[]>
 
   createSubject(name: string, code?: string): Promise<Subject>
   updateSubject(id: ID, patch: Partial<Omit<Subject, 'id'>>): Promise<void>
   deleteSubject(id: ID): Promise<void>
 
-  createDeck(subjectId: ID, name: string, description?: string): Promise<Deck>
+  createDeck(subjectId: ID, name: string, description?: string, reserve?: boolean): Promise<Deck>
   updateDeck(id: ID, patch: Partial<Omit<Deck, 'id'>>): Promise<void>
   setReminder(id: ID, reminder: Reminder | null): Promise<void>
   deleteDeck(id: ID): Promise<void>
@@ -140,6 +154,12 @@ export interface Store extends State {
   deleteCard(id: ID): Promise<void>
   deleteCards(ids: ID[]): Promise<void>
   moveCards(ids: ID[], deckId: ID): Promise<void>
+  /**
+   * Recopie des cartes dans un thème. Une carte n'appartenant qu'à un seul
+   * thème, « reprendre » une carte, c'est en faire une copie : elle repart
+   * avec une progression neuve et vit sa vie.
+   */
+  copyCards(ids: ID[], deckId: ID): Promise<Card[]>
 
   /** Archive ou désarchive un lot de cartes d'un seul geste. */
   archiveCards(ids: ID[], archived: boolean): Promise<void>
@@ -150,6 +170,8 @@ export interface Store extends State {
   createDistribution(deckId: ID, name: string, cardIds: ID[]): Promise<Distribution>
   updateDistribution(id: ID, patch: Partial<Omit<Distribution, 'id' | 'deckId'>>): Promise<void>
   deleteDistribution(id: ID): Promise<void>
+  /** Copie un lot pour en faire une variante, l'original intact. */
+  duplicateDistribution(id: ID): Promise<Distribution>
   /** Note la date de diffusion, pour retrouver ce qu'on a donné et quand. */
   markDistributionShared(id: ID): Promise<void>
 
@@ -255,7 +277,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   /* ---------------------------- Thèmes ---------------------------- */
 
-  const createDeck = useCallback(async (subjectId: ID, name: string, description = '') => {
+  const createDeck = useCallback(
+    async (subjectId: ID, name: string, description = '', reserve = false) => {
     const current = stateRef.current.decks
     const deck: Deck = {
       id: uid('d'),
@@ -265,17 +288,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       createdAt: Date.now(),
       position: current.filter((d) => d.subjectId === subjectId).length,
       reminder: null,
+      ...(reserve ? { reserve: true } : {}),
     }
     await idb.put('decks', deck)
     dispatch({ type: 'decks', payload: [...current, deck].sort(byPosition) })
     return deck
-  }, [])
+    },
+    [],
+  )
 
   const updateDeck = useCallback(async (id: ID, patch: Partial<Omit<Deck, 'id'>>) => {
-    const next = stateRef.current.decks.map((d) => (d.id === id ? { ...d, ...patch } : d))
-    const updated = next.find((d) => d.id === id)
-    if (updated) await idb.put('decks', updated)
-    dispatch({ type: 'decks', payload: next.sort(byPosition) })
+    const current = stateRef.current.decks.find((d) => d.id === id)
+    if (current) await idb.put('decks', { ...current, ...patch })
+    // Action ciblée plutôt que remplacement de la liste : l'instantané utilisé
+    // ici peut dater d'avant une création faite dans le même tour de boucle.
+    dispatch({ type: 'deck:patch', id, patch })
   }, [])
 
   const setReminder = useCallback(
@@ -377,6 +404,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'cards', payload: next })
   }, [])
 
+  const copyCards = useCallback(async (ids: ID[], deckId: ID) => {
+    const set = new Set(ids)
+    const copies = stateRef.current.cards
+      .filter((c) => set.has(c.id))
+      .map((c) =>
+        makeCard(deckId, {
+          front: c.front,
+          back: c.back,
+          notes: c.notes,
+          tags: [...c.tags],
+        }),
+      )
+    if (copies.length === 0) return []
+    await idb.putMany('cards', copies)
+    dispatch({ type: 'cards', payload: [...stateRef.current.cards, ...copies] })
+    return copies
+  }, [])
+
   /* ---------------------------- Révision ------------------------------ */
 
   const answer = useCallback(async (card: Card, value: Grade) => {
@@ -460,6 +505,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       type: 'distributions',
       payload: stateRef.current.distributions.filter((d) => d.id !== id),
     })
+  }, [])
+
+  const duplicateDistribution = useCallback(async (id: ID) => {
+    const source = stateRef.current.distributions.find((d) => d.id === id)
+    if (!source) throw new Error('Lot introuvable')
+    const now = Date.now()
+    const copy: Distribution = {
+      ...source,
+      id: uid('lot'),
+      name: `${source.name} (copie)`,
+      cardIds: [...source.cardIds],
+      createdAt: now,
+      updatedAt: now,
+      // La copie n'a rien diffusé : on ne lui prête pas l'histoire de l'original.
+      lastSharedAt: null,
+    }
+    await idb.put('distributions', copy)
+    dispatch({ type: 'distributions', payload: [...stateRef.current.distributions, copy] })
+    return copy
   }, [])
 
   const markDistributionShared = useCallback(async (id: ID) => {
@@ -749,7 +813,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
     for (const list of distributionsByDeck.values()) list.sort((a, b) => a.createdAt - b.createdAt)
 
-    return { cardsByDeck, decksBySubject, distributionsByDeck }
+    // Les thèmes de réserve sont des viviers : leurs cartes existent, mais ne
+    // sont ni révisées ni comptées. Deux index évitent de refaire ce tri
+    // partout où il faut distinguer « mes cartes » de « ce que j'ai à réviser ».
+    const reserveIds = new Set(state.decks.filter((d) => d.reserve).map((d) => d.id))
+    const studyDecks = state.decks.filter((d) => !d.reserve)
+    const studyCards = reserveIds.size
+      ? state.cards.filter((c) => !reserveIds.has(c.deckId))
+      : state.cards
+
+    return { cardsByDeck, decksBySubject, distributionsByDeck, reserveIds, studyDecks, studyCards }
   }, [state.cards, state.decks, state.subjects, state.distributions])
 
   const value = useMemo<Store>(
@@ -769,11 +842,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       deleteCard,
       deleteCards,
       moveCards,
+      copyCards,
       archiveCards,
       answer,
       resetCards,
       createDistribution,
       updateDistribution,
+      duplicateDistribution,
       deleteDistribution,
       markDistributionShared,
       hasDemo: state.subjects.some((s) => s.id === DEMO_SUBJECT_ID),
@@ -801,11 +876,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       deleteCard,
       deleteCards,
       moveCards,
+      copyCards,
       archiveCards,
       answer,
       resetCards,
       createDistribution,
       updateDistribution,
+      duplicateDistribution,
       deleteDistribution,
       markDistributionShared,
       installDemo,

@@ -93,6 +93,12 @@ sauvegarde JSON reste le filet.
   pour changer d'appareil, ou CSV pour un tableur.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
+- **Reprendre une carte** — une carte déjà écrite se recopie dans un autre
+  thème depuis une feuille de recherche (matière, thème, étiquettes), sans
+  ressaisie et sans doublon.
+- **Thème de réserve** — un vivier par matière : ses cartes restent cherchables
+  et reprenables, mais sortent de la révision, des compteurs et des
+  statistiques.
 - **Lots de distribution** — dans un thème, une sélection de cartes cochées se
   conserve, se modifie et se diffuse séparément : de quoi importer trente cartes
   d'un coup puis les donner en trois fois (voir « Lots de distribution »).
@@ -129,6 +135,27 @@ bruit, pas un signal.
 Aucune de ces lignes n'est un simple affichage — toutes lancent une session sur
 le thème concerné. Une statistique qui ne mène pas à une action est un bulletin
 de notes de plus.
+
+## Réserve et reprise de cartes
+
+Une carte appartient à **un seul thème** : c'est ce qui rend cohérentes la
+progression, les statistiques et le partage. « Reprendre une carte »
+(`src/components/PickCardsSheet.tsx`) en fait donc une **copie**, avec une
+progression neuve ; les cartes dont le recto existe déjà dans le thème de
+destination sont marquées « déjà ici » et verrouillées.
+
+La feuille ne déroule jamais la bibliothèque entière — illisible passé la
+centaine de cartes. Elle ouvre sur une recherche (recto, verso, étiquettes), ne
+propose que les quinze dernières cartes écrites tant qu'on n'a rien demandé,
+offre trois filtres (matière, thème, étiquettes les plus portées) et s'arrête à
+cinquante lignes en invitant à affiner. Le panier se garde d'une recherche à
+l'autre, pour composer en plusieurs passes.
+
+Un **thème de réserve** (`Deck.reserve`) est un vivier de cartes en attente
+d'affectation. Le magasin expose `reserveIds`, `studyDecks` et `studyCards` :
+tout ce qui relève de la révision — files, compteurs, pastille, rappels,
+reprise spiralaire, statistiques — se calcule sur ces derniers, tandis que la
+recherche et la reprise voient toutes les cartes.
 
 ## Rappels et agenda
 
@@ -217,6 +244,10 @@ sa dernière diffusion. Il ne contient ni copie des cartes, ni destinataire :
 - **non exclusif** — une carte peut figurer dans plusieurs lots ;
 - **sans effet de bord** — supprimer un lot ne touche aucune carte, et une carte
   archivée sort des lots qui la citaient sans qu'on ait à les modifier.
+
+Un lot se **duplique** pour en faire une variante sans perdre l'original, et
+porte la mention « modifié depuis la diffusion » dès que sa composition change
+après coup — ce que les élèves ont reçu n'est alors plus à jour.
 
 La diffusion d'un lot réutilise l'identifiant de partage **du thème**. Chez
 l'élève, les lots successifs se rejoignent donc dans un seul thème, se

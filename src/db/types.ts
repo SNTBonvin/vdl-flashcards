@@ -48,6 +48,12 @@ export interface Deck {
    * rien planifié.
    */
   plan?: RevisionPlan | null
+  /**
+   * Thème de réserve : un vivier de cartes mises de côté, en attente d'être
+   * affectées à un chapitre. Ses cartes restent cherchables et reprenables,
+   * mais sortent de la révision, des compteurs et des statistiques.
+   */
+  reserve?: boolean
 }
 
 /**

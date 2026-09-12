@@ -42,8 +42,8 @@ function Shell() {
   const update = useAppUpdate()
 
   const dueTotal = useMemo(
-    () => store.cards.filter((c) => isDue(c) || isNew(c)).length,
-    [store.cards],
+    () => store.studyCards.filter((c) => isDue(c) || isNew(c)).length,
+    [store.studyCards],
   )
 
   useReminderTicker()
