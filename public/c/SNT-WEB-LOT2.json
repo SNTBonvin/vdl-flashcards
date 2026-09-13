@@ -2,14 +2,14 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SNT-WEB-LOT2",
-  "publishedAt": "2026-09-13T09:19:18.514Z",
+  "publishedAt": "2026-09-13T09:20:56.919Z",
   "listed": false,
   "level": "2de",
   "subject": "Sciences Numériques et Technologies",
   "deck": "Le web — Lot 2 - SNT - Web",
-  "lot": "Lot 2 6 SNT - Web",
+  "lot": "Lot 2 - SNT - Web",
   "shareId": "sh3y5n1d3m6r6u6g",
-  "rev": 1789291158514,
+  "rev": 1789291256919,
   "cards": [
     [
       "À quoi sert le langage CSS ?",
@@ -52,8 +52,18 @@
       "Google, Bing, Ecosia…"
     ],
     [
+      "Quelles sont les trois balises principales d’une page HTML ?",
+      "html, head et body.",
+      null
+    ],
+    [
       "À quoi sert le HTML ?",
       "C’est le langage d’écriture des pages web.",
+      null
+    ],
+    [
+      "Que fait le navigateur quand on entre une URL dans la barre d’adresse ?",
+      "Il envoie une requête au serveur web, dans le langage HTTP.",
       null
     ],
     [
