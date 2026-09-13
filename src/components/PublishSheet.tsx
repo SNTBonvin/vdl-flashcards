@@ -255,7 +255,7 @@ export function PublishSheet({
           Un code court se dicte en classe et se tape dans l’application, sans passer par un lien —
           c’est le seul chemin qui atteigne à coup sûr une application installée sur iPhone.
           {lot
-            ? ' Les lots d’un même thème se rejoignent chez l’élève : il reçoit des cartes dans un seul thème, sans voir le découpage.'
+            ? ' Les séries d’un même thème se rejoignent chez l’élève : il reçoit des cartes dans un seul thème, sans voir le découpage.'
             : ''}
         </p>
 

@@ -164,8 +164,11 @@ export interface Store extends State {
 
   /** Archive ou désarchive un lot de cartes d'un seul geste. */
   archiveCards(ids: ID[], archived: boolean): Promise<void>
-  /** Retire l'échéance « à savoir pour le … » d'un groupe de cartes. */
-  clearDueBy(ids: ID[]): Promise<void>
+  /**
+   * Pose ou retire l'échéance « à savoir pour le … » sur un groupe de cartes.
+   * La date vit sur les cartes : séries et thèmes ne font que les désigner.
+   */
+  setDueBy(ids: ID[], dueBy?: string): Promise<void>
 
   answer(card: Card, value: Grade): Promise<Card>
   resetCards(ids: ID[]): Promise<void>
@@ -409,15 +412,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   /**
-   * Retire l'échéance d'un groupe de cartes. Un geste de l'élève : c'est son
-   * appareil, et une date annoncée par un professeur n'a pas à s'y imposer.
+   * Pose — ou retire — l'échéance « à savoir pour le … » sur un groupe de cartes.
+   *
+   * **La date vit sur les cartes.** Une série ou un thème ne font que désigner
+   * lesquelles : sans cela, celui qui pose la date sur sa propre série n'en
+   * verrait aucun effet sur ses révisions, et la fonctionnalité ne servirait
+   * qu'à annoncer une date aux autres. C'est ce qui permet à un élève de s'en
+   * fixer une, exactement comme un professeur.
    */
-  const clearDueBy = useCallback(async (ids: ID[]) => {
+  const setDueBy = useCallback(async (ids: ID[], dueBy?: string) => {
     if (ids.length === 0) return
     const set = new Set(ids)
     const now = Date.now()
     const next = stateRef.current.cards.map((c) =>
-      set.has(c.id) ? { ...c, dueBy: undefined, updatedAt: now } : c,
+      set.has(c.id) ? { ...c, dueBy, updatedAt: now } : c,
     )
     await idb.putMany('cards', next.filter((c) => set.has(c.id)))
     dispatch({ type: 'cards', payload: next })
@@ -885,7 +893,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       copyCards,
       archiveCards,
-      clearDueBy,
+      setDueBy,
       answer,
       resetCards,
       createDistribution,
@@ -920,7 +928,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       copyCards,
       archiveCards,
-      clearDueBy,
+      setDueBy,
       answer,
       resetCards,
       createDistribution,

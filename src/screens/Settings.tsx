@@ -257,7 +257,7 @@ export function SettingsScreen() {
             checked={store.settings.teacherTools}
             onChange={(v) => void store.saveSettings({ teacherTools: v })}
             label="Outils d’enseignant"
-            hint="Fait apparaître les lots de distribution et la publication sous un code. Sans eux, l’application reste complète pour réviser, créer et partager ses propres cartes."
+            hint="Fait apparaître la publication sous un code, et le bouton qui crée une série même quand il n’y en a encore aucune. Les séries elles-mêmes restent accessibles à tous."
           />
           {store.settings.teacherTools && (
             <p className="meta" style={{ lineHeight: 1.55 }}>

@@ -131,8 +131,8 @@ export function HelpScreen() {
 
       <Step
         icon="layers"
-        title="Diffuser en plusieurs lots"
-        text="Quand un thème compte trop de cartes pour un QR code projetable, importe-les toutes dans le même thème, puis coche-en une partie et crée un lot. Chaque lot se diffuse séparément, se modifie à tout moment et resservira à une autre classe. Chez l’élève, les lots d’un même thème se rejoignent dans ce thème."
+        title="Les séries"
+        text="Une série est une sélection de cartes d’un même thème, gardée sous la main. Elle sert à deux choses : se fixer une échéance — « ces quinze cartes, pour vendredi » — et diffuser une partie d’un thème sans tout donner d’un coup. Coche des cartes, puis « Créer une série ». Chez celui qui la reçoit, les séries d’un même thème se rejoignent dans ce thème."
       />
 
       <Step
@@ -144,7 +144,7 @@ export function HelpScreen() {
       <Step
         icon="upload"
         title="Publier sous un code"
-        text="Les lots et la publication sont masqués par défaut : active « Outils d’enseignant » dans les réglages. « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
+        text="La publication est masquée par défaut : active « Outils d’enseignant » dans les réglages. « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
       />
 
       <Step
@@ -156,7 +156,7 @@ export function HelpScreen() {
       <Step
         icon="download"
         title="Tes données"
-        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exporte la sauvegarde depuis les réglages. Pour donner ou retravailler un jeu de cartes, exporte plutôt un paquet — depuis un thème, une matière ou un lot, en CSV pour le tableur ou en JSON pour le réimporter ici."
+        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exporte la sauvegarde depuis les réglages. Pour donner ou retravailler un jeu de cartes, exporte plutôt un paquet — depuis un thème, une matière ou une série, en CSV pour le tableur ou en JSON pour le réimporter ici."
       />
 
       <Step

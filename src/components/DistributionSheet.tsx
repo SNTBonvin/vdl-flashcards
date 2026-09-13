@@ -85,7 +85,7 @@ export function DistributionSheet({
     <>
       <Sheet
         open={open}
-        title="Lot de distribution"
+        title="Série"
         onClose={onClose}
         footer={
           <button
@@ -95,12 +95,12 @@ export function DistributionSheet({
             onClick={onShare}
           >
             <Icon name="move" size={18} />
-            Diffuser ce lot
+            Diffuser cette série
           </button>
         }
       >
         <div className="stack stack-5">
-          <Field label="Intitulé" hint="Pour t’y retrouver. L’élève ne le voit pas.">
+          <Field label="Intitulé" hint="Pour t’y retrouver. Celui qui la reçoit ne le voit pas.">
             <input
               className="input"
               value={name}
@@ -121,9 +121,14 @@ export function DistributionSheet({
               className="input mono"
               type="date"
               value={lot.dueBy ?? ''}
-              onChange={(e) =>
-                void store.updateDistribution(lot.id, { dueBy: e.target.value || undefined })
-              }
+              onChange={(e) => {
+                const dueBy = e.target.value || undefined
+                void (async () => {
+                  await store.updateDistribution(lot.id, { dueBy })
+                  // La date vit sur les cartes : la série ne fait que les désigner.
+                  await store.setDueBy(lot.cardIds, dueBy)
+                })()
+              }}
             />
           </Field>
 
@@ -160,7 +165,7 @@ export function DistributionSheet({
 
           <button type="button" className="btn btn--ghost btn--block" onClick={onEditSelection}>
             <Icon name="edit" size={18} />
-            Modifier les cartes du lot
+            Modifier les cartes de la série
           </button>
 
           <button
@@ -171,10 +176,10 @@ export function DistributionSheet({
           >
             <Icon name="upload" size={18} />
             {!lot.publishedAs
-              ? 'Publier ce lot sous un code'
+              ? 'Publier cette série sous un code'
               : lot.publishedCount !== cards.length ||
                   cards.some((c) => c.updatedAt > (lot.publishedAt ?? 0))
-                ? 'Republier ce lot'
+                ? 'Republier cette série'
                 : `Code ${lot.publishedAs}`}
           </button>
 
@@ -185,7 +190,7 @@ export function DistributionSheet({
             onClick={() => setExporting(true)}
           >
             <Icon name="download" size={18} />
-            Exporter ce lot
+            Exporter cette série
           </button>
 
           <button
@@ -198,7 +203,7 @@ export function DistributionSheet({
             }}
           >
             <Icon name="layers" size={18} />
-            Dupliquer ce lot
+            Dupliquer cette série
           </button>
 
           <div className="card card--pad row" data-status="run" style={{ gap: 12 }}>
@@ -206,9 +211,9 @@ export function DistributionSheet({
               <Icon name="info" size={18} />
             </span>
             <p className="meta" style={{ lineHeight: 1.55 }}>
-              Les lots d’un même thème se rejoignent chez l’élève : il reçoit des cartes dans
-              « {deck?.name} », sans voir le découpage. Un lot diffusé plus tard complète
-              les précédents sans rien effacer.
+              Les séries d’un même thème se rejoignent chez celui qui les reçoit : il obtient
+              des cartes dans « {deck?.name} », sans voir le découpage. Une série diffusée plus
+              tard complète les précédentes sans rien effacer.
             </p>
           </div>
 
@@ -218,7 +223,7 @@ export function DistributionSheet({
             onClick={() => setConfirming(true)}
           >
             <Icon name="trash" size={17} />
-            Supprimer le lot
+            Supprimer la série
           </button>
         </div>
       </Sheet>
@@ -238,11 +243,11 @@ export function DistributionSheet({
       <ConfirmSheet
         open={confirming}
         title={`Supprimer « ${lot.name} » ?`}
-        text="Seul le lot est supprimé : les cartes restent dans le thème, et ce que tes élèves ont déjà reçu n’est pas concerné."
+        text="Seule la série est supprimée : les cartes restent dans le thème, et ce que d’autres ont déjà reçu n’est pas concerné."
         onClose={() => setConfirming(false)}
         onConfirm={async () => {
           await store.deleteDistribution(lot.id)
-          toast('Lot supprimé.')
+          toast('Série supprimée.')
           onClose()
         }}
       />

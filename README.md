@@ -93,11 +93,15 @@ sauvegarde JSON reste le filet.
   réellement, quota quotidien de cartes neuves compris (`countSession`, qui
   partage sa sélection avec `buildQueue`). Quand le quota retient des cartes,
   l'écran le dit et renvoie à demain plutôt que d'ouvrir une séance vide.
-- **Échéance de lot** — un lot peut porter une date « à savoir pour le … », qui
-  voyage avec les cartes jusque chez l'élève. Elle garantit un passage sur
-  chaque carte la veille au plus tard (`srs/deadline`), affiche un compte à
-  rebours, puis devient inerte. L'accumulation des lots, elle, ne demande rien :
-  c'est la répétition espacée qui la produit.
+- **Échéance** — une série ou un thème peut porter une date « à savoir pour
+  le … », qui voyage avec les cartes jusque chez l'élève. Elle garantit un
+  passage sur chaque carte la veille au plus tard (`srs/deadline`), affiche un
+  compte à rebours, puis devient inerte. La date est écrite **sur les cartes**,
+  la série ne faisant que les désigner : celui qui la pose en voit donc l'effet
+  sur ses propres révisions, et un élève se sert du même mécanisme qu'un
+  professeur — il peut composer sa série, s'en fixer l'échéance et la partager
+  avec la date. L'accumulation, elle, ne demande rien : c'est la répétition
+  espacée qui la produit.
 - **Révision blanche** — une option de séance (« Ne pas modifier le
   programme ») interroge sans rien écrire : ni échéance, ni historique, ni
   compteur. C'est ce qu'il faut la veille d'un contrôle, où répondre « Su »
@@ -126,8 +130,9 @@ sauvegarde JSON reste le filet.
 - **Import** — CSV, TSV ou texte collé (`recto ; verso`), avec aperçu avant
   validation.
 - **Export** — deux fichiers distincts : la sauvegarde JSON intégrale (cartes,
-  historique, lots, réglages) pour changer d'appareil, et le *paquet de cartes*
-  (CSV ou JSON) exportable depuis un thème, une matière, un lot ou les réglages.
+  historique, séries, réglages) pour changer d'appareil, et le *paquet de
+  cartes* (CSV ou JSON) exportable depuis un thème, une matière, une série ou
+  les réglages.
 - **Import** — CSV, TSV, texte collé ou paquet JSON, dans le thème de son
   choix : les cartes s'ajoutent, rien n'est remplacé.
 - **Publication sous un code court** — un jeu déposé sur la forge est joignable
@@ -144,7 +149,7 @@ sauvegarde JSON reste le filet.
   absence ramène simplement au dépôt manuel.
 - **Catalogue** — les jeux publiés et listés se parcourent dans l'application,
   par niveau puis par matière, l'index étant reconstruit à chaque publication.
-  Le choix « afficher ou non » est mémorisé sur le thème ou le lot : republier
+  Le choix « afficher ou non » est mémorisé sur le thème ou la série : republier
   ne le défait pas.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
@@ -154,17 +159,19 @@ sauvegarde JSON reste le filet.
 - **Thème de réserve** — un vivier par matière : ses cartes restent cherchables
   et reprenables, mais sortent de la révision, des compteurs et des
   statistiques.
-- **Lots de distribution** — dans un thème, une sélection de cartes cochées se
-  conserve, se modifie et se diffuse séparément : de quoi importer trente cartes
-  d'un coup puis les donner en trois fois (voir « Lots de distribution »).
+- **Séries** — dans un thème, une sélection de cartes cochées se conserve, se
+  modifie, se diffuse séparément et porte son échéance : de quoi importer trente
+  cartes d'un coup puis les donner en trois fois, ou se dire « ces quinze-là,
+  pour vendredi » (voir « Séries »).
 - **Thème reçu, thème vivant** — celui qui reçoit un thème peut y ajouter ses
   propres cartes, archiver celles dont il ne veut pas, et distinguer d'un coup
   d'œil les cartes reçues des siennes.
 - **Courbes d'apprentissage** — sa propre courbe de l'oubli (réussite selon
   l'intervalle écoulé) et la montée de l'acquis, par thème, tracées en SVG sans
   bibliothèque et seulement au-delà de trente réponses.
-- **Outils d'enseignant** — lots et publication masqués par défaut : un élève
-  ne voit que ce qui le concerne, sans que rien lui soit interdit.
+- **Outils d'enseignant** — la publication est masquée par défaut, et la
+  section « Séries » n'apparaît alors qu'à partir de la première série créée :
+  un élève ne voit que ce qui le concerne, sans que rien lui soit interdit.
 - **Rubrique « Pourquoi ça marche »** — l'aide explique en quatre principes ce
   que l'outil fait faire (se tester, espacer, revenir sur l'ancien, une idée par
   carte), avec les sources : DRANE de Bourgogne-Franche-Comté et académie de
@@ -203,7 +210,7 @@ de notes de plus.
 ## Deux formats de fichier
 
 La confusion à éviter : une **sauvegarde** (`Backup`) porte tout — matières,
-thèmes, cartes, progression, lots, réglages — et sa restauration **remplace**
+thèmes, cartes, progression, séries, réglages — et sa restauration **remplace**
 l'existant ; c'est le fichier du changement d'appareil. Un **paquet de cartes**
 (`CardsFile`, `format: 'vdl-flashcards-cards'`) ne porte que des cartes, sans
 progression ni réglages, et **s'ajoute** au thème choisi.
@@ -213,7 +220,7 @@ retient alors que les cartes), un tableau JSON brut, ou du CSV, du TSV et du
 texte collé — et lève une erreur explicite plutôt que de produire un import vide.
 
 Un paquet s'exporte depuis un thème, une matière (entière ou thème par thème),
-un lot, ou les réglages (tout, ou une matière), en CSV comme en JSON.
+une série, ou les réglages (tout, ou une matière), en CSV comme en JSON.
 
 ## Réserve et reprise de cartes
 
@@ -265,7 +272,7 @@ Les deux chemins se rejoignent volontairement : `setToPayload()` produit la mêm
 charge utile qu'un lien, de sorte qu'un code passe par les **mêmes règles de
 réception** — aperçu avant ajout, appariement sur le recto, mise à jour sans
 doublon, progression conservée. Le fichier porte le `shareId` du thème : un jeu
-reçu par code et un lot reçu par lien se rejoignent donc chez l'élève.
+reçu par code et une série reçue par lien se rejoignent donc chez l'élève.
 
 Trois points méritent l'attention :
 
@@ -278,7 +285,7 @@ Trois points méritent l'attention :
   arrive, et un jeu déjà consulté reste lisible hors ligne.
 
 Le nom publié est distinct du nom de travail (`publishedName`) : un thème
-s'appelle « Biodiversité - Lot 2 » chez son auteur et « Biodiversité » chez
+s'appelle « Biodiversité — série 2 » chez son auteur et « Biodiversité » chez
 l'élève, sans qu'il faille renommer l'un pour l'autre.
 
 Le fichier publié est une photographie, non un miroir du thème : le thème
@@ -441,35 +448,48 @@ et toutes protègent le travail de celui qui reçoit :
 - **Une carte archivée ne réapparaît pas.** Son contenu est mis à jour, mais
   elle reste hors de la liste.
 
-### Lots de distribution
+### Séries
 
-Un thème de trente cartes tient dans un lien, mais son QR code n'est plus
-projetable. Les lots répondent à ce cas sans découper le thème : on importe
-toutes les cartes au même endroit, puis on coche celles que porte chaque lot.
+Une série sert à deux choses : diffuser une partie d'un thème — trente cartes
+tiennent dans un lien, mais leur QR code n'est plus projetable — et désigner des
+cartes à savoir pour une date. Le thème n'est jamais découpé : on importe toutes
+les cartes au même endroit, puis on coche celles que porte chaque série.
 
-Un lot (`Distribution`, magasin `distributions`) est une liste d'identifiants de
-cartes rattachée à un thème, avec un intitulé, sa date de création et celle de
-sa dernière diffusion. Il ne contient ni copie des cartes, ni destinataire :
+Une série (`Distribution`, magasin `distributions` — le nom interne est
+d'origine et n'a pas été renommé, pour ne migrer ni les données ni le format
+publié) est une liste d'identifiants de cartes rattachée à un thème, avec un
+intitulé, sa date de création, celle de sa dernière diffusion et, facultative,
+son échéance. Elle ne contient ni copie des cartes, ni destinataire :
 
-- **évolutif** — la sélection se modifie à tout moment ; le lien est reconstruit
+- **évolutive** — la sélection se modifie à tout moment ; le lien est reconstruit
   à chaque diffusion, jamais mis en cache ;
-- **réutilisable** — rien n'y attache une classe ni une date d'usage, le même
-  lot resservira l'année suivante ;
-- **non exclusif** — une carte peut figurer dans plusieurs lots ; pendant la
-  sélection, une pastille indique combien de lots contiennent déjà chaque carte
-  (le lot en cours de modification étant exclu, faute de quoi elle n'apprendrait
-  rien) ;
-- **sans effet de bord** — supprimer un lot ne touche aucune carte, et une carte
-  archivée sort des lots qui la citaient sans qu'on ait à les modifier.
+- **réutilisable** — rien n'y attache une classe ni une date d'usage, la même
+  série resservira l'année suivante ;
+- **non exclusive** — une carte peut figurer dans plusieurs séries ; pendant la
+  sélection, une pastille indique combien de séries contiennent déjà chaque
+  carte (celle en cours de modification étant exclue, faute de quoi elle
+  n'apprendrait rien) ;
+- **sans effet de bord** — supprimer une série ne touche aucune carte, et une
+  carte archivée sort des séries qui la citaient sans qu'on ait à les modifier.
 
-Un lot se **duplique** pour en faire une variante sans perdre l'original, et
+L'échéance fait exception à cette absence d'effet : elle est écrite **sur les
+cartes désignées** (`setDueBy`), non sur la série. C'est délibéré — une date qui
+ne vivrait que sur la série ne changerait rien aux révisions de celui qui la
+pose, et ne servirait qu'à annoncer une date aux autres. Écrite sur les cartes,
+elle agit chez son auteur comme chez ceux qui les reçoivent, et un élève dispose
+exactement du même outil qu'un professeur. La date suit la composition : une
+carte ajoutée à une série qui en porte une la reçoit, une carte retirée la perd
+— à moins qu'une autre série lui en ait donné une différente, auquel cas la
+sienne est laissée en place.
+
+Une série se **duplique** pour en faire une variante sans perdre l'original, et
 porte la mention « modifié depuis la diffusion » dès que sa composition change
 après coup — ce que les élèves ont reçu n'est alors plus à jour.
 
-La diffusion d'un lot réutilise l'identifiant de partage **du thème**. Chez
-l'élève, les lots successifs se rejoignent donc dans un seul thème, se
-complètent sans rien effacer, et le découpage reste invisible. L'intitulé d'un
-lot ne quitte jamais l'appareil de l'enseignant.
+La diffusion d'une série réutilise l'identifiant de partage **du thème**. Chez
+l'élève, les séries successives se rejoignent donc dans un seul thème, se
+complètent sans rien effacer, et le découpage reste invisible. L'intitulé d'une
+série ne quitte jamais l'appareil de son auteur.
 
 ### Archivage, origine et appropriation
 

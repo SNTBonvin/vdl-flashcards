@@ -82,7 +82,7 @@ export function normalizeCode(input: string): string | null {
 
 /**
  * Propose un code à partir des noms, sans prétendre qu'il soit libre. Le
- * troisième fragment distingue les lots d'un même thème.
+ * troisième fragment distingue les séries d'un même thème.
  */
 export function suggestCode(subject: string, deck: string, extra?: string): string {
   const part = (value: string, max: number) =>

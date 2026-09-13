@@ -93,7 +93,7 @@ export function DeckScreen({ id }: { id: string }) {
   /** Retirer une échéance : la date disparaît des cartes qui la portaient. */
   const clearDeadline = async (dueBy: string) => {
     const ids = cards.filter((c) => c.dueBy === dueBy).map((c) => c.id)
-    await store.clearDueBy(ids)
+    await store.setDueBy(ids)
     toast('Échéance retirée.')
   }
 
@@ -391,10 +391,16 @@ export function DeckScreen({ id }: { id: string }) {
         </div>
       )}
 
-      {store.settings.teacherTools && !deck.reserve && (lots.length > 0 || counts.total > 0) && (
+      {/* Une série sert autant à l'élève qu'au professeur : « ces quinze cartes,
+          pour vendredi » se dit des deux côtés. Elle n'est donc plus réservée
+          aux outils d'enseignant. La section, elle, ne s'affiche qu'à partir de
+          la première série — ou d'emblée avec les outils d'enseignant, pour qui
+          en composera de toute façon : rien de nouveau chez qui n'en veut pas,
+          et le chemin ordinaire reste « Sélectionner » dans la liste. */}
+      {!deck.reserve && (store.settings.teacherTools ? counts.total > 0 : lots.length > 0) && (
         <section className="stack stack-3">
           <SectionHead
-            title="Lots de distribution"
+            title="Séries"
             aside={
               counts.total > 0 && !selecting ? (
                 <button
@@ -402,7 +408,7 @@ export function DeckScreen({ id }: { id: string }) {
                   className="btn btn--quiet"
                   onClick={() => setSelection({ ids: new Set(), editing: null })}
                 >
-                  Nouveau lot
+                  Nouvelle série
                 </button>
               ) : undefined
             }
@@ -410,8 +416,9 @@ export function DeckScreen({ id }: { id: string }) {
           {lots.length === 0 ? (
             <div className="card card--pad">
               <p className="meta" style={{ lineHeight: 1.6 }}>
-                Un lot est une sélection de cartes de ce thème, que l’on diffuse séparément. Chez
-                l’élève, les lots se rejoignent dans le même thème.
+                Une série est une sélection de cartes de ce thème, qu’on garde sous la main :
+                pour se fixer une échéance, ou pour la diffuser à part. Chez celui qui la reçoit,
+                les séries d’un même thème se rejoignent.
               </p>
             </div>
           ) : (
@@ -575,7 +582,7 @@ export function DeckScreen({ id }: { id: string }) {
                 </span>
                 {selecting && (lotCount.get(card.id) ?? 0) > 0 && (
                   <span className="chip chip--accent mono">
-                    {lotCount.get(card.id)} {plural(lotCount.get(card.id)!, 'lot')}
+                    {lotCount.get(card.id)} {plural(lotCount.get(card.id)!, 'série')}
                   </span>
                 )}
                 <span className="chip mono">{cardStateLabel(card)}</span>
@@ -626,7 +633,6 @@ export function DeckScreen({ id }: { id: string }) {
                 </button>
               </div>
 
-              {(store.settings.teacherTools || selection?.editing) && (
               <button
                 type="button"
                 className="btn btn--primary btn--block"
@@ -634,20 +640,34 @@ export function DeckScreen({ id }: { id: string }) {
                 onClick={async () => {
                   const editing = selection?.editing
                   if (editing) {
-                    await store.updateDistribution(editing.id, { cardIds: [...selected] })
+                    const ids = [...selected]
+                    await store.updateDistribution(editing.id, { cardIds: ids })
+                    // L'échéance vit sur les cartes : elle doit suivre la
+                    // composition, sinon une carte retirée resterait « à savoir
+                    // pour jeudi » sans que rien ne le dise. On ne retire la
+                    // date qu'aux sortantes qui portaient exactement celle-ci :
+                    // une autre série a pu leur en donner une autre.
+                    if (editing.dueBy) {
+                      const sorties = editing.cardIds.filter(
+                        (cid) =>
+                          !selected.has(cid) &&
+                          cards.find((c) => c.id === cid)?.dueBy === editing.dueBy,
+                      )
+                      await store.setDueBy(sorties)
+                      await store.setDueBy(ids, editing.dueBy)
+                    }
                     setSelection(null)
                     setOpenLotId(editing.id)
-                    toast('Lot mis à jour.')
+                    toast('Série mise à jour.')
                   } else {
-                    setLotName(`Lot ${lots.length + 1}`)
+                    setLotName(`Série ${lots.length + 1}`)
                     setNamingLot(true)
                   }
                 }}
               >
                 <Icon name="layers" size={18} />
-                {selection?.editing ? 'Enregistrer le lot' : 'Créer un lot'}
+                {selection?.editing ? 'Enregistrer la série' : 'Créer une série'}
               </button>
-              )}
 
               {!selection?.editing && (
                 <div className="row" style={{ gap: 10 }}>
@@ -745,6 +765,8 @@ export function DeckScreen({ id }: { id: string }) {
         onClose={() => setEditingDeck(false)}
         onSubmit={async (name, description, reserve, dueBy) => {
           await store.updateDeck(deck.id, { name, description, reserve, dueBy })
+          // La date vit sur les cartes : le thème ne fait que les désigner.
+          if (dueBy !== deck.dueBy) await store.setDueBy(cards.map((c) => c.id), dueBy)
           setEditingDeck(false)
           toast('Thème mis à jour.')
         }}
@@ -866,7 +888,7 @@ export function DeckScreen({ id }: { id: string }) {
 
       <Sheet
         open={namingLot}
-        title="Nouveau lot"
+        title="Nouvelle série"
         onClose={() => setNamingLot(false)}
         footer={
           <button
@@ -878,20 +900,20 @@ export function DeckScreen({ id }: { id: string }) {
               setNamingLot(false)
               setSelection(null)
               setOpenLotId(lot.id)
-              toast('Lot créé.')
+              toast('Série créée.')
             }}
           >
-            Créer le lot
+            Créer la série
           </button>
         }
       >
         <div className="stack stack-5">
-          <Field label="Intitulé" hint="Pour t’y retrouver. L’élève ne le voit pas.">
+          <Field label="Intitulé" hint="Pour t’y retrouver. Celui qui la reçoit ne le voit pas.">
             <input
               className="input"
               value={lotName}
               onChange={(e) => setLotName(e.target.value)}
-              placeholder="Lot 1"
+              placeholder="Contrôle de vendredi"
               autoFocus
             />
           </Field>

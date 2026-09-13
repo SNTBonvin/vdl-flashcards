@@ -56,7 +56,7 @@ Les cartes choisies sont **copiées** dans le thème, avec une progression neuve
 l'originale reste où elle est. Une carte dont le recto existe déjà dans le thème
 est signalée « déjà ici » et ne peut pas être reprise deux fois.
 
-Si vous étiez en train de composer un lot, les cartes reprises y entrent
+Si vous étiez en train de composer une série, les cartes reprises y entrent
 directement : inutile de revenir en arrière.
 
 ### Un thème de réserve
@@ -163,63 +163,104 @@ créée lui-même n'est jamais écrasée.
 Ordre de grandeur : environ 70 caractères par carte. Vingt cartes donnent un
 lien d'environ 1,4 Ko, et un QR code encore lisible de près.
 
+## Les séries
+
+Une **série** est une sélection de cartes d'un même thème, gardée sous la main.
+Elle sert à deux choses, et la seconde n'est pas réservée à l'enseignant :
+
+- **diffuser une partie d'un thème** : trente cartes tiennent dans un lien, mais
+  leur QR code devient trop dense pour être projeté ; on importe tout d'un coup
+  dans le même thème, puis on donne par paquets ;
+- **se fixer une échéance** : « ces quinze cartes, pour vendredi ».
+
+Dans un thème → **Sélectionner** dans la liste des cartes → cochez → **Créer une
+série** → donnez-lui un intitulé. Ce bouton est proposé à tout le monde. La
+section **Séries** du thème, elle, n'apparaît qu'à partir de la première série
+créée — ou d'emblée si les outils d'enseignant sont allumés. Un élève qui n'en
+veut pas ne voit donc rien de plus qu'avant.
+
+La fiche d'une série affiche le nombre de cartes, la longueur du lien qu'elle
+produira, la date de sa dernière diffusion et le champ **« À savoir pour le »**.
+Trois boutons : **Diffuser cette série** (lien + QR code), **Modifier les cartes
+de la série**, **Supprimer la série**.
+
+Pendant la sélection, les cartes **déjà prises dans une autre série** portent une
+pastille : « 1 série », « 2 séries ». De quoi composer la suivante sans redonner
+deux fois les mêmes cartes — ou le faire exprès, en connaissance de cause. Elle
+compte les séries telles qu'elles sont : celles constituées de longue date y
+figurent sans qu'il y ait rien à reprendre. Quand vous **modifiez** une série, la
+pastille ignore celle-là : elle ne montre que les cartes engagées ailleurs.
+
+Au-delà d'une vingtaine de cartes, un champ de recherche apparaît au-dessus de
+la liste. Il se combine avec la sélection : cherchez « littoral », appuyez sur
+**Tout**, puis sur **Créer une série** — la série est faite en trois gestes à
+partir de cartes disséminées dans le thème.
+
+Ce qu'il faut savoir :
+
+- **Dupliquer cette série** en fait une variante, l'original intact — pratique
+  pour la remanier sans perdre sa composition d'origine ;
+- une série déjà diffusée que vous modifiez ensuite porte la mention **« modifié
+  depuis la diffusion »** : ce que vos élèves ont reçu n'est plus à jour ;
+- une série est **évolutive** : ajoutez ou retirez des cartes quand vous voulez,
+  le lien est recalculé à la diffusion suivante ;
+- une série **resservira** telle quelle à une autre classe : rien n'y est
+  attaché, ni élève, ni date, ni classe ;
+- une carte peut appartenir à **plusieurs séries** ;
+- supprimer une série ne supprime aucune carte, et ne retire rien de ce que vos
+  élèves ont déjà reçu ;
+- l'intitulé est **pour vous** : celui qui reçoit les cartes ne le voit pas. Chez
+  lui, les séries d'un même thème se rejoignent dans ce thème, sans le découpage.
+
+L'intitulé n'apparaît nulle part chez l'élève, et aucune information sur qui a
+reçu quoi n'est enregistrée : l'application ne suit personne.
+
+### Se fixer une échéance
+
+Un champ **« À savoir pour le »**, à deux endroits : dans la fiche d'une série,
+et dans **Modifier le thème** pour un thème pris en entier. Facultatif, il
+accompagne les cartes jusque chez l'élève — par lien comme par code.
+
+La date est écrite **sur les cartes elles-mêmes** ; la série ou le thème ne font
+que désigner lesquelles. C'est ce qui rend le mécanisme symétrique : celui qui
+pose la date en voit l'effet sur ses propres révisions. Un élève peut donc
+composer sa série — « ces quinze cartes, pour jeudi » —, s'en fixer l'échéance,
+et la partager à un camarade avec la date. C'est le même outil des deux côtés,
+et le professeur n'en a pas un autre.
+
+Il fait une seule chose au calcul, mais elle compte. Une carte sue le 10 ne
+revient naturellement que le 16 : une échéance au 14 tomberait dans un trou, et
+la carte ne serait pas repassée avant le contrôle. La règle est donc :
+
+> **Aucune carte à savoir pour le 14 ne garde une échéance après le 14.** Celles
+> qui dépassent sont proposées la veille.
+
+Ce n'est pas un dérèglement : on avance une révision, on n'en supprime aucune,
+et répondre ce jour-là fait repartir le calcul normalement. Un seul passage est
+garanti, pas un par jour. Une fois la date passée, l'échéance devient inerte et
+les cartes rejoignent le cycle ordinaire.
+
+L'accueil affiche un compte à rebours — « dimanche 20 · 3 cartes · J − 7 » — et
+le thème un bandeau avec un bouton **Retirer** : l'appareil appartient à
+l'élève, une date annoncée ne s'y impose pas.
+
+**L'accumulation, elle, n'a besoin de rien.** Série 1 donnée le 7 pour le 14,
+série 2 le 14 pour le 21 : les deux restent dans la rotation et se mélangent
+d'office. Une interrogation du 21 portant sur les deux ne demande aucun
+réglage — c'est le fonctionnement normal de la répétition espacée.
+
 ## Les outils d'enseignant
 
-Les lots de distribution et la publication sous un code ne servent qu'à celui
-qui diffuse. Ils sont donc **éteints par défaut** : *Réglages → Diffusion →
-**Outils d'enseignant***. Sans eux, l'application reste entière pour réviser,
-créer, modifier et partager ses propres cartes.
+La publication sous un code ne sert qu'à celui qui diffuse. Elle est donc
+**éteinte par défaut** : *Réglages → Diffusion → **Outils d'enseignant***. Le
+même réglage fait apparaître la section **Séries** d'emblée, avant même qu'il en
+existe une. Sans lui, l'application reste entière pour réviser, créer, modifier,
+partager ses propres cartes — et s'y fixer une échéance.
 
 Ce n'est pas une serrure — n'importe qui peut les allumer, et ils n'agissent
 que sur l'appareil de qui les utilise. C'est un rangement : un élève n'a pas à
 voir des outils dont il n'a que faire. Publier suppose d'avoir les droits sur
 le dépôt, et aucun réglage ne les donne.
-
-## Diffuser en plusieurs lots
-
-Un thème de trente cartes tient dans un lien, mais son QR code devient trop
-dense pour être projeté. Les **lots de distribution** répondent à ce cas :
-on importe toutes les cartes d'un coup dans le même thème, puis on les diffuse
-par paquets.
-
-Dans un thème → **Nouveau lot** (ou **Sélectionner** dans la liste des cartes) →
-cochez les cartes → **Créer un lot** → donnez-lui un intitulé.
-
-La fiche d'un lot affiche le nombre de cartes, la longueur du lien qu'il
-produira et la date de sa dernière diffusion. Trois boutons : **Diffuser ce
-lot** (lien + QR code), **Modifier les cartes du lot**, **Supprimer le lot**.
-
-Pendant la sélection, les cartes **déjà prises dans un autre lot** portent une
-pastille : « 1 lot », « 2 lots ». De quoi composer le lot suivant sans redonner
-deux fois les mêmes cartes — ou le faire exprès, en connaissance de cause. Elle
-compte les lots tels qu'ils sont : ceux constitués de longue date y figurent
-sans qu'il y ait rien à reprendre. Quand vous **modifiez** un lot, la pastille
-ignore ce lot-là : elle ne montre que les cartes engagées ailleurs.
-
-Au-delà d'une vingtaine de cartes, un champ de recherche apparaît au-dessus de
-la liste. Il se combine avec la sélection : cherchez « littoral », appuyez sur
-**Tout**, puis sur **Créer un lot** — le lot est fait en trois gestes à partir
-de cartes disséminées dans le thème.
-
-Ce qu'il faut savoir :
-
-- **Dupliquer ce lot** en fait une variante, l'original intact — pratique pour
-  remanier un lot sans perdre sa composition d'origine ;
-- un lot déjà diffusé que vous modifiez ensuite porte la mention **« modifié
-  depuis la diffusion »** : ce que vos élèves ont reçu n'est plus à jour ;
-- un lot est **évolutif** : ajoutez ou retirez des cartes quand vous voulez, le
-  lien est recalculé à la diffusion suivante ;
-- un lot **resservira** tel quel à une autre classe : rien n'y est attaché, ni
-  élève, ni date, ni classe ;
-- une carte peut appartenir à **plusieurs lots** ;
-- supprimer un lot ne supprime aucune carte, et ne retire rien de ce que vos
-  élèves ont déjà reçu ;
-- l'intitulé du lot est **pour vous** : l'élève ne le voit pas. Chez lui, les
-  lots d'un même thème se rejoignent dans ce thème, sans le découpage.
-
-L'intitulé n'apparaît nulle part chez l'élève, et aucune information sur qui a
-reçu quoi n'est enregistrée : l'application ne suit personne.
-
 ## Publier sous un code court
 
 Un lien est long, et sur iPhone il n'atteint pas l'application installée. Un
@@ -241,34 +282,6 @@ La publication prend environ deux minutes, le temps du pipeline.
 miroir : un fichier ajouté directement sur le miroir fait diverger les deux
 dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
-
-### Donner un lot pour une date
-
-Un champ **« À savoir pour le »**, à deux endroits : dans la fiche d'un lot, et
-dans **Modifier le thème** pour un thème diffusé en entier. Facultatif, il
-accompagne les cartes jusque chez l'élève — par lien comme par code. Quand le
-lot en porte une, la sienne l'emporte sur celle du thème.
-
-Il fait une seule chose au calcul, mais elle compte. Une carte sue le 10 ne
-revient naturellement que le 16 : une échéance au 14 tomberait dans un trou, et
-la carte ne serait pas repassée avant le contrôle. La règle est donc :
-
-> **Aucune carte à savoir pour le 14 ne garde une échéance après le 14.** Celles
-> qui dépassent sont proposées la veille.
-
-Ce n'est pas un dérèglement : on avance une révision, on n'en supprime aucune,
-et répondre ce jour-là fait repartir le calcul normalement. Un seul passage est
-garanti, pas un par jour. Une fois la date passée, l'échéance devient inerte et
-le lot rejoint le cycle ordinaire.
-
-Côté élève, l'accueil affiche un compte à rebours — « dimanche 20 · 3 cartes ·
-J − 7 » — et le thème un bandeau avec un bouton **Retirer** : c'est son
-appareil, une date annoncée ne s'y impose pas.
-
-**L'accumulation, elle, n'a besoin de rien.** Lot 1 donné le 7 pour le 14,
-lot 2 le 14 pour le 21 : les deux restent dans la rotation et se mélangent
-d'office. Une interrogation du 21 portant sur les deux ne demande aucun
-réglage — c'est le fonctionnement normal de la répétition espacée.
 
 ### Publier d'un seul bouton
 
@@ -294,19 +307,19 @@ Ce que l'application en fait :
 Rien ne change pour les élèves : ils lisent toujours un fichier servi par le
 site de l'application, sans passer par GitHub.
 
-### Publier un lot sous son propre code
+### Publier une série sous son propre code
 
-Un lot se publie comme un thème, mais en gardant l'essentiel : **tous les lots
-d'un thème portent le même identifiant de thème**. Chez l'élève, les codes
+Une série se publie comme un thème, mais en gardant l'essentiel : **toutes les
+séries d'un thème portent le même identifiant de thème**. Chez l'élève, les codes
 successifs se rejoignent donc dans **un seul thème qui grossit**, au lieu de
 s'empiler en chapitres séparés.
 
-Fiche du lot → **Publier ce lot sous un code**. Le code proposé distingue le
-lot (`SVT-BIODIVER-LOT1`), et le nom affiché reprend « thème — lot ». Le reste
+Fiche de la série → **Publier cette série sous un code**. Le code proposé la
+distingue (`SVT-BIODIVER-SERIE1`), et le nom affiché reprend « thème — série ». Le reste
 est identique : copier, déposer, deux minutes.
 
 Conséquence pratique : une seule liste de cartes, trois sélections par-dessus,
-trois codes — et une carte peut servir dans deux lots sans être révisée en
+trois codes — et une carte peut servir dans deux séries sans être révisée en
 double chez l'élève.
 
 ### Mettre à jour un jeu publié
@@ -457,7 +470,7 @@ les connaissances pour de bon.
 Deux fichiers différents, deux usages qu'il ne faut pas confondre.
 
 **La sauvegarde** (*Réglages → Exporter la sauvegarde*) contient tout : cartes,
-progression, lots et réglages. C'est le fichier pour **changer d'appareil**, et
+progression, séries et réglages. C'est le fichier pour **changer d'appareil**, et
 sa restauration **remplace** ce qui est sur le téléphone.
 
 **Un paquet de cartes** ne contient que des cartes — ni progression, ni
@@ -469,7 +482,7 @@ On exporte un paquet depuis trois endroits :
 - **un thème** → l'icône de téléchargement, à côté d'« Importer » ;
 - **une matière** → l'icône de téléchargement, en haut ; la feuille propose la
   matière entière ou n'importe lequel de ses thèmes ;
-- **un lot** → « Exporter ce lot » dans sa fiche ;
+- **une série** → « Exporter cette série » dans sa fiche ;
 - et **Réglages → Cartes** pour tout, ou une matière au choix.
 
 Chaque fois, deux formats : **CSV** pour le tableur, **JSON** pour réimporter
@@ -571,7 +584,7 @@ classe. Trois réponses possibles :
 | **hors ligne** | Le site n'a pas répondu : on ne peut rien affirmer |
 
 Installer une nouvelle version **ne touche pas aux données** : cartes,
-historique, lots et réglages restent en place. Seule l'application est
+historique, séries et réglages restent en place. Seule l'application est
 remplacée.
 
 ## Vie privée
