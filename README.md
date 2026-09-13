@@ -426,7 +426,10 @@ sa dernière diffusion. Il ne contient ni copie des cartes, ni destinataire :
   à chaque diffusion, jamais mis en cache ;
 - **réutilisable** — rien n'y attache une classe ni une date d'usage, le même
   lot resservira l'année suivante ;
-- **non exclusif** — une carte peut figurer dans plusieurs lots ;
+- **non exclusif** — une carte peut figurer dans plusieurs lots ; pendant la
+  sélection, une pastille indique combien de lots contiennent déjà chaque carte
+  (le lot en cours de modification étant exclu, faute de quoi elle n'apprendrait
+  rien) ;
 - **sans effet de bord** — supprimer un lot ne touche aucune carte, et une carte
   archivée sort des lots qui la citaient sans qu'on ait à les modifier.
 

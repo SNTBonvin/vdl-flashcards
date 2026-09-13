@@ -110,6 +110,26 @@ export function DeckScreen({ id }: { id: string }) {
       return { ...current, ids }
     })
 
+  /**
+   * Nombre de lots qui contiennent déjà chaque carte.
+   *
+   * Sert à repérer, au moment de composer un lot, ce qui a déjà été distribué :
+   * sans cela on redonne deux fois les mêmes cartes sans s'en apercevoir. Le
+   * compte se lit sur les lots tels qu'ils sont — ceux constitués de longue
+   * date y figurent donc sans rien avoir à reprendre.
+   *
+   * Le lot en cours de modification est exclu : toutes ses cartes porteraient
+   * sinon une pastille qui n'apprend rien.
+   */
+  const lotCount = useMemo(() => {
+    const map = new Map<ID, number>()
+    for (const lot of lots) {
+      if (selection?.editing && lot.id === selection.editing.id) continue
+      for (const id of lot.cardIds) map.set(id, (map.get(id) ?? 0) + 1)
+    }
+    return map
+  }, [lots, selection?.editing])
+
   /** Le thème contient-il à la fois des cartes reçues et des cartes personnelles ? */
   const mixed = useMemo(
     () => cards.some((c) => c.sharedFrom) && cards.some((c) => !c.sharedFrom),
@@ -518,6 +538,11 @@ export function DeckScreen({ id }: { id: string }) {
                     {card.back}
                   </span>
                 </span>
+                {selecting && (lotCount.get(card.id) ?? 0) > 0 && (
+                  <span className="chip chip--accent mono">
+                    {lotCount.get(card.id)} {plural(lotCount.get(card.id)!, 'lot')}
+                  </span>
+                )}
                 <span className="chip mono">{cardStateLabel(card)}</span>
               </button>
             ))}

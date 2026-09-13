@@ -155,6 +155,13 @@ La fiche d'un lot affiche le nombre de cartes, la longueur du lien qu'il
 produira et la date de sa dernière diffusion. Trois boutons : **Diffuser ce
 lot** (lien + QR code), **Modifier les cartes du lot**, **Supprimer le lot**.
 
+Pendant la sélection, les cartes **déjà prises dans un autre lot** portent une
+pastille : « 1 lot », « 2 lots ». De quoi composer le lot suivant sans redonner
+deux fois les mêmes cartes — ou le faire exprès, en connaissance de cause. Elle
+compte les lots tels qu'ils sont : ceux constitués de longue date y figurent
+sans qu'il y ait rien à reprendre. Quand vous **modifiez** un lot, la pastille
+ignore ce lot-là : elle ne montre que les cartes engagées ailleurs.
+
 Au-delà d'une vingtaine de cartes, un champ de recherche apparaît au-dessus de
 la liste. Il se combine avec la sélection : cherchez « littoral », appuyez sur
 **Tout**, puis sur **Créer un lot** — le lot est fait en trois gestes à partir
