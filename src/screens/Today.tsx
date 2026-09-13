@@ -3,7 +3,7 @@ import { pendingUpdates } from '../io/updates'
 import { useStore } from '../state/store'
 import { requestSession } from '../state/session'
 import { useRoute } from '../lib/router'
-import { countCards } from '../srs/queue'
+import { countCards, countSession } from '../srs/queue'
 import { spiralSuggestion } from '../srs/spiral'
 import { isReminderPending } from '../reminders/reminders'
 import { Icon } from '../components/Icon'
@@ -16,6 +16,17 @@ export function TodayScreen() {
   const now = Date.now()
 
   const totals = useMemo(() => countCards(store.studyCards, now), [store.studyCards, now])
+
+  /**
+   * Ce que la séance du jour contiendra vraiment. À ne pas confondre avec
+   * `totals`, qui compte les cartes du thème : le quota quotidien de cartes
+   * neuves en retient une partie pour demain, et l'annoncer comme disponible
+   * mènerait à une séance vide.
+   */
+  const session = useMemo(
+    () => countSession(store.studyCards, { introducedToday: store.intro.counts, settings: store.settings, now }),
+    [store.studyCards, store.intro.counts, store.settings, now],
+  )
 
   const doneToday = useMemo(() => {
     const from = startOfDay(now)
@@ -30,10 +41,21 @@ export function TodayScreen() {
         // Les thèmes de réserve ne comptent pas : ils ne se révisent pas.
         const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
         const cards = decks.flatMap((d) => store.cardsByDeck.get(d.id) ?? [])
-        return { subject, decks, counts: countCards(cards, now) }
+        return {
+          subject,
+          decks,
+          counts: countCards(cards, now),
+          // Même quota que la séance : une pastille qui annonce plus que ce qu'on
+          // peut réviser envoie dans une séance vide.
+          waiting: countSession(cards, {
+            introducedToday: store.intro.counts,
+            settings: store.settings,
+            now,
+          }).total,
+        }
       })
       .filter((row) => row.counts.total > 0 || row.decks.length > 0)
-  }, [store.subjects, store.decksBySubject, store.cardsByDeck, now])
+  }, [store.subjects, store.decksBySubject, store.cardsByDeck, store.intro.counts, store.settings, now])
 
   const reminders = useMemo(
     () => store.studyDecks.filter((deck) => isReminderPending(deck, now)),
@@ -49,7 +71,7 @@ export function TodayScreen() {
     [store.studyDecks, store.cardsByDeck, now],
   )
 
-  const pending = totals.due + totals.fresh
+  const pending = session.total
   const allDeckIds = store.studyDecks.map((d) => d.id)
 
   const startDaily = () => {
@@ -126,13 +148,21 @@ export function TodayScreen() {
             <Icon name={pending > 0 ? 'review' : 'check'} size={21} />
           </span>
           <div className="grow stack" style={{ gap: 2 }}>
-            <h2>{pending > 0 ? 'Séance du jour' : 'Rien de programmé'}</h2>
+            <h2>
+              {pending > 0
+                ? 'Séance du jour'
+                : session.held > 0
+                  ? 'C’est fait pour aujourd’hui'
+                  : 'Rien de programmé'}
+            </h2>
             <span className="meta">
               {pending > 0
-                ? `${totals.due} en attente · ${totals.fresh} ${plural(totals.fresh, 'nouvelle')}`
-                : totals.nextDue
-                  ? `Prochaine révision ${formatDue(totals.nextDue, now)}`
-                  : 'Aucune carte planifiée'}
+                ? `${session.due} en attente · ${session.fresh} ${plural(session.fresh, 'nouvelle')}`
+                : session.held > 0
+                  ? `${session.held} ${plural(session.held, 'carte neuve t’attend', 'cartes neuves t’attendent')} demain`
+                  : totals.nextDue
+                    ? `Prochaine révision ${formatDue(totals.nextDue, now)}`
+                    : 'Aucune carte planifiée'}
             </span>
           </div>
         </div>
@@ -147,8 +177,12 @@ export function TodayScreen() {
                 c'est lui qu'on encourage, et « vous » sonnerait comme un
                 bulletin. */}
             <p style={{ color: 'var(--ink-2)', fontSize: 15, lineHeight: 1.6 }}>
-              Bravo, tu es à jour. Rien ne t’oblige à t’arrêter là — tu peux te lancer un défi sur
-              un thème, ou reprendre les cartes qui te résistent.
+              {session.held > 0
+                ? // Les cartes existent et se voient dans le thème : taire le quota
+                  // ferait croire à une perte. On dit pourquoi, et on rappelle que
+                  // l’étalement est ce qui fait tenir.
+                  'Tu as atteint ta dose de cartes neuves du jour. Le reste arrive demain — c’est justement en étalant qu’on retient. Mais rien ne t’empêche de reprendre ce que tu connais déjà.'
+                : 'Bravo, tu es à jour. Rien ne t’oblige à t’arrêter là — tu peux te lancer un défi sur un thème, ou reprendre les cartes qui te résistent.'}
             </p>
             <button
               type="button"
@@ -281,8 +315,7 @@ export function TodayScreen() {
           }
         />
         <div className="card">
-          {subjectRows.map(({ subject, decks, counts }) => {
-            const waiting = counts.due + counts.fresh
+          {subjectRows.map(({ subject, decks, counts, waiting }) => {
             return (
               <button
                 key={subject.id}

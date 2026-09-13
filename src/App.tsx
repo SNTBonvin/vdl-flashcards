@@ -5,7 +5,7 @@ import { Icon, type IconName } from './components/Icon'
 import { useRoute, type Route } from './lib/router'
 import { claimPersistIfSilent } from './lib/storage'
 import { checkSets } from './io/updates'
-import { countCards, isDue, isNew } from './srs/queue'
+import { countCards, countSession } from './srs/queue'
 import { fireDueReminders, isReminderPending } from './reminders/reminders'
 import { UpdateBanner } from './components/UpdateBanner'
 import { useAppUpdate } from './pwa/update'
@@ -43,9 +43,15 @@ function Shell() {
   const [sessionOpen, setSessionOpen] = useState(false)
   const update = useAppUpdate()
 
+  // Même compte que la séance, quota du jour compris : une pastille qui annonce
+  // plus que ce qu'on peut réviser envoie dans une séance vide.
   const dueTotal = useMemo(
-    () => store.studyCards.filter((c) => isDue(c) || isNew(c)).length,
-    [store.studyCards],
+    () =>
+      countSession(store.studyCards, {
+        introducedToday: store.intro.counts,
+        settings: store.settings,
+      }).total,
+    [store.studyCards, store.intro.counts, store.settings],
   )
 
   useReminderTicker()

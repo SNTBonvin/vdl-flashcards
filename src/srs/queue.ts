@@ -58,22 +58,71 @@ export function buildQueue(cards: Card[], options: QueueOptions): Card[] {
   }
 
   const due = cards.filter((c) => isDue(c, now)).sort((a, b) => a.srs.due - b.srs.due)
+  const { taken: fresh } = pickFresh(cards, introducedToday, settings)
 
-  // Cartes neuves : quota par thème, dans l'ordre de création.
+  const merged = settings.shuffle ? shuffle([...due, ...fresh]) : [...due, ...fresh]
+  return merged.slice(0, limit)
+}
+
+/**
+ * Cartes neuves retenues pour aujourd'hui, dans la limite du quota par thème.
+ *
+ * Isolé parce que **deux endroits** en ont besoin et ne doivent jamais diverger :
+ * la file d'une séance, et le compteur qui l'annonce. Les avoir laissés séparés
+ * a produit un défaut visible — l'accueil promettait des cartes que la séance ne
+ * servait pas, le quota du jour étant déjà épuisé.
+ */
+function pickFresh(
+  cards: Card[],
+  introducedToday: Record<ID, number>,
+  settings: Settings,
+): { taken: Card[]; held: number } {
   const remaining: Record<ID, number> = {}
-  const fresh: Card[] = []
+  const taken: Card[] = []
+  let held = 0
+
   for (const card of cards.filter(isNew).sort((a, b) => a.createdAt - b.createdAt)) {
     if (remaining[card.deckId] === undefined) {
       remaining[card.deckId] = Math.max(0, settings.newPerDay - (introducedToday[card.deckId] ?? 0))
     }
     if (remaining[card.deckId] > 0) {
       remaining[card.deckId] -= 1
-      fresh.push(card)
+      taken.push(card)
+    } else {
+      held += 1
     }
   }
 
-  const merged = settings.shuffle ? shuffle([...due, ...fresh]) : [...due, ...fresh]
-  return merged.slice(0, limit)
+  return { taken, held }
+}
+
+export interface SessionCounts {
+  /** Cartes échues à revoir. */
+  due: number
+  /** Cartes neuves que la séance introduira aujourd'hui. */
+  fresh: number
+  /**
+   * Cartes neuves **retenues** par le quota du jour. Elles existent, elles sont
+   * visibles dans le thème, mais elles ne seront pas proposées avant demain :
+   * c'est ce qu'il faut dire plutôt que de les compter comme disponibles.
+   */
+  held: number
+  /** Ce que la séance servira réellement — le nombre à afficher sur le bouton. */
+  total: number
+}
+
+/**
+ * Ce qu'une séance « à revoir » contiendrait si on la lançait maintenant.
+ *
+ * À préférer à `countCards` partout où un nombre annonce une séance : celui-ci
+ * compte les cartes du thème, celui-là ce que l'on peut effectivement réviser.
+ */
+export function countSession(cards: Card[], options: Omit<QueueOptions, 'mode'>): SessionCounts {
+  const now = options.now ?? Date.now()
+  const limit = Math.max(1, options.settings.maxPerSession)
+  const due = cards.filter((c) => isDue(c, now)).length
+  const { taken, held } = pickFresh(cards, options.introducedToday, options.settings)
+  return { due, fresh: taken.length, held, total: Math.min(limit, due + taken.length) }
 }
 
 export interface DeckCounts {

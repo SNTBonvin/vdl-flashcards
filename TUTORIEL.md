@@ -99,6 +99,19 @@ Trois réponses possibles, et l'échéance calculée est affichée sur chaque bo
 | **Difficile** | L'intervalle avance peu |
 | **Su** | L'intervalle est multiplié par le facteur de facilité |
 
+### Le quota de cartes neuves
+
+L'application n'introduit qu'un nombre limité de **cartes neuves par jour et par
+thème** — vingt par défaut, réglable dans *Réglages → Révision*. C'est délibéré :
+avaler quatre-vingts cartes le premier soir, c'est les avoir toutes à revoir le
+même jour trois semaines plus tard.
+
+Quand le quota est atteint, l'accueil le dit — « C'est fait pour aujourd'hui,
+N cartes neuves t'attendent demain » — et ne propose plus de séance. Les cartes
+ne sont pas perdues : elles sont visibles dans le thème, simplement pas
+programmées avant demain. Les modes **Tout revoir** et **Mes difficultés**
+restent accessibles, eux : ils ne dépendent pas du quota.
+
 Trois modes de séance, nommés par ce qu'ils font :
 
 - **À revoir** — les cartes échues du jour, plus un quota de cartes neuves.

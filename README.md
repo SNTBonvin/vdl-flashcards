@@ -85,6 +85,11 @@ sauvegarde JSON reste le filet.
   révision (courbe de l'oubli : demain, une semaine, un mois, six mois) exporté
   vers l'agenda du téléphone, seul dispositif capable de sonner application
   fermée (voir « Rappels et agenda »).
+- **Un seul compte pour la séance** — le nombre affiché sur l'accueil, sur la
+  pastille de l'onglet et sur le bouton est celui que la séance servira
+  réellement, quota quotidien de cartes neuves compris (`countSession`, qui
+  partage sa sélection avec `buildQueue`). Quand le quota retient des cartes,
+  l'écran le dit et renvoie à demain plutôt que d'ouvrir une séance vide.
 - **Trois modes de séance**, nommés par ce qu'ils font et non par leur
   mécanique :
   - *À revoir* : les cartes échues du jour, plus un quota de cartes neuves ;

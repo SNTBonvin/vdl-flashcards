@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useStore } from '../state/store'
 import { takeSession } from '../state/session'
-import { buildQueue, countCards, type SessionMode } from '../srs/queue'
+import { buildQueue, countCards, countSession, type SessionMode } from '../srs/queue'
 import { formatDelay, previewDelay } from '../srs/scheduler'
 import { Icon } from '../components/Icon'
 import { EmptyState, SectionHead, Toggle, plural, useToast } from '../components/ui'
@@ -35,6 +35,7 @@ const MODES: { value: SessionMode; label: string; hint: string; help: string }[]
 
 export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: boolean) => void }) {
   const store = useStore()
+  const toast = useToast()
   const [queue, setQueue] = useState<Card[] | null>(null)
   const [label, setLabel] = useState('Révision')
 
@@ -52,11 +53,22 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
         introducedToday: store.intro.counts,
         settings: store.settings,
       })
+      // Garde-fou : une file vide affichait l'écran de fin de séance, « 0 % de
+      // réussite, 0 réponse », ce qui se lit comme une panne. Mieux vaut ne pas
+      // ouvrir la séance du tout et dire pourquoi.
+      if (built.length === 0) {
+        toast(
+          mode === 'due'
+            ? 'Rien à réviser pour l’instant : le quota de cartes neuves du jour est atteint.'
+            : 'Aucune carte ne correspond à ce mode.',
+        )
+        return 0
+      }
       setLabel(sessionLabel)
       setQueue(built)
       return built.length
     },
-    [store.cards, store.intro.counts, store.settings],
+    [store.cards, store.intro.counts, store.settings, toast],
   )
 
   // Une demande venue d'un autre écran démarre la session directement.
@@ -98,6 +110,20 @@ function ReviewSetup({
       introducedToday: store.intro.counts,
       settings: store.settings,
     }).length
+  }, [store.cards, store.intro.counts, store.settings, selectedSet, mode])
+
+  /**
+   * Cartes neuves retenues par le quota du jour. « Aucune carte à réviser » est
+   * vrai mais muet : quand c'est le quota qui bloque, le dire évite de croire à
+   * une perte de cartes.
+   */
+  const held = useMemo(() => {
+    if (mode !== 'due') return 0
+    const cards = store.cards.filter((c) => selectedSet.has(c.deckId))
+    return countSession(cards, {
+      introducedToday: store.intro.counts,
+      settings: store.settings,
+    }).held
   }, [store.cards, store.intro.counts, store.settings, selectedSet, mode])
 
   const toggle = (deckId: ID) =>
@@ -263,7 +289,9 @@ function ReviewSetup({
         {selected.length === 0
           ? 'Choisissez un thème'
           : preview === 0
-            ? 'Aucune carte à réviser'
+            ? held > 0
+              ? 'Quota du jour atteint'
+              : 'Aucune carte à réviser'
             : `Commencer — ${preview} ${plural(preview, 'carte')}`}
       </button>
     </main>
