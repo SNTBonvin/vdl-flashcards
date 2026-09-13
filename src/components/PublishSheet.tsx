@@ -99,7 +99,8 @@ export function PublishSheet({
     if (!open) return
     setCode(target.publishedAs ?? suggestCode(subject?.name ?? '', deck.name, lot?.name))
     setLabel(target.publishedName ?? (lot ? `${deck.name} — ${lot.name}` : deck.name))
-    setListed(true)
+    // Republier ne doit pas défaire un choix : on relit le dernier état.
+    setListed(target.publishedListed ?? true)
     setRepo(store.settings.publishRepo)
     setShareId(null)
     setFailure(null)
@@ -183,6 +184,7 @@ export function PublishSheet({
         publishedName: label.trim() || deck.name,
         publishedAt: Date.now(),
         publishedCount: live.length,
+        publishedListed: listed,
       }
       if (lot) await store.updateDistribution(lot.id, marks)
       else await store.updateDeck(deck.id, marks)
@@ -208,6 +210,7 @@ export function PublishSheet({
       publishedName: label.trim() || deck.name,
       publishedAt: Date.now(),
       publishedCount: live.length,
+      publishedListed: listed,
     }
     if (lot) await store.updateDistribution(lot.id, marks)
     else await store.updateDeck(deck.id, marks)

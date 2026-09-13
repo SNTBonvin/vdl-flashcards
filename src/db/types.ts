@@ -75,6 +75,12 @@ export interface Deck {
   publishedAt?: number
   /** Nombre de cartes déposées : une suppression ne se voit pas autrement. */
   publishedCount?: number
+  /**
+   * Le jeu figure-t-il dans le catalogue ? Mémorisé parce que republier ne doit
+   * pas défaire un choix : un jeu volontairement retiré de la liste y
+   * reviendrait sinon dès la première correction de faute, sans rien dire.
+   */
+  publishedListed?: boolean
 }
 
 /**
@@ -198,6 +204,12 @@ export interface Distribution {
   /** Date du dernier dépôt, et nombre de cartes déposées. */
   publishedAt?: number
   publishedCount?: number
+  /**
+   * Le jeu figure-t-il dans le catalogue ? Mémorisé parce que republier ne doit
+   * pas défaire un choix : un jeu volontairement retiré de la liste y
+   * reviendrait sinon dès la première correction de faute, sans rien dire.
+   */
+  publishedListed?: boolean
 }
 
 export interface Settings {

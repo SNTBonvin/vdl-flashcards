@@ -123,6 +123,8 @@ sauvegarde JSON reste le filet.
   absence ramène simplement au dépôt manuel.
 - **Catalogue** — les jeux publiés et listés se parcourent dans l'application,
   par niveau puis par matière, l'index étant reconstruit à chaque publication.
+  Le choix « afficher ou non » est mémorisé sur le thème ou le lot : republier
+  ne le défait pas.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
   en classe) que les élèves ouvrent pour récupérer le jeu (voir « Partage »).
 - **Reprendre une carte** — une carte déjà écrite se recopie dans un autre
@@ -325,6 +327,12 @@ chercher du mauvais côté.
 Le dépôt passe par l'API Contents : lecture de l'empreinte du fichier existant,
 puis `PUT` avec cette empreinte s'il y en a une (remplacement) ou sans (création).
 La branche n'est pas précisée, GitHub écrit sur la branche par défaut.
+
+### Pistes mises de côté
+
+`docs/note-images-et-sons.md` — ce qu'il faudrait ouvrir pour porter des images
+ou des sons sur les cartes, et la question pédagogique à trancher avant d'y
+toucher. Rien n'est implémenté.
 
 ## Rappels et agenda
 

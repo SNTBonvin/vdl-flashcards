@@ -271,7 +271,8 @@ verraient deux entrées pour le même chapitre.
 - un code **n'est pas un secret** : qui l'a, a les cartes. Pour des flashcards
   de cours, c'est sans conséquence ;
 - **décoché, « Afficher dans le catalogue »** garde le jeu joignable par son
-  code sans qu'il apparaisse dans aucune liste ;
+  code sans qu'il apparaisse dans aucune liste. Le choix est mémorisé :
+  republier pour corriger une faute ne le remet pas au catalogue ;
 - la publication demande du **réseau à la première ouverture** chez l'élève.
   Ensuite les cartes sont sur son appareil et tout redevient autonome. Le
   partage par lien, lui, fonctionne sans réseau : les deux coexistent.
