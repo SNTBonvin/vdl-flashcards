@@ -142,7 +142,7 @@ rien à voir :
 | Historique git par republication | +3 Mo à chaque fois | l'image n'est stockée qu'une fois | rien |
 | Retéléchargement élève à chaque correction | **tout le jeu** | le texte seul | le texte seul |
 | Lien mort possible | non | non (versionné avec le site) | **oui, un jour** |
-| Sauvegarde autonome | oui, pixels compris | non (elle porte l'adresse) | non |
+| Sauvegarde autonome *(voir plus bas)* | oui, pixels compris | non en l'état, **oui avec un export qui incorpore** | non |
 | Effort d'écriture | ~1 journée | ~1 journée | ~2 heures |
 
 ### Pourquoi l'option C est à écarter
@@ -212,12 +212,79 @@ Poser la question dans cet ordre :
    Si oui → **B** : les deux factures différées se paient à chaque
    republication.
 3. Sinon, **tenez-vous à ce qu'une sauvegarde suffise à tout restaurer, site
-   éteint ?** Si oui → **A**.
+   éteint ?** Si oui → **A**… *mais voir « Ce que "site éteint" veut dire » plus
+   bas : ce critère se neutralise, et les réponses effectivement données à ces
+   trois questions y sont consignées.*
 
 En l'état de l'usage — publication par code, republication fréquente pendant
 qu'un chapitre se construit — **l'option B semble la plus juste**. Mais ce
 classement tient à des hypothèses d'usage, pas à une vérité technique : c'est à
 revérifier le jour où la décision se prend.
+
+## Ce que « site éteint » veut dire, et pourquoi ce n'est pas dirimant
+
+*Ajouté le 13 septembre. Le tableau ci-dessus opposait « sauvegarde autonome :
+oui / non ». Formule obscure, à expliciter — et il se trouve qu'en l'explicitant
+on découvre que l'objection tombe.*
+
+### Le jour où l'adresse ne répond plus
+
+« Site éteint » veut dire : `bonvinchristophe.forge.apps.education.fr/vdl-flashcards`
+ne répond plus. Les raisons sont banales et n'ont rien de catastrophiste — un
+changement d'établissement et le compte de la Forge suit, un dépôt renommé ou
+déplacé, un site supprimé par inactivité, ou simplement cinq ans plus tard et
+plus personne pour maintenir quoi que ce soit.
+
+| | Restaurer une sauvegarde des années plus tard, le site ayant disparu |
+|---|---|
+| **A — base64** | tout revient, images comprises : les pixels sont **dans** le fichier |
+| **B — adresse** | les cartes reviennent, les images sont des trous |
+
+À noter : cela **ne concerne pas les élèves au quotidien**. Chez eux l'image est
+en cache dès l'import et y reste tant qu'ils gardent l'application installée.
+C'est l'archive de l'enseignant qui est en jeu, à l'échelle des années.
+
+### Le champ accepte les deux formes, et c'est ce qui débloque tout
+
+Le point décisif, qui n'apparaissait dans aucune version précédente de cette
+note : **`image?: string` accepte indifféremment une adresse ou un `data:` URI.**
+Dans les deux cas l'affichage est le même `<img src="…">` ; l'application n'a
+pas à savoir laquelle des deux formes elle tient.
+
+Trois conséquences :
+
+- **on peut mélanger** — une carte en adresse, une autre en base64, dans le même
+  thème, sans rien de particulier ;
+- **on peut commencer par B et basculer plus tard**, sans migration ni reprise
+  du modèle de données ;
+- surtout, **l'export de sauvegarde peut aller chercher les images et les
+  incorporer au moment de l'export** — l'enseignant est en ligne à ce
+  moment-là. Le fichier de sauvegarde redevient autonome, exactement comme avec
+  A, sans que les jeux publiés ni les mises à jour des élèves en pâtissent.
+  Compter une heure de travail en plus.
+
+**B + export autonome enlève donc la seule objection sérieuse à B**, tout en
+gardant ses deux avantages : pas de gonflement de l'historique git, pas de
+retéléchargement du jeu entier chez l'élève à chaque correction.
+
+### État des réponses, au 13 septembre
+
+Les trois critères ont été posés à Christophe Bonvin. Ses réponses :
+
+| Critère | Réponse | Effet |
+|---|---|---|
+| Les cartes illustrées doivent-elles se partager par lien et QR code ? | *pas nécessairement* | ne tranche plus rien |
+| Les jeux illustrés seront-ils souvent corrigés et republiés ? | *peut-être* | penche vers B, faiblement |
+| L'archive doit-elle survivre à l'extinction du site ? | — | neutralisé par l'export autonome |
+
+**Reste donc B**, pour une raison qui n'est dans aucun des trois critères et qui
+n'est pas très technique : avec le base64, la moindre correction de faute
+renvoie trois mégaoctets à trente téléphones en début d'heure. C'est le genre de
+coût qu'on ne voit pas en développant et qu'on subit en classe.
+
+Mais rien n'engage : le champ étant le même, la forme retenue peut changer carte
+par carte, un autre jour.
+
 
 ## Proposition, si la décision est prise
 
