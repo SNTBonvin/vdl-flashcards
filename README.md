@@ -74,7 +74,8 @@ sauvegarde JSON reste le filet.
   le détail par matière n'apparaît qu'avec les outils d'enseignant.
 - **Mises à jour** — un bandeau propose d'installer la nouvelle version sans
   jamais interrompre une révision en cours ; les cartes et la progression sont
-  conservées (voir « Mises à jour » plus bas).
+  conservées. Les réglages y ajoutent une vérification à la demande, qui
+  distingue « à jour » de « hors ligne » (voir « Mises à jour » plus bas).
 - **Répétition espacée** — variante simplifiée de SM-2 : une carte ratée revient
   une minute plus tard puis dix minutes plus tard, dans la séance en cours ; une
   carte acquise que l'on oublie repart avec un intervalle divisé par deux ; une
@@ -480,6 +481,14 @@ règlent le problème (`src/pwa/update.ts`) :
 Les données ne sont jamais concernées : elles vivent dans IndexedDB, que la
 mise à jour du service worker ne touche pas. Le numéro de version affiché dans
 les réglages permet de vérifier qu'un appareil est bien à jour.
+
+À cela s'ajoute une **vérification à la demande**, dans les réglages, sous le
+numéro de version. Elle ne remplace pas l'automatique : elle sert à pouvoir
+répondre « oui, tu es à jour » devant une classe, ou à forcer la main avant un
+cours. Elle distingue trois réponses, et c'est tout son intérêt — *à jour*,
+*nouvelle version* (avec le bouton pour l'installer), et *hors ligne* quand le
+site n'a pas répondu : annoncer « à jour » sans avoir pu vérifier serait un
+mensonge utile à personne.
 
 ### Vocabulaire et compatibilité des données
 

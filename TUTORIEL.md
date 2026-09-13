@@ -478,6 +478,26 @@ Cela ne protège pas d'un effacement volontaire (vider les données du
 navigateur, désinstaller l'application) : la sauvegarde exportée reste le seul
 filet vraiment sûr.
 
+## Vérifier qu'un appareil est à jour
+
+**Réglages → À propos**. Le numéro de version s'y affiche, et juste en dessous
+un bouton **« Vérifier maintenant »**.
+
+L'application se met à jour d'elle-même — au retour au premier plan, au retour
+du réseau, toutes les demi-heures — et propose le rechargement par un bandeau,
+jamais de force. Le bouton sert à autre chose : pouvoir répondre devant une
+classe. Trois réponses possibles :
+
+| Réponse | Ce que cela veut dire |
+|---|---|
+| **à jour** | C'est bien la dernière version publiée |
+| **nouvelle version** | Une version est prête ; le bouton l'installe et recharge |
+| **hors ligne** | Le site n'a pas répondu : on ne peut rien affirmer |
+
+Installer une nouvelle version **ne touche pas aux données** : cartes,
+historique, lots et réglages restent en place. Seule l'application est
+remplacée.
+
 ## Vie privée
 
 Tout est stocké sur l'appareil, hors ligne. Aucun compte, aucun serveur, aucune

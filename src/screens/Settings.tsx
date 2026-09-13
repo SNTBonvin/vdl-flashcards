@@ -19,7 +19,7 @@ import {
   stamp,
 } from '../io/transfer'
 import { notificationSupport, requestPermission } from '../reminders/reminders'
-import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
+import { APP_BUILD_DATE, APP_VERSION, checkNow, useAppUpdate, type CheckResult } from '../pwa/update'
 import { useTheme, type ThemeMode } from '../theme/theme'
 import { useRoute } from '../lib/router'
 import {
@@ -403,6 +403,8 @@ export function SettingsScreen() {
           </span>
         </div>
 
+        <VersionCheck />
+
         <button
           type="button"
           className="card card--pad card--tap"
@@ -676,6 +678,97 @@ function PublishToken() {
           toast('Jeton retiré de cet appareil.')
         }}
       />
+    </div>
+  )
+}
+
+/**
+ * Vérification de version à la demande.
+ *
+ * L'application se met à jour toute seule — au retour au premier plan, au
+ * retour du réseau, toutes les demi-heures. Ce bouton ne remplace pas cela : il
+ * sert à pouvoir répondre, devant une classe, « regarde, tu es à jour », ou à
+ * forcer la main avant un cours.
+ *
+ * D'où le soin apporté aux trois réponses possibles. « À jour » ne doit être
+ * affiché que si on l'a vraiment vérifié : quand le site est injoignable, on le
+ * dit, au lieu de rassurer à tort.
+ */
+function VersionCheck() {
+  const update = useAppUpdate()
+  const [busy, setBusy] = useState(false)
+  const [result, setResult] = useState<CheckResult | null>(null)
+
+  const run = async () => {
+    setBusy(true)
+    setResult(null)
+    try {
+      setResult(await checkNow())
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const found = result === 'updated' || update.available
+
+  return (
+    <div className="card card--pad stack stack-3" data-status={found ? 'run' : undefined}>
+      <div className="row row--between">
+        <span className="grow stack" style={{ gap: 1 }}>
+          <span className="listrow__title">Mise à jour de l’application</span>
+          <span className="meta">
+            Vérifiée d’elle-même à chaque ouverture. À demander ici en cas de doute.
+          </span>
+        </span>
+        {result && !busy && (
+          <span className={`chip ${found ? 'chip--accent' : result === 'current' ? 'chip--ok' : 'chip--warn'}`}>
+            {found
+              ? 'nouvelle version'
+              : result === 'current'
+                ? 'à jour'
+                : result === 'offline'
+                  ? 'hors ligne'
+                  : 'indisponible'}
+          </span>
+        )}
+      </div>
+
+      {result === 'offline' && (
+        <p className="meta" style={{ lineHeight: 1.55 }}>
+          Le site n’a pas répondu : impossible de savoir. L’application continue de fonctionner avec
+          la version installée, et retentera d’elle-même au retour du réseau.
+        </p>
+      )}
+
+      {result === 'unsupported' && (
+        <p className="meta" style={{ lineHeight: 1.55 }}>
+          Ce navigateur ne gère pas les mises à jour hors ligne — en navigation privée, par exemple.
+          Rechargez la page pour obtenir la dernière version.
+        </p>
+      )}
+
+      {found ? (
+        <>
+          <p className="meta" style={{ lineHeight: 1.55 }}>
+            Une nouvelle version est prête. Vos cartes, votre historique et vos réglages sont
+            conservés : seule l’application est remplacée.
+          </p>
+          <button type="button" className="btn btn--primary btn--block" onClick={update.apply}>
+            <Icon name="download" size={18} />
+            Installer et recharger
+          </button>
+        </>
+      ) : (
+        <button
+          type="button"
+          className="btn btn--ghost btn--block"
+          disabled={busy}
+          onClick={() => void run()}
+        >
+          <Icon name="reset" size={17} />
+          {busy ? 'Vérification…' : 'Vérifier maintenant'}
+        </button>
+      )}
     </div>
   )
 }
