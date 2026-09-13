@@ -144,7 +144,7 @@ export function HelpScreen() {
       <Step
         icon="today"
         title="Planifier ses révisions"
-        text="Dans un thème, « Planifier mes révisions » propose des rendez-vous suivant la courbe de l’oubli — demain, dans une semaine, dans un mois, dans six mois — et les dépose dans l’agenda du téléphone. C’est le seul rappel qui sonne même application fermée : une page web ne peut pas programmer une notification à l’avance."
+        text="Dans un thème, « Planifier mes révisions » dépose des rendez-vous dans l’agenda du téléphone. C’est le seul rappel qui sonne même application fermée : une page web ne peut pas programmer une notification à l’avance. Tu n’as pas de rythme à choisir — sans échéance, ils suivent la courbe de l’oubli (demain, dans une semaine, dans un mois, dans six mois) ; si tu t’es fixé une date, ils se répartissent jusqu’à elle, le dernier la veille."
       />
 
       <Step

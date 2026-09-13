@@ -457,16 +457,27 @@ Un thème reçu n'est pas figé :
 
 ### Planifier ses reprises, et les mettre dans son agenda
 
-Dans un thème → **Planifier mes révisions**. Choisissez un rythme et une heure,
-l'application affiche les rendez-vous, puis **Ajouter à mon agenda** les dépose
-dans le calendrier du téléphone.
+Dans un thème → **Planifier mes révisions**. Choisissez une heure, l'application
+affiche les rendez-vous, puis **Ajouter à mon agenda** les dépose dans le
+calendrier du téléphone.
 
-Deux rythmes :
+**Il n'y a pas de rythme à choisir** : il se déduit de l'échéance.
 
-- **Courbe de l'oubli** — demain, dans une semaine, dans un mois, dans six mois.
-  C'est le rythme conseillé : l'oubli est massif dans les premiers jours, et
+- **Thème sans échéance** — demain, dans une semaine, dans un mois, dans six
+  mois : la courbe de l'oubli. L'oubli est massif dans les premiers jours, et
   chaque rappel aplatit la courbe.
-- **Resserré** — cinq reprises en un mois, pour un contrôle proche.
+- **Thème avec une échéance** — les rendez-vous se répartissent jusqu'à elle, le
+  dernier la veille. Pour une date à sept jours : demain, dans trois jours, la
+  veille. Pour une date à trois jours : demain et la veille.
+
+Cette seconde règle a remplacé un rythme « resserré, pour un contrôle proche »
+qui n'était que l'approximation d'une date inconnue. Maintenant qu'on peut poser
+la date, il n'y a plus à deviner.
+
+Changer l'échéance ensuite ne déplace pas les rendez-vous déjà déposés — un plan
+est la photographie de ce qui est parti dans l'agenda. Rouvrez la feuille et
+réexportez : les rendez-vous sont mis à jour, et ceux que le nouveau plan ne
+contient plus sont retirés du calendrier.
 
 Pourquoi passer par l'agenda : une application web ne peut pas programmer une
 notification à l'avance. La notification de l'application ne part qu'à son

@@ -23,6 +23,12 @@ export interface IcsEvent {
   description?: string
   /** Répétition hebdomadaire, avec une fin — un rappel sans fin est une plaie. */
   weekly?: { days: number[]; until: Date }
+  /**
+   * Rendez-vous annulé. Sert à retirer de l'agenda ce qu'un plan précédent y
+   * avait posé et que le nouveau ne contient plus : sans cela, un plan qui
+   * raccourcit laisserait derrière lui des rappels devenus faux.
+   */
+  cancelled?: boolean
 }
 
 const WEEKDAY_CODES = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
@@ -112,14 +118,19 @@ export function buildIcs(events: IcsEvent[], now = new Date()): string {
       // UNTIL suit la forme de DTSTART : locale ici, donc sans « Z ».
       lines.push(`RRULE:FREQ=WEEKLY;BYDAY=${days};UNTIL=${localStamp(event.weekly.until)}`)
     }
-    lines.push(
-      'BEGIN:VALARM',
-      'ACTION:DISPLAY',
-      `DESCRIPTION:${escapeText(event.summary)}`,
-      'TRIGGER:PT0S',
-      'END:VALARM',
-      'END:VEVENT',
-    )
+    if (event.cancelled) {
+      // Un rendez-vous annulé n'a pas d'alarme à faire sonner.
+      lines.push('STATUS:CANCELLED', 'END:VEVENT')
+    } else {
+      lines.push(
+        'BEGIN:VALARM',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:${escapeText(event.summary)}`,
+        'TRIGGER:PT0S',
+        'END:VALARM',
+        'END:VEVENT',
+      )
+    }
   }
 
   lines.push('END:VCALENDAR')

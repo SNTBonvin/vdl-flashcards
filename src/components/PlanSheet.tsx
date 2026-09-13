@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Icon } from './Icon'
 import { ConfirmSheet, Field, Sheet, useToast } from './ui'
-import { PLAN_PRESETS, planDates } from '../reminders/plan'
+import { planDates, planOffsets } from '../reminders/plan'
+import { formatDeadline } from '../srs/deadline'
 import { buildIcs, icsFilename } from '../io/ics'
 import { download } from '../io/transfer'
 import { formatDue } from '../lib/date'
-import type { Deck, PlanPreset, RevisionPlan } from '../db/types'
+import type { Deck, RevisionPlan } from '../db/types'
 
 const DEFAULT_TIME = '18:00'
 
@@ -31,18 +32,20 @@ function longDate(date: Date): string {
 export function PlanSheet({
   open,
   deck,
+  dueBy,
   onClose,
   onSave,
   onRemove,
 }: {
   open: boolean
   deck: Deck
+  /** Échéance la plus proche portée par les cartes du thème, s'il y en a une. */
+  dueBy?: string
   onClose: () => void
   onSave: (plan: RevisionPlan) => void
   onRemove: () => void
 }) {
   const toast = useToast()
-  const [preset, setPreset] = useState<PlanPreset>(deck.plan?.preset ?? 'ebbinghaus')
   const [time, setTime] = useState(deck.plan?.time ?? DEFAULT_TIME)
   const [startedAt, setStartedAt] = useState(deck.plan?.startedAt ?? Date.now())
   const [removing, setRemoving] = useState(false)
@@ -50,14 +53,18 @@ export function PlanSheet({
   // Recharge à l'ouverture : le plan a pu changer entre deux visites.
   useEffect(() => {
     if (!open) return
-    setPreset(deck.plan?.preset ?? 'ebbinghaus')
     setTime(deck.plan?.time ?? DEFAULT_TIME)
     setStartedAt(deck.plan?.startedAt ?? Date.now())
   }, [open, deck.plan])
 
-  const plan: RevisionPlan = { preset, time, startedAt }
+  // Les rendez-vous se déduisent de l'échéance : il n'y a plus de rythme à
+  // choisir, et la feuille montre ce qu'elle va poser.
+  const offsets = useMemo(() => planOffsets(dueBy, startedAt), [dueBy, startedAt])
+  const plan: RevisionPlan = { offsets, time, startedAt }
   const dates = planDates(plan)
-  const hint = PLAN_PRESETS.find((p) => p.id === preset)?.hint ?? ''
+  const hint = dueBy
+    ? `Répartis jusqu’à l’échéance — ${formatDeadline(dueBy)} —, le dernier la veille.`
+    : 'Demain, dans une semaine, dans un mois, dans six mois : la courbe de l’oubli.'
 
   const addToCalendar = () => {
     // Identifiant stable par rang : réimporter met à jour les rendez-vous
@@ -71,6 +78,20 @@ export function PlanSheet({
         'Reprise espacée. Ouvre l’application et lance une séance sur ce thème — ' +
         'quinze minutes suffisent.',
     }))
+    // Le nombre de rendez-vous dépend désormais de l'échéance : un plan qui
+    // raccourcit doit retirer de l'agenda ceux qu'il y avait laissés, faute de
+    // quoi de faux rappels survivraient à la nouvelle date.
+    const avant = deck.plan ? planDates(deck.plan).length : 0
+    for (let index = dates.length; index < avant; index += 1) {
+      events.push({
+        uid: `${deck.id}-reprise-${index}@vdl-flashcards`,
+        start: new Date(startedAt),
+        durationMinutes: 15,
+        summary: `Réviser : ${deck.name}`,
+        description: '',
+        cancelled: true,
+      } as (typeof events)[number])
+    }
     download(icsFilename(deck.name), buildIcs(events), 'text/calendar')
     onSave(plan)
     toast('Plan ajouté à l’agenda.')
@@ -96,24 +117,11 @@ export function PlanSheet({
             l’application fermée.
           </p>
 
-          <div className="field">
-            <span className="label">Rythme</span>
-            <div className="seg">
-              {PLAN_PRESETS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className="seg__item"
-                  aria-pressed={preset === item.id}
-                  onClick={() => setPreset(item.id)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-            <span className="meta" style={{ fontSize: 12.5 }}>
-              {hint}
+          <div className="card card--pad row" data-status={dueBy ? 'warn' : 'ok'} style={{ gap: 12 }}>
+            <span className="glyph glyph--warm">
+              <Icon name="today" size={18} />
             </span>
+            <p className="meta" style={{ lineHeight: 1.55 }}>{hint}</p>
           </div>
 
           <Field label="Heure" hint="Choisis un moment où tu es disponible.">
@@ -124,6 +132,19 @@ export function PlanSheet({
               onChange={(e) => setTime(e.target.value)}
             />
           </Field>
+
+          {dates.length > 0 && dates[dates.length - 1].getTime() < Date.now() && (
+            <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+              <span className="glyph glyph--warm">
+                <Icon name="info" size={18} />
+              </span>
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                L’échéance est trop proche pour que ce rendez-vous soit encore à venir : il ne
+                sonnera pas. Choisis une heure plus tardive, ou ouvre simplement l’application —
+                les cartes à savoir te sont de toute façon proposées.
+              </p>
+            </div>
+          )}
 
           <div className="stack stack-3">
             <span className="eyebrow">Tes rendez-vous</span>

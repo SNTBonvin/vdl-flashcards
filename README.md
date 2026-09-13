@@ -85,9 +85,10 @@ sauvegarde JSON reste le filet.
   au lieu de piétiner. L'intervalle est plafonné à **90 jours** par défaut, pour
   qu'une carte ne disparaisse jamais plus d'un trimestre.
 - **Plan de reprises et agenda** — chaque thème peut recevoir un plan de
-  révision (courbe de l'oubli : demain, une semaine, un mois, six mois) exporté
-  vers l'agenda du téléphone, seul dispositif capable de sonner application
-  fermée (voir « Rappels et agenda »).
+  révision exporté vers l'agenda du téléphone, seul dispositif capable de sonner
+  application fermée. Aucun rythme à choisir : la courbe de l'oubli (demain, une
+  semaine, un mois, six mois), ou, si le thème porte une échéance, des rappels
+  répartis jusqu'à elle, le dernier la veille (voir « Rappels et agenda »).
 - **Un seul compte pour la séance** — le nombre affiché sur l'accueil, sur la
   pastille de l'onglet et sur le bouton est celui que la séance servira
   réellement, quota quotidien de cartes neuves compris (`countSession`, qui
@@ -387,11 +388,23 @@ Deux détails d'implémentation méritent d'être signalés :
 - Les `UID` sont **stables par rang** (`<thème>-reprise-<n>`) : réimporter un
   plan modifié met à jour les rendez-vous existants au lieu de les dupliquer.
 
-Le **plan de reprises** (`src/reminders/plan.ts`) propose deux rythmes : la
-courbe de l'oubli (demain, une semaine, un mois, six mois) et un rythme resserré
-(1, 3, 7, 15 et 30 jours) pour un contrôle proche. Il ne remplace pas la
-répétition espacée carte par carte : celle-ci décide de *quelles* cartes revoir,
-le plan dit *quand* s'y mettre.
+Le **plan de reprises** (`src/reminders/plan.ts`) n'offre plus de rythme à
+choisir : `planOffsets` le déduit de l'échéance du thème. Sans échéance, la
+courbe de l'oubli (1, 7, 30, 180 jours). Avec, les paliers naturels (1, 3, 7,
+15, 30) qui tombent avant la veille, plus la veille — le jour même étant trop
+tard pour apprendre. Le second rythme d'autrefois, « resserré, pour un contrôle
+proche », n'était que l'approximation d'une date qu'on ne pouvait pas saisir ;
+la saisir rend la devinette inutile.
+
+Les décalages sont **enregistrés avec le plan** (`RevisionPlan.offsets`), qui
+est la photographie de ce qui a été déposé dans l'agenda plutôt qu'une formule à
+réévaluer — recalculer après coup ferait diverger l'application des rendez-vous
+réellement posés. Un plan plus court que le précédent réémet les rendez-vous en
+trop avec `STATUS:CANCELLED`, faute de quoi de faux rappels survivraient à la
+nouvelle date. Les plans enregistrés avant portent un `preset` et restent lus.
+
+Il ne remplace pas la répétition espacée carte par carte : celle-ci décide de
+*quelles* cartes revoir, le plan dit *quand* s'y mettre.
 
 La **reprise spiralaire** (`src/srs/spiral.ts`) complète le dispositif : dès
 qu'un thème déjà travaillé est resté trois semaines sans être rouvert, l'écran

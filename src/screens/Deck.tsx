@@ -889,6 +889,7 @@ export function DeckScreen({ id }: { id: string }) {
       <PlanSheet
         open={planOpen}
         deck={deck}
+        dueBy={deadlines[0]?.dueBy}
         onClose={() => setPlanOpen(false)}
         onSave={async (plan) => {
           await store.updateDeck(deck.id, { plan })

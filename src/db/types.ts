@@ -97,7 +97,14 @@ export interface Deck {
  * de *quelles* cartes revoir, le plan décide de *quand* s'y mettre.
  */
 export interface RevisionPlan {
-  preset: PlanPreset
+  /**
+   * Jours écoulés depuis le départ, fixés à l'enregistrement. Le plan est une
+   * photographie de ce qui a été déposé dans l'agenda : le recalculer après
+   * coup le ferait diverger des rendez-vous réellement posés.
+   */
+  offsets?: number[]
+  /** Rythme choisi, du temps où c'en était un. Lu pour les plans anciens. */
+  preset?: PlanPreset
   /** Heure du rendez-vous, « HH:MM ». */
   time: string
   /** Jour de départ du plan (horodatage). */
