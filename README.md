@@ -94,7 +94,10 @@ sauvegarde JSON reste le filet.
   partage sa sélection avec `buildQueue`). Quand le quota retient des cartes,
   l'écran le dit et renvoie à demain plutôt que d'ouvrir une séance vide.
 - **Échéance** — une série ou un thème peut porter une date « à savoir pour
-  le … », qui voyage avec les cartes jusque chez l'élève. Elle garantit un
+  le … », qui voyage avec les cartes jusque chez l'élève, **où elle se décide
+  aussi** : l'écran de réception propose le champ, pré-rempli par la date de
+  l'envoi s'il y en a une, sinon par celle que les cartes portent déjà. Celui
+  qui reçoit connaît la date du contrôle ; celui qui donne, pas toujours. Elle garantit un
   passage sur chaque carte la veille au plus tard (`srs/deadline`), affiche un
   compte à rebours, puis devient inerte. La date est écrite **sur les cartes**,
   la série ne faisant que les désigner : celui qui la pose en voit donc l'effet
@@ -477,7 +480,12 @@ cartes désignées** (`setDueBy`), non sur la série. C'est délibéré — une 
 ne vivrait que sur la série ne changerait rien aux révisions de celui qui la
 pose, et ne servirait qu'à annoncer une date aux autres. Écrite sur les cartes,
 elle agit chez son auteur comme chez ceux qui les reçoivent, et un élève dispose
-exactement du même outil qu'un professeur. La date suit la composition : une
+exactement du même outil qu'un professeur. C'est aussi ce qui permet de la poser
+**à la réception** : `importShare` applique la date de la charge utile aux
+cartes de cet envoi — créées comme mises à jour —, si bien qu'il suffit à l'écran
+de réception de remplacer cette valeur par celle que l'élève a choisie. Le champ
+y est pré-rempli avec la date que ses cartes portent déjà : sans cela, une mise
+à jour diffusée sans date effacerait en silence l'échéance qu'il s'était fixée. La date suit la composition : une
 carte ajoutée à une série qui en porte une la reçoit, une carte retirée la perd
 — à moins qu'une autre série lui en ait donné une différente, auquel cas la
 sienne est laissée en place.

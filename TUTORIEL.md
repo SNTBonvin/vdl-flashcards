@@ -217,9 +217,15 @@ reçu quoi n'est enregistrée : l'application ne suit personne.
 
 ### Se fixer une échéance
 
-Un champ **« À savoir pour le »**, à deux endroits : dans la fiche d'une série,
-et dans **Modifier le thème** pour un thème pris en entier. Facultatif, il
-accompagne les cartes jusque chez l'élève — par lien comme par code.
+Un champ **« À savoir pour le »**, à trois endroits : dans la fiche d'une série,
+dans **Modifier le thème** pour un thème pris en entier, et — c'est le plus
+utile — **sur l'écran de réception**, au moment où l'élève ajoute les cartes.
+
+Ce troisième endroit change la répartition des rôles. Vous n'avez pas toujours
+la date du contrôle quand vous préparez le jeu ; l'élève, lui, l'a sous les yeux
+dans son cahier de textes. Il peut donc poser la sienne, et vous n'avez rien à
+dater. Si vous datez tout de même votre envoi, votre date devient **celle qui
+est proposée par défaut** : il lui suffit de l'accepter.
 
 La date est écrite **sur les cartes elles-mêmes** ; la série ou le thème ne font
 que désigner lesquelles. C'est ce qui rend le mécanisme symétrique : celui qui
@@ -241,8 +247,14 @@ garanti, pas un par jour. Une fois la date passée, l'échéance devient inerte 
 les cartes rejoignent le cycle ordinaire.
 
 L'accueil affiche un compte à rebours — « dimanche 20 · 3 cartes · J − 7 » — et
-le thème un bandeau avec un bouton **Retirer** : l'appareil appartient à
-l'élève, une date annoncée ne s'y impose pas.
+le thème un bandeau avec un bouton **Modifier**, qui permet de déplacer la date
+ou de la retirer : l'appareil appartient à l'élève, une date annoncée ne s'y
+impose pas.
+
+Une précaution enfin, pour que la date de l'élève lui appartienne vraiment : à
+la réception d'une **mise à jour**, le champ arrive pré-rempli avec la date que
+ses cartes portent déjà. Vos corrections n'effacent donc pas l'échéance qu'il
+s'était fixée — seul lui peut l'effacer, en vidant le champ.
 
 **L'accumulation, elle, n'a besoin de rien.** Série 1 donnée le 7 pour le 14,
 série 2 le 14 pour le 21 : les deux restent dans la rotation et se mélangent

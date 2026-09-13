@@ -49,6 +49,9 @@ export function DeckScreen({ id }: { id: string }) {
   const toast = useToast()
 
   const [editingDeck, setEditingDeck] = useState(false)
+  /** Échéance en cours de déplacement : sa date actuelle, puis la nouvelle. */
+  const [movingDeadline, setMovingDeadline] = useState<string | null>(null)
+  const [movedTo, setMovedTo] = useState('')
   const [confirming, setConfirming] = useState(false)
   const [reminderOpen, setReminderOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
@@ -90,11 +93,19 @@ export function DeckScreen({ id }: { id: string }) {
   /** Échéances portées par les cartes de ce thème, la plus proche d'abord. */
   const deadlines = useMemo(() => upcomingDeadlines(cards, now), [cards, now])
 
-  /** Retirer une échéance : la date disparaît des cartes qui la portaient. */
-  const clearDeadline = async (dueBy: string) => {
-    const ids = cards.filter((c) => c.dueBy === dueBy).map((c) => c.id)
-    await store.setDueBy(ids)
-    toast('Échéance retirée.')
+  /**
+   * Retirer ou déplacer une échéance. Les deux gestes sont le même : la date
+   * change sur les cartes qui la portaient, et sur ce qui l'annonçait — la
+   * série, le thème — pour que rien n'affiche plus une date périmée.
+   */
+  const moveDeadline = async (from: string, to?: string) => {
+    const ids = cards.filter((c) => c.dueBy === from).map((c) => c.id)
+    await store.setDueBy(ids, to)
+    for (const lot of lots.filter((l) => l.dueBy === from)) {
+      await store.updateDistribution(lot.id, { dueBy: to })
+    }
+    if (deck?.dueBy === from) await store.updateDeck(deck.id, { dueBy: to })
+    toast(to ? 'Échéance déplacée.' : 'Échéance retirée.')
   }
 
   /**
@@ -276,7 +287,7 @@ export function DeckScreen({ id }: { id: string }) {
           </>
         )}
         {deck.reserve && <span className="grow" />}
-        <button type="button" className="icon-btn" onClick={() => setEditingDeck(true)} aria-label="Modifier">
+        <button type="button" className="icon-btn" onClick={() => setEditingDeck(true)} aria-label="Modifier le thème">
           <Icon name="edit" size={18} />
         </button>
         <button
@@ -305,9 +316,12 @@ export function DeckScreen({ id }: { id: string }) {
           <button
             type="button"
             className="btn btn--quiet"
-            onClick={() => void clearDeadline(group.dueBy)}
+            onClick={() => {
+              setMovedTo(group.dueBy)
+              setMovingDeadline(group.dueBy)
+            }}
           >
-            Retirer
+            Modifier
           </button>
         </div>
       ))}
@@ -885,6 +899,54 @@ export function DeckScreen({ id }: { id: string }) {
       />
 
       <ShareSheet open={sharing} deck={deck} dueBy={deck.dueBy} onClose={() => setSharing(false)} />
+
+      {/* Déplacer une échéance, ou la retirer. Le même geste des deux côtés :
+          celui qui l'a posée corrige sa date, celui qui l'a reçue l'ajuste à ce
+          que dit son cahier de textes. */}
+      <Sheet
+        open={movingDeadline !== null}
+        title="Échéance"
+        onClose={() => setMovingDeadline(null)}
+        footer={
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            disabled={!movedTo}
+            onClick={async () => {
+              if (movingDeadline) await moveDeadline(movingDeadline, movedTo)
+              setMovingDeadline(null)
+            }}
+          >
+            Enregistrer
+          </button>
+        }
+      >
+        <div className="stack stack-5">
+          <Field
+            label="À savoir pour le"
+            hint="Les cartes concernées te seront proposées la veille au plus tard. Passée cette date, elles reprennent leur rythme normal."
+          >
+            <input
+              className="input mono"
+              type="date"
+              value={movedTo}
+              onChange={(e) => setMovedTo(e.target.value)}
+            />
+          </Field>
+
+          <button
+            type="button"
+            className="btn btn--danger btn--block"
+            onClick={async () => {
+              if (movingDeadline) await moveDeadline(movingDeadline)
+              setMovingDeadline(null)
+            }}
+          >
+            <Icon name="trash" size={17} />
+            Retirer l’échéance
+          </button>
+        </div>
+      </Sheet>
 
       <Sheet
         open={namingLot}

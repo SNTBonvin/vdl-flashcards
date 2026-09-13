@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { Icon } from '../components/Icon'
-import { EmptyState, SectionHead, plural, useToast } from '../components/ui'
+import { EmptyState, Field, SectionHead, plural, useToast } from '../components/ui'
 import { decodeShare, ShareError, type SharePayload } from '../io/share'
 import { CatalogError, fetchSet, setToPayload } from '../io/catalog'
 import { isIosBrowser } from '../lib/storage'
@@ -22,6 +22,16 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
   const [payload, setPayload] = useState<SharePayload | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [importing, setImporting] = useState(false)
+  /**
+   * Échéance retenue pour cette réception.
+   *
+   * C'est ici qu'elle se décide, et non à la diffusion : celui qui reçoit sait
+   * pour quand il doit savoir ses cartes — la date est sur son cahier de textes
+   * — tandis que celui qui donne ne connaît pas toujours la date du contrôle au
+   * moment où il prépare le jeu. La date proposée par l'envoi n'est donc qu'un
+   * défaut, que l'on accepte d'un geste ou que l'on corrige.
+   */
+  const [dueBy, setDueBy] = useState('')
 
   // Deux sources, une seule suite : un code produit la même charge utile qu'un
   // lien, et passe ensuite par les mêmes règles de réception.
@@ -50,6 +60,27 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
       cancelled = true
     }
   }, [token, code])
+
+  /**
+   * Date proposée par défaut : celle de l'envoi s'il en porte une, sinon celle
+   * que portent déjà les cartes de ce partage. Ce second cas n'est pas un
+   * détail : sans lui, une mise à jour diffusée sans date effacerait en silence
+   * l'échéance que le destinataire s'était fixée.
+   */
+  const suggested = useMemo(() => {
+    if (!payload) return ''
+    if (payload.due) return payload.due
+    const deck = store.decks.find((d) => d.shareId === payload.id)
+    if (!deck) return ''
+    const dates = store.cards
+      .filter((c) => c.deckId === deck.id && c.sharedFrom === payload.id && !c.suspended)
+      .map((c) => c.dueBy ?? '')
+    return dates.length > 0 && dates.every((d) => d === dates[0]) ? dates[0] : ''
+  }, [payload, store.decks, store.cards])
+
+  useEffect(() => {
+    setDueBy(suggested)
+  }, [suggested])
 
   if (error) {
     return (
@@ -92,7 +123,7 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
   const add = async () => {
     setImporting(true)
     try {
-      const result = await store.importShare(payload, code)
+      const result = await store.importShare({ ...payload, due: dueBy || undefined }, code)
       const parts = [
         result.added > 0 ? `${result.added} ${plural(result.added, 'carte ajoutée', 'cartes ajoutées')}` : null,
         result.updated > 0 ? `${result.updated} mise${result.updated > 1 ? 's' : ''} à jour` : null,
@@ -160,6 +191,18 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
         {payload.d && (
           <p style={{ color: 'var(--ink-2)', fontSize: 14.5, lineHeight: 1.6 }}>{payload.d}</p>
         )}
+
+        <Field
+          label="À savoir pour le"
+          hint="Facultatif. Mets la date de ton contrôle si tu la connais : ces cartes te seront proposées la veille au plus tard. Ensuite, elles reprennent leur rythme normal."
+        >
+          <input
+            className="input mono"
+            type="date"
+            value={dueBy}
+            onChange={(e) => setDueBy(e.target.value)}
+          />
+        </Field>
 
         <button
           type="button"

@@ -130,6 +130,12 @@ export function HelpScreen() {
       />
 
       <Step
+        icon="today"
+        title="À savoir pour quand ?"
+        text="Quand tu ajoutes des cartes reçues, un champ « À savoir pour le » te propose de dire pour quand il faut les savoir — la date de ton contrôle, telle qu’elle est sur ton cahier de textes. Ce n’est pas obligatoire. Si tu la mets, chacune de ces cartes te sera proposée la veille au plus tard, même si son tour n’était pas encore venu. Une fois la date passée, elles reprennent leur rythme normal. Tu peux la changer ou la retirer à tout moment : bandeau du thème, bouton « Modifier »."
+      />
+
+      <Step
         icon="layers"
         title="Les séries"
         text="Une série est une sélection de cartes d’un même thème, gardée sous la main. Elle sert à deux choses : se fixer une échéance — « ces quinze cartes, pour vendredi » — et diffuser une partie d’un thème sans tout donner d’un coup. Coche des cartes, puis « Créer une série ». Chez celui qui la reçoit, les séries d’un même thème se rejoignent dans ce thème."
