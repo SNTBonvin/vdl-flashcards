@@ -113,6 +113,20 @@ export function DistributionSheet({
             />
           </Field>
 
+          <Field
+            label="À savoir pour le"
+            hint="Facultatif. L’élève verra la date, et l’application garantira un passage sur chaque carte la veille au plus tard."
+          >
+            <input
+              className="input mono"
+              type="date"
+              value={lot.dueBy ?? ''}
+              onChange={(e) =>
+                void store.updateDistribution(lot.id, { dueBy: e.target.value || undefined })
+              }
+            />
+          </Field>
+
           <div className="card card--pad stack stack-3">
             <div className="row row--between">
               <span className="eyebrow">Contenu</span>

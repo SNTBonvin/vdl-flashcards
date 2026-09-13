@@ -102,7 +102,8 @@ Trois réponses possibles, et l'échéance calculée est affichée sur chaque bo
 ### Le quota de cartes neuves
 
 L'application n'introduit qu'un nombre limité de **cartes neuves par jour et par
-thème** — vingt par défaut, réglable dans *Réglages → Révision*. C'est délibéré :
+thème** — vingt par défaut, réglable dans *Réglages → Révision*. Les cartes
+portant une échéance proche passent devant les autres quand le quota mord. C'est délibéré :
 avaler quatre-vingts cartes le premier soir, c'est les avoir toutes à revoir le
 même jour trois semaines plus tard.
 
@@ -240,6 +241,32 @@ La publication prend environ deux minutes, le temps du pipeline.
 miroir : un fichier ajouté directement sur le miroir fait diverger les deux
 dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
+
+### Donner un lot pour une date
+
+Dans la fiche d'un lot, un champ **« À savoir pour le »**. Facultatif, il
+accompagne les cartes jusque chez l'élève — par lien comme par code.
+
+Il fait une seule chose au calcul, mais elle compte. Une carte sue le 10 ne
+revient naturellement que le 16 : une échéance au 14 tomberait dans un trou, et
+la carte ne serait pas repassée avant le contrôle. La règle est donc :
+
+> **Aucune carte à savoir pour le 14 ne garde une échéance après le 14.** Celles
+> qui dépassent sont proposées la veille.
+
+Ce n'est pas un dérèglement : on avance une révision, on n'en supprime aucune,
+et répondre ce jour-là fait repartir le calcul normalement. Un seul passage est
+garanti, pas un par jour. Une fois la date passée, l'échéance devient inerte et
+le lot rejoint le cycle ordinaire.
+
+Côté élève, l'accueil affiche un compte à rebours — « dimanche 20 · 3 cartes ·
+J − 7 » — et le thème un bandeau avec un bouton **Retirer** : c'est son
+appareil, une date annoncée ne s'y impose pas.
+
+**L'accumulation, elle, n'a besoin de rien.** Lot 1 donné le 7 pour le 14,
+lot 2 le 14 pour le 21 : les deux restent dans la rotation et se mélangent
+d'office. Une interrogation du 21 portant sur les deux ne demande aucun
+réglage — c'est le fonctionnement normal de la répétition espacée.
 
 ### Publier d'un seul bouton
 

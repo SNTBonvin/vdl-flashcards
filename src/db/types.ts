@@ -153,6 +153,17 @@ export interface Card {
    */
   suspended: boolean
   /**
+   * Date à laquelle cette carte doit être sue, « AAAA-MM-JJ ». Portée par la
+   * carte et non par le thème : chez l'élève, les lots d'un même thème se
+   * rejoignent, et deux lots donnés à quinze jours d'intervalle gardent chacun
+   * la leur.
+   *
+   * Elle ne fait qu'une chose au calcul : garantir un passage avant le jour dit
+   * (voir srs/deadline). Une fois la date passée, elle devient inerte et la
+   * carte poursuit le cycle ordinaire.
+   */
+  dueBy?: string
+  /**
    * Identifiant du partage dont la carte provient. Absent pour les cartes que
    * l'utilisateur a créées lui-même — et retiré dès qu'il modifie une carte
    * reçue, celle-ci devenant alors la sienne.
@@ -191,6 +202,11 @@ export interface Distribution {
   id: ID
   deckId: ID
   name: string
+  /**
+   * Date à laquelle le lot doit être su, « AAAA-MM-JJ ». Posée par l'enseignant,
+   * elle accompagne les cartes jusque chez l'élève.
+   */
+  dueBy?: string
   /** Cartes retenues. Une même carte peut figurer dans plusieurs lots. */
   cardIds: ID[]
   createdAt: number
@@ -246,7 +262,7 @@ export const DEFAULT_SETTINGS: Settings = {
   shuffle: true,
   reverse: false,
   notificationsEnabled: false,
-  maxInterval: 365,
+  maxInterval: 90,
   sharedBy: '',
   publishRepo: '',
   teacherTools: false,

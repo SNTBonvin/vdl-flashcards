@@ -5,6 +5,7 @@ import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { requestSession } from '../state/session'
 import { countCards } from '../srs/queue'
+import { formatDeadline, upcomingDeadlines } from '../srs/deadline'
 import { Icon } from '../components/Icon'
 import {
   ConfirmSheet,
@@ -84,6 +85,17 @@ export function DeckScreen({ id }: { id: string }) {
   const lots = useMemo(() => store.distributionsByDeck.get(id) ?? [], [store.distributionsByDeck, id])
 
   const nextReprise = deck?.plan ? nextPlanDate(deck.plan) : null
+
+  const now = Date.now()
+  /** Échéances portées par les cartes de ce thème, la plus proche d'abord. */
+  const deadlines = useMemo(() => upcomingDeadlines(cards, now), [cards, now])
+
+  /** Retirer une échéance : la date disparaît des cartes qui la portaient. */
+  const clearDeadline = async (dueBy: string) => {
+    const ids = cards.filter((c) => c.dueBy === dueBy).map((c) => c.id)
+    await store.clearDueBy(ids)
+    toast('Échéance retirée.')
+  }
 
   /**
    * Le jeu publié ne suit pas les modifications : c'est une photographie. On
@@ -276,6 +288,29 @@ export function DeckScreen({ id }: { id: string }) {
           <Icon name="trash" size={18} />
         </button>
       </div>
+
+      {/* Échéance annoncée par le professeur. Retirable : c'est l'appareil de
+          l'élève, et rien ne s'y impose. */}
+      {deadlines.map((group) => (
+        <div key={group.dueBy} className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+          <span className="glyph glyph--warm">
+            <Icon name="today" size={18} />
+          </span>
+          <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+            <span className="listrow__title">À savoir pour {formatDeadline(group.dueBy, now)}</span>
+            <span className="listrow__sub">
+              {group.total} {plural(group.total, 'carte')} · un passage garanti la veille
+            </span>
+          </span>
+          <button
+            type="button"
+            className="btn btn--quiet"
+            onClick={() => void clearDeadline(group.dueBy)}
+          >
+            Retirer
+          </button>
+        </div>
+      ))}
 
       {deck.setCode &&
         (hasUpdate(deck) ? (
@@ -891,6 +926,7 @@ export function DeckScreen({ id }: { id: string }) {
           open
           deck={deck}
           cards={cards.filter((c) => sharingLot.cardIds.includes(c.id))}
+          dueBy={sharingLot.dueBy}
           title={`Diffuser « ${sharingLot.name} »`}
           onClose={() => setSharingLotId(null)}
           onShared={() => void store.markDistributionShared(sharingLot.id)}

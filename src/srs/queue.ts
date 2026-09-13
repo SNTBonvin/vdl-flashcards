@@ -1,6 +1,7 @@
 /** Construction des files de révision. */
 
 import type { Card, ID, Settings } from '../db/types'
+import { dueByDeadline } from './deadline'
 
 export type SessionMode = 'due' | 'quiz' | 'hard'
 
@@ -19,7 +20,11 @@ export interface QueueOptions {
 }
 
 export function isDue(card: Card, now = Date.now()): boolean {
-  return !card.suspended && card.srs.state !== 'new' && card.srs.due <= now
+  if (card.suspended || card.srs.state === 'new') return false
+  // Une carte à savoir pour bientôt est proposée même si son échéance propre
+  // tombe après le jour dit : c'est le seul effet des échéances de lot, et il
+  // ne fait qu'avancer une révision (voir srs/deadline).
+  return card.srs.due <= now || dueByDeadline(card, now)
 }
 
 export function isNew(card: Card): boolean {
@@ -89,7 +94,13 @@ function pickFresh(
   let extra = Math.max(0, bonus)
   let held = 0
 
-  for (const card of cards.filter(isNew).sort((a, b) => a.createdAt - b.createdAt)) {
+  // À quota serré, les cartes attendues pour une date passent devant : il serait
+  // absurde de retenir pour demain ce qui doit être su lundi.
+  const queue = cards
+    .filter(isNew)
+    .sort((a, b) => (a.dueBy ?? '9999').localeCompare(b.dueBy ?? '9999') || a.createdAt - b.createdAt)
+
+  for (const card of queue) {
     if (remaining[card.deckId] === undefined) {
       remaining[card.deckId] = Math.max(0, settings.newPerDay - (introducedToday[card.deckId] ?? 0))
     }

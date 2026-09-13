@@ -156,7 +156,10 @@ export function SettingsScreen() {
             />
           </Field>
 
-          <Field label="Intervalle maximum (jours)" hint="Plafond entre deux passages d’une même carte.">
+          <Field
+            label="Intervalle maximum (jours)"
+            hint="Plafond entre deux passages d’une même carte. 90 jours garde tout dans la rotation d’un trimestre à l’autre ; au-delà, une carte peut disparaître pour la moitié de l’année."
+          >
             <input
               className="input mono"
               type="number"

@@ -94,8 +94,21 @@ export function grade(srs: Srs, answer: Grade, settings: Settings, now = Date.no
     }
 
     if (answer === 'hard') {
-      const step = clamp(srs.step, 0, steps.length - 1)
-      return inMinutes(steps[step], state, step)
+      /*
+       * « Difficile » avance d'un palier, au lieu de rester sur place.
+       *
+       * En restant, la carte était enfermée : répondre « Difficile » la
+       * ramenait au bout d'une minute, indéfiniment, et seul « Su » permettait
+       * d'en sortir. Autrement dit, l'élève honnête était puni. Une carte neuve
+       * entre donc au premier palier, puis « Difficile » la fait progresser —
+       * une minute, dix minutes, le cycle long — simplement plus lentement que
+       * « Su », qui saute directement.
+       */
+      const step = srs.state === 'new' ? 0 : clamp(srs.step, 0, steps.length - 1) + 1
+      if (step < steps.length) return inMinutes(steps[step], state, step)
+      return schedule(
+        relearning ? Math.max(1, Math.round(srs.interval * LAPSE_FACTOR)) : GRADUATING_INTERVAL,
+      )
     }
 
     // Carte jamais vue et sue d'emblée : elle sort directement.

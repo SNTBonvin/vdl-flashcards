@@ -164,6 +164,8 @@ export interface Store extends State {
 
   /** Archive ou désarchive un lot de cartes d'un seul geste. */
   archiveCards(ids: ID[], archived: boolean): Promise<void>
+  /** Retire l'échéance « à savoir pour le … » d'un groupe de cartes. */
+  clearDueBy(ids: ID[]): Promise<void>
 
   answer(card: Card, value: Grade): Promise<Card>
   resetCards(ids: ID[]): Promise<void>
@@ -340,6 +342,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       updatedAt: now,
       suspended: data.suspended ?? false,
       ...(data.sharedFrom ? { sharedFrom: data.sharedFrom } : {}),
+      ...(data.dueBy ? { dueBy: data.dueBy } : {}),
       srs: data.srs ?? newSrs(now),
     }
   }
@@ -400,6 +403,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const now = Date.now()
     const next = stateRef.current.cards.map((c) =>
       set.has(c.id) ? { ...c, suspended: archived, updatedAt: now } : c,
+    )
+    await idb.putMany('cards', next.filter((c) => set.has(c.id)))
+    dispatch({ type: 'cards', payload: next })
+  }, [])
+
+  /**
+   * Retire l'échéance d'un groupe de cartes. Un geste de l'élève : c'est son
+   * appareil, et une date annoncée par un professeur n'a pas à s'y imposer.
+   */
+  const clearDueBy = useCallback(async (ids: ID[]) => {
+    if (ids.length === 0) return
+    const set = new Set(ids)
+    const now = Date.now()
+    const next = stateRef.current.cards.map((c) =>
+      set.has(c.id) ? { ...c, dueBy: undefined, updatedAt: now } : c,
     )
     await idb.putMany('cards', next.filter((c) => set.has(c.id)))
     dispatch({ type: 'cards', payload: next })
@@ -701,19 +719,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           continue
         }
         created.push(
-          makeCard(deck.id, { front, back, notes: notes ?? '', sharedFrom: payload.id } as Card),
+          makeCard(deck.id, {
+            front,
+            back,
+            notes: notes ?? '',
+            sharedFrom: payload.id,
+            ...(payload.due ? { dueBy: payload.due } : {}),
+          } as Card),
         )
         continue
       }
 
       const nextBack = back.trim()
       const nextNotes = (notes ?? '').trim()
-      if (current.back === nextBack && current.notes === nextNotes) {
+      // L'échéance suit la diffusion : redonner le même lot pour une autre date
+      // doit déplacer la date, sans quoi il faudrait tout redonner sous un autre
+      // nom. La retirer se fait en rediffusant sans date.
+      const nextDue = payload.due
+      if (current.back === nextBack && current.notes === nextNotes && current.dueBy === nextDue) {
         unchanged += 1
         continue
       }
       // La progression (srs) et l'archivage sont délibérément laissés intacts.
-      touched.push({ ...current, back: nextBack, notes: nextNotes, updatedAt: now })
+      touched.push({
+        ...current,
+        back: nextBack,
+        notes: nextNotes,
+        dueBy: nextDue,
+        updatedAt: now,
+      })
     }
 
     await Promise.all([
@@ -851,6 +885,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       copyCards,
       archiveCards,
+      clearDueBy,
       answer,
       resetCards,
       createDistribution,
@@ -885,6 +920,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       moveCards,
       copyCards,
       archiveCards,
+      clearDueBy,
       answer,
       resetCards,
       createDistribution,

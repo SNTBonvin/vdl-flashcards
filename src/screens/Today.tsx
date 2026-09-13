@@ -4,6 +4,7 @@ import { useStore } from '../state/store'
 import { requestSession } from '../state/session'
 import { useRoute } from '../lib/router'
 import { countCards, countSession } from '../srs/queue'
+import { formatDeadline, upcomingDeadlines } from '../srs/deadline'
 import { spiralSuggestion } from '../srs/spiral'
 import { isReminderPending } from '../reminders/reminders'
 import { Icon } from '../components/Icon'
@@ -65,6 +66,12 @@ export function TodayScreen() {
   // Tous les thèmes, réserve comprise : une mise à jour reçue se signale même
   // si le thème est mis de côté pour la révision.
   const updates = useMemo(() => pendingUpdates(store.decks), [store.decks])
+
+  /** Échéances annoncées par le professeur, la plus proche d'abord. */
+  const deadlines = useMemo(
+    () => upcomingDeadlines(store.studyCards, now).slice(0, 3),
+    [store.studyCards, now],
+  )
 
   const spiral = useMemo(
     () => spiralSuggestion(store.studyDecks, store.cardsByDeck, now),
@@ -224,6 +231,32 @@ export function TodayScreen() {
           </>
         )}
       </section>
+
+      {deadlines.length > 0 && (
+        <section className="stack stack-3">
+          <SectionHead title={plural(deadlines.length, 'À savoir pour', 'À savoir pour')} />
+          <div className="card">
+            {deadlines.map((group) => (
+              <div key={group.dueBy} className="listrow" style={{ cursor: 'default' }}>
+                <span className={`dot dot--${group.days <= 1 ? 'warn' : 'ok'}`} />
+                <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                  <span className="listrow__title truncate">
+                    {formatDeadline(group.dueBy, now)}
+                  </span>
+                  <span className="listrow__sub">
+                    {group.total} {plural(group.total, 'carte')}
+                    {group.unseen > 0 &&
+                      ` · ${group.unseen} ${plural(group.unseen, 'pas encore vue', 'pas encore vues')}`}
+                  </span>
+                </span>
+                <span className={`chip mono ${group.days <= 1 ? 'chip--warn' : ''}`}>
+                  {group.days === 0 ? "c’est aujourd’hui" : group.days === 1 ? 'demain' : `J − ${group.days}`}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Vérification silencieuse : le professeur a redéposé un jeu reçu. On le
           signale ici parce que c'est le seul écran que l'élève ouvre tous les

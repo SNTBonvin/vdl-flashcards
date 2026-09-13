@@ -139,6 +139,9 @@ export function PublishSheet({
       subject: subject.name,
       deck: label.trim() || deck.name,
       ...(lot ? { lot: lot.name } : {}),
+      // L'échéance du lot voyage avec le jeu : chez l'élève, elle garantira un
+      // passage sur chaque carte avant le jour dit.
+      ...(lot?.dueBy ? { dueBy: lot.dueBy } : {}),
       ...(deck.description ? { description: deck.description } : {}),
       // Le même identifiant que le partage par lien : chez l'élève, un jeu reçu
       // par code et un lot reçu par lien se rejoignent dans le même thème.

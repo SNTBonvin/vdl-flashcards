@@ -21,6 +21,7 @@ export function ShareSheet({
   open,
   deck,
   cards: subset,
+  dueBy,
   title = 'Partager ce thème',
   onClose,
   onShared,
@@ -29,6 +30,8 @@ export function ShareSheet({
   deck: Deck
   /** Sous-ensemble à diffuser — un lot. Par défaut, tout le thème. */
   cards?: Card[]
+  /** Échéance du lot, le cas échéant : elle voyage avec les cartes. */
+  dueBy?: string
   title?: string
   onClose: () => void
   /** Appelé quand le lien a été produit, pour dater la diffusion. */
@@ -52,7 +55,7 @@ export function ShareSheet({
     setBuilding(true)
     ;(async () => {
       const shareId = await store.prepareShare(deck.id)
-      const token = await encodeShare(buildPayload({ subject, deck, cards, by, shareId }))
+      const token = await encodeShare(buildPayload({ subject, deck, cards, by, shareId, dueBy }))
       if (cancelled) return
       const link = shareUrl(token)
       setUrl(link)

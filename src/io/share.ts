@@ -30,6 +30,12 @@ export interface SharePayload {
   t: string
   /** Description du thème. */
   d?: string
+  /**
+   * Date à laquelle le jeu doit être su, « AAAA-MM-JJ ». Portée par le partage
+   * entier plutôt que carte par carte : un lot a une seule échéance, et la
+   * répéter coûterait de la place dans un lien déjà serré.
+   */
+  due?: string
   /** Cartes : recto, verso, puis note facultative. */
   c: [string, string, string?][]
 }
@@ -116,8 +122,10 @@ export function buildPayload(options: {
   cards: Card[]
   by: string
   shareId: string
+  /** Échéance du lot diffusé, « AAAA-MM-JJ ». */
+  dueBy?: string
 }): SharePayload {
-  const { subject, deck, cards, by, shareId } = options
+  const { subject, deck, cards, by, shareId, dueBy } = options
   return {
     v: 1,
     id: shareId,
@@ -128,6 +136,7 @@ export function buildPayload(options: {
     s: subject.name,
     t: deck.name,
     ...(deck.description ? { d: deck.description } : {}),
+    ...(dueBy ? { due: dueBy } : {}),
     c: cards
       .filter((card) => !card.suspended)
       .map((card) => (card.notes ? [card.front, card.back, card.notes] : [card.front, card.back])),

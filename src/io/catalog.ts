@@ -32,6 +32,11 @@ export interface PublishedSet {
   deck: string
   /** Nom du lot dont provient ce jeu, à titre indicatif. */
   lot?: string
+  /**
+   * Date à laquelle le jeu doit être su, « AAAA-MM-JJ ». Facultative. Chez
+   * l'élève, elle garantit un passage sur chaque carte avant le jour dit.
+   */
+  dueBy?: string
   description?: string
   /** Identifiant de partage du thème : c'est lui qui évite les doublons. */
   shareId: string
@@ -117,6 +122,7 @@ export function setToPayload(set: PublishedSet): SharePayload {
     s: set.subject,
     t: set.deck,
     d: set.description,
+    ...(set.dueBy ? { due: set.dueBy } : {}),
     c: set.cards,
   }
 }

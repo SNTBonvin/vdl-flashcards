@@ -80,7 +80,10 @@ sauvegarde JSON reste le filet.
   une minute plus tard puis dix minutes plus tard, dans la séance en cours ; une
   carte acquise que l'on oublie repart avec un intervalle divisé par deux ; une
   carte sue s'espace de plus en plus (intervalle × facteur de facilité, 2,5 au
-  départ). Une carte neuve sue d'emblée rejoint directement le cycle long.
+  départ), soit 1 j, 3 j, 8 j, 20 j, 2 mois… Une carte neuve sue d'emblée
+  rejoint directement le cycle long, et « Difficile » fait avancer d'un palier
+  au lieu de piétiner. L'intervalle est plafonné à **90 jours** par défaut, pour
+  qu'une carte ne disparaisse jamais plus d'un trimestre.
 - **Plan de reprises et agenda** — chaque thème peut recevoir un plan de
   révision (courbe de l'oubli : demain, une semaine, un mois, six mois) exporté
   vers l'agenda du téléphone, seul dispositif capable de sonner application
@@ -90,6 +93,11 @@ sauvegarde JSON reste le filet.
   réellement, quota quotidien de cartes neuves compris (`countSession`, qui
   partage sa sélection avec `buildQueue`). Quand le quota retient des cartes,
   l'écran le dit et renvoie à demain plutôt que d'ouvrir une séance vide.
+- **Échéance de lot** — un lot peut porter une date « à savoir pour le … », qui
+  voyage avec les cartes jusque chez l'élève. Elle garantit un passage sur
+  chaque carte la veille au plus tard (`srs/deadline`), affiche un compte à
+  rebours, puis devient inerte. L'accumulation des lots, elle, ne demande rien :
+  c'est la répétition espacée qui la produit.
 - **Révision blanche** — une option de séance (« Ne pas modifier le
   programme ») interroge sans rien écrire : ni échéance, ni historique, ni
   compteur. C'est ce qu'il faut la veille d'un contrôle, où répondre « Su »
