@@ -4,6 +4,12 @@
 reprise plus tard. **Rien n'est implémenté.** La plus-value pédagogique n'est
 pas tranchée : c'est la question à régler avant d'écrire une ligne.*
 
+*La note a été révisée deux fois le même jour, au fil des questions posées. Les
+sections sont laissées dans leur ordre d'écriture pour que le raisonnement reste
+lisible, mais **c'est « Les trois options, comparées » qui fait foi** : les
+sections antérieures concluent sur une comparaison à deux termes qu'elle
+remplace.*
+
 ## L'état actuel
 
 Une carte est **trois chaînes de texte** — `front`, `back`, `notes` — et rien
@@ -20,14 +26,17 @@ façon à l'arrivée d'un média :
 
 ## Ce que ça change, couche par couche
 
-### 1. Le transport — l'image embarquée l'emporte
+### 1. Le transport — ce que l'image embarquée fait disparaître
 
-*Révision du 13 septembre, après une remarque de Christophe Bonvin, qui
-signalait l'outil de la forge éducative convertissant les images en base64
-(`edu-md.forge.apps.education.fr/inserer-image.html`). La première version de
-cette note recommandait l'image **référencée**. C'était une erreur
-d'appréciation : l'image **embarquée en base64 dans la carte** est le meilleur
-premier pas, et pour une raison de fond plus que de commodité.*
+> **Attention en relisant :** cette section a été écrite avant la comparaison
+> des trois options, plus bas, qui en révise la conclusion. Elle reste juste sur
+> ce que le base64 supprime ; elle surévalue en revanche le coût du hors ligne
+> pour une image référencée. Lire « Les trois options, comparées » avant de
+> décider.
+
+*Écrit après une remarque de Christophe Bonvin signalant l'outil de la forge
+éducative qui convertit les images en base64
+(`edu-md.forge.apps.education.fr/inserer-image.html`).*
 
 **L'image devient une donnée de la carte, pas une ressource externe.** Six
 problèmes disparaissent d'un coup :
@@ -111,21 +120,130 @@ images sans s'en apercevoir.
 - **Droits** : une photo trouvée en ligne et redistribuée à une classe engage
   l'enseignant. Un rappel discret à l'ajout serait de mise.
 
+## Les trois options, comparées
+
+*Ajouté le 13 septembre, sur une question de Christophe Bonvin : « et si on
+n'acceptait que des URL d'images hébergées ? » Cette question fait apparaître
+une troisième voie, et oblige à corriger deux estimations de cette note.*
+
+Il faut d'abord séparer deux choses que « URL hébergée » recouvre, et qui n'ont
+rien à voir :
+
+- **B. URL sur le domaine de l'application** — l'image vit dans `public/media/`
+  du dépôt, déployée avec le site ;
+- **C. URL sur un hébergeur tiers** — le WordPress du lycée, un nuage, un site
+  quelconque.
+
+| | **A. Base64 dans la carte** | **B. URL même domaine** | **C. URL tierce** |
+|---|---|---|---|
+| Requête vers un tiers | aucune | aucune | **une par affichage** |
+| Hors ligne | acquis d'office | préchargement à l'import | **perdu** |
+| Lien de partage et QR code | **impossibles** | l'adresse tient (~80 car.) | l'adresse tient |
+| Historique git par republication | +3 Mo à chaque fois | l'image n'est stockée qu'une fois | rien |
+| Retéléchargement élève à chaque correction | **tout le jeu** | le texte seul | le texte seul |
+| Lien mort possible | non | non (versionné avec le site) | **oui, un jour** |
+| Sauvegarde autonome | oui, pixels compris | non (elle porte l'adresse) | non |
+| Effort d'écriture | ~1 journée | ~1 journée | ~2 heures |
+
+### Pourquoi l'option C est à écarter
+
+Elle est de loin la moins chère à écrire, et c'est son seul avantage.
+
+**Elle défait la promesse centrale de l'application.** Aujourd'hui aucune
+requête ne part vers un service tiers, et un contrôle automatisé
+(`privacy-check`) le vérifie à chaque passage. Une image hébergée ailleurs veut
+dire que **le téléphone de chaque élève contacte ce serveur chaque fois que la
+carte se présente en révision**. Le serveur y voit une adresse IP, une date, une
+heure, et *quelle carte était révisée*. Sur le WordPress de l'établissement, ce
+sont les journaux du lycée qui enregistreraient l'activité de révision des
+élèves. C'est précisément le suivi que ce projet refuse par construction depuis
+le premier jour.
+
+Le reste suit : **le hors ligne disparaît** (une image non chargée laisse un
+trou), et **les liens meurent** — une image déplacée, un site réorganisé, un
+compte fermé, et la carte est cassée des années plus tard, sans que l'auteur
+s'en aperçoive puisque son propre cache la lui montre encore.
+
+### L'option B mérite d'être reprise au sérieux
+
+En comparant les trois, **deux estimations de cette note se révèlent fausses**,
+et toutes deux en défaveur du base64 :
+
+**1. J'avais surévalué le coût du hors ligne pour une image référencée.** La
+première version parlait d'un magasin `media` dans IndexedDB, de `Blob` et de
+`URL.createObjectURL`. C'est inutile pour une image du même domaine : l'API
+`Cache` est faite pour cela. Un `caches.open('media').then(c => c.addAll(urls))`
+au moment de l'import — une quinzaine de lignes — et le service worker sert les
+images hors ligne sans que la page ait à le savoir. Le `<img src="/media/x.jpg">`
+fonctionne tel quel. C'est bien plus léger que ce que j'ai écrit.
+
+**2. Le base64 a deux factures différées, que l'option B ne paie pas :**
+
+- **l'historique git**. Republier un jeu illustré de 3 Mo vingt fois dans
+  l'année, c'est 60 Mo d'historique par an — le base64 d'un JPEG ne se
+  compresse pas. Sur cinq ans, 300 Mo : on reste dans les clous de GitHub, mais
+  les clonages et les constructions ralentissent. Avec une image référencée, le
+  fichier n'est stocké qu'une fois, quel que soit le nombre de republications ;
+- **le retéléchargement chez l'élève**. Corriger une virgule renvoie aujourd'hui
+  2 Ko. Avec les images embarquées, la même correction renvoie **le jeu entier**.
+  Trente élèves qui mettent à jour un jeu de 3 Mo en début d'heure, sur le wifi
+  de l'établissement, cela fait 90 Mo d'un coup. Avec une image référencée, le
+  texte seul circule : les images déjà en cache ne bougent pas.
+
+**Et surtout : l'option B rend leur parité aux trois chemins de diffusion.** Une
+adresse tient en quatre-vingts caractères, donc elle passe dans un lien *et*
+dans un QR code. L'asymétrie décrite plus haut — « les cartes illustrées ne
+pourront voyager que par code publié » — **n'existe qu'avec le base64**.
+
+Ce que l'option B coûte en retour : le dépôt des images sur le site (que le
+jeton de publication sait déjà faire, `putFile` encode le binaire), des fichiers
+orphelins quand une carte est supprimée (sans conséquence, c'est un dépôt et non
+un quota), et surtout **une sauvegarde qui n'est plus autonome** : elle porte
+les adresses, pas les pixels. Changer de téléphone suppose que le site réponde
+encore. C'est la seule vraie régression face au base64.
+
+### Le critère qui départage A et B
+
+Poser la question dans cet ordre :
+
+1. **Voulez-vous que les cartes illustrées se partagent par lien et par QR
+   code ?** Si oui → **B**, sans hésiter : le base64 l'interdit.
+2. Sinon, **les jeux illustrés seront-ils fréquemment corrigés et republiés ?**
+   Si oui → **B** : les deux factures différées se paient à chaque
+   republication.
+3. Sinon, **tenez-vous à ce qu'une sauvegarde suffise à tout restaurer, site
+   éteint ?** Si oui → **A**.
+
+En l'état de l'usage — publication par code, republication fréquente pendant
+qu'un chapitre se construit — **l'option B semble la plus juste**. Mais ce
+classement tient à des hypothèses d'usage, pas à une vérité technique : c'est à
+revérifier le jour où la décision se prend.
+
 ## Proposition, si la décision est prise
 
-Commencer petit, dans cet ordre :
+**Sur l'option B**, dans cet ordre :
 
-1. **un champ `image` sur la carte**, contenant un `data:` URI — PNG, JPEG ou
-   WebP, jamais SVG — affiché au recto seulement ;
-2. **redimensionnement automatique** à l'ajout, avec plafond dur. C'est l'étape
-   qui décide de tout : sans elle, rien ne tient ;
-3. affichage du poids du jeu dans la feuille de publication ;
-4. avertissement au partage par lien quand le jeu contient des images, puisque
-   le lien ne peut pas les porter.
+1. **un champ `image` sur la carte**, contenant une adresse relative du même
+   domaine (`/media/schema-adn.jpg`), affichée au recto seulement ;
+2. **redimensionnement automatique à l'ajout** — `canvas` + `toBlob`, sans
+   bibliothèque. C'est l'étape qui décide de tout : entre une photo de téléphone
+   brute et un schéma à 800 px il y a un facteur 57, et rien ne tient sans elle.
+   Attention aux photos d'iPhone, dont l'orientation est en EXIF et que le
+   canvas ignore : `createImageBitmap(file, { imageOrientation: 'from-image' })` ;
+3. **dépôt de l'image par le jeton**, au moment de publier : `putFile` encode
+   déjà le binaire, il n'y a qu'à l'appeler pour chaque image nouvelle ;
+4. **préchargement à l'import** : `caches.open('media').then(c => c.addAll(…))`,
+   une quinzaine de lignes, et le hors ligne est acquis sans magasin de médias ;
+5. liste blanche stricte des types — PNG, JPEG, WebP, **jamais SVG** ;
+6. rien à changer au partage par lien ni au QR code : une adresse tient dedans.
 
-Ce que cet ordre évite : le magasin de médias, la règle de cache, le
-téléversement séparé, la reprise du format de sauvegarde. Rien de tout cela
-n'est nécessaire tant que l'image vit dans la carte.
+**Si c'est l'option A** (base64) qui est retenue, remplacer les points 1, 3 et 4
+par : un `data:` URI dans le champ, aucun dépôt séparé, aucun préchargement — et
+ajouter un plafond dur par carte (300 Ko encodés), l'affichage du poids du jeu
+dans la feuille de publication, et un avertissement au partage par lien, qui ne
+pourra pas porter les images.
+
+**L'option C (hébergeur tiers) n'est pas à retenir** : voir plus haut.
 
 Le son viendrait ensuite, par le même chemin, s'il se justifie — il concerne
 surtout les langues vivantes, moins la SVT et la SNT.
