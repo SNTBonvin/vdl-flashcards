@@ -11,6 +11,7 @@ import {
   suggestCode,
   type PublishedSet,
 } from '../io/catalog'
+import { PublishError, parseRepo, putFile, readToken } from '../io/github'
 import type { Card, Deck, Distribution } from '../db/types'
 
 /**
@@ -89,6 +90,10 @@ export function PublishSheet({
    * confondraient. Rien n'est proposé tant qu'il n'est pas prêt.
    */
   const [shareId, setShareId] = useState<string | null>(null)
+  /** Jeton de publication, s'il y en a un sur cet appareil. */
+  const [token, setToken] = useState('')
+  const [sending, setSending] = useState(false)
+  const [failure, setFailure] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) return
@@ -97,6 +102,8 @@ export function PublishSheet({
     setListed(true)
     setRepo(store.settings.publishRepo)
     setShareId(null)
+    setFailure(null)
+    void readToken().then(setToken)
     let cancelled = false
     void store.prepareShare(deck.id).then((id) => {
       if (!cancelled) setShareId(id)
@@ -142,6 +149,8 @@ export function PublishSheet({
 
   const content = file ? JSON.stringify(file, null, 2) : ''
   const normalized = normalizeCode(code)
+  /** Dépôt direct possible : un jeton sur cet appareil, et un dépôt GitHub. */
+  const canSend = token.length > 0 && parseRepo(repo) !== null
 
   const copy = async () => {
     try {
@@ -149,6 +158,45 @@ export function PublishSheet({
       toast('Contenu copié.')
     } catch {
       toast('Copie impossible : téléchargez le fichier.', 'error')
+    }
+  }
+
+  /** Ce qu'on inscrit dans l'historique du dépôt : lisible sans ouvrir le fichier. */
+  const commitMessage = () =>
+    `${published ? 'Mettre à jour' : 'Publier'} le jeu ${normalized} (${live.length} ${plural(live.length, 'carte')})`
+
+  /**
+   * Dépôt direct, quand un jeton est en place. En cas d'échec on ne bloque
+   * pas : le message dit quoi faire, et les boutons du dépôt manuel sont
+   * toujours là, juste en dessous.
+   */
+  const publishNow = async () => {
+    const target = parseRepo(repo)
+    if (!target || !normalized || !content) return
+    if (repo !== store.settings.publishRepo) await store.saveSettings({ publishRepo: repo.trim() })
+    setSending(true)
+    setFailure(null)
+    try {
+      const result = await putFile(target, token, setPath(normalized), content, commitMessage())
+      const marks = {
+        publishedAs: normalized,
+        publishedName: label.trim() || deck.name,
+        publishedAt: Date.now(),
+        publishedCount: live.length,
+      }
+      if (lot) await store.updateDistribution(lot.id, marks)
+      else await store.updateDeck(deck.id, marks)
+      onPublished(normalized)
+      toast(result.replaced ? 'Jeu mis à jour sur le dépôt.' : 'Jeu publié sur le dépôt.')
+      onClose()
+    } catch (e) {
+      setFailure(
+        e instanceof PublishError
+          ? e.message
+          : 'Le dépôt a échoué. Utilisez le dépôt manuel ci-dessous.',
+      )
+    } finally {
+      setSending(false)
     }
   }
 
@@ -173,15 +221,27 @@ export function PublishSheet({
       title={published ? 'Republier ce jeu' : 'Publier sous un code'}
       onClose={onClose}
       footer={
-        <button
-          type="button"
-          className="btn btn--primary btn--block"
-          disabled={!valid || live.length === 0}
-          onClick={copy}
-        >
-          <Icon name="upload" size={18} />
-          Copier le contenu du fichier
-        </button>
+        canSend ? (
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            disabled={!valid || live.length === 0 || sending}
+            onClick={() => void publishNow()}
+          >
+            <Icon name="upload" size={18} />
+            {sending ? 'Dépôt en cours…' : published ? 'Republier maintenant' : 'Publier maintenant'}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            disabled={!valid || live.length === 0}
+            onClick={copy}
+          >
+            <Icon name="upload" size={18} />
+            Copier le contenu du fichier
+          </button>
+        )
       }
     >
       <div className="stack stack-5">
@@ -281,6 +341,22 @@ export function PublishSheet({
           )}
         </div>
 
+        {failure && (
+          <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+            <span className="glyph glyph--warm">
+              <Icon name="info" size={18} />
+            </span>
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              {failure} Le dépôt à la main, ci-dessous, marche toujours.
+            </p>
+          </div>
+        )}
+
+        {canSend && <hr className="rule" />}
+        {canSend && (
+          <span className="eyebrow">Sinon, à la main</span>
+        )}
+
         <button
           type="button"
           className="btn btn--ghost btn--block"
@@ -320,9 +396,11 @@ export function PublishSheet({
             <Icon name="info" size={18} />
           </span>
           <p className="meta" style={{ lineHeight: 1.55 }}>
-            {published
-              ? 'Sur la page qui s’ouvre : tout sélectionner, coller, valider. Deux minutes plus tard, le jeu est à jour chez ceux qui l’ont reçu — sans doublon et sans toucher à leur progression.'
-              : 'Sur la page qui s’ouvre : nommez le fichier, collez le contenu, validez. La publication prend environ deux minutes.'}{' '}
+            {canSend
+              ? 'Le fichier part directement sur le dépôt ; le site se reconstruit ensuite tout seul, en deux minutes environ. Chez ceux qui ont déjà reçu le jeu, la mise à jour se signale d’elle-même, sans doublon et sans toucher à leur progression.'
+              : published
+                ? 'Sur la page qui s’ouvre : tout sélectionner, coller, valider. Deux minutes plus tard, le jeu est à jour chez ceux qui l’ont reçu — sans doublon et sans toucher à leur progression.'
+                : 'Sur la page qui s’ouvre : nommez le fichier, collez le contenu, validez. La publication prend environ deux minutes.'}{' '}
             Gardez le même code : en changer créerait un second jeu.
           </p>
         </div>

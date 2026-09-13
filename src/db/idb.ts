@@ -119,6 +119,12 @@ export function setMeta<T>(key: string, value: T): Promise<void> {
   })
 }
 
+export function delMeta(key: string): Promise<void> {
+  return run(['meta'], 'readwrite', (tx) => {
+    tx.objectStore('meta').delete(key)
+  })
+}
+
 /** Vide entièrement la base (utilisé par la restauration d'une sauvegarde). */
 export function clearAll(): Promise<void> {
   return run(['subjects', 'decks', 'cards', 'logs', 'distributions'], 'readwrite', (tx) => {

@@ -22,6 +22,14 @@ import { notificationSupport, requestPermission } from '../reminders/reminders'
 import { APP_BUILD_DATE, APP_VERSION } from '../pwa/update'
 import { useTheme, type ThemeMode } from '../theme/theme'
 import { useRoute } from '../lib/router'
+import {
+  PublishError,
+  checkAccess,
+  forgetToken,
+  parseRepo,
+  readToken,
+  saveToken,
+} from '../io/github'
 import { ExportSheet, exportRows } from '../components/ExportSheet'
 import {
   formatBytes,
@@ -255,6 +263,8 @@ export function SettingsScreen() {
             </p>
           )}
         </div>
+
+        {store.settings.teacherTools && <PublishToken />}
       </section>
 
       {/* ---------------- Données ---------------- */}
@@ -524,4 +534,148 @@ function clampNumber(raw: string, min: number, max: number): number {
   const value = Number.parseInt(raw, 10)
   if (Number.isNaN(value)) return min
   return Math.min(max, Math.max(min, value))
+}
+
+/**
+ * Jeton de publication : ce qui transforme le dépôt d'un fichier en un bouton.
+ *
+ * Il est délibérément rangé ici plutôt que dans la feuille de publication :
+ * c'est un réglage de l'appareil, qu'on saisit une fois, pas une étape de la
+ * diffusion. Et il est écrit dans une case à part de la base — jamais dans les
+ * réglages exportés, une sauvegarde n'ayant aucune raison de transporter un
+ * droit d'écriture (voir io/github).
+ */
+function PublishToken() {
+  const store = useStore()
+  const toast = useToast()
+  const [token, setToken] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [forgetting, setForgetting] = useState(false)
+
+  useEffect(() => {
+    void readToken().then((value) => setSaved(value.length > 0))
+  }, [])
+
+  const repo = parseRepo(store.settings.publishRepo)
+
+  const save = async () => {
+    if (!repo) {
+      setError('Renseignez d’abord l’adresse du dépôt dans la feuille de publication.')
+      return
+    }
+    setBusy(true)
+    setError(null)
+    try {
+      await checkAccess(repo, token.trim())
+      await saveToken(token)
+      setToken('')
+      setSaved(true)
+      toast('Jeton enregistré sur cet appareil.')
+    } catch (e) {
+      setError(e instanceof PublishError ? e.message : 'Vérification impossible.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="card card--pad stack stack-4">
+      <div className="row row--between">
+        <span className="eyebrow">Publier en un geste</span>
+        {saved && <span className="chip chip--ok">jeton en place</span>}
+      </div>
+
+      <p className="meta" style={{ lineHeight: 1.6 }}>
+        Sans jeton, publier veut dire télécharger un fichier puis le déposer à la main sur le
+        dépôt. Avec un jeton, l’application le dépose pour vous.
+      </p>
+
+      {saved ? (
+        <>
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            Le jeton est enregistré sur cet appareil seulement. Il ne part jamais dans la
+            sauvegarde, et n’est envoyé qu’à GitHub, au moment où vous publiez.
+          </p>
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => setForgetting(true)}
+          >
+            <Icon name="trash" size={17} />
+            Oublier ce jeton
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="stack stack-2">
+            <span className="label">Comment en obtenir un</span>
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              Sur GitHub : <span className="mono">Settings → Developer settings → Personal access
+              tokens → Fine-grained tokens</span>. Donnez-lui accès au{' '}
+              <strong style={{ color: 'var(--ink)' }}>seul dépôt du projet</strong>, et une seule
+              autorisation : <span className="mono">Contents</span> en lecture et écriture. Il
+              s’annule d’un clic depuis la même page si vous perdez votre téléphone.
+            </p>
+          </div>
+
+          <Field label="Jeton" hint="Collé une fois, il reste sur cet appareil.">
+            <input
+              className="input mono"
+              style={{ fontSize: 12 }}
+              type="password"
+              value={token}
+              onChange={(e) => {
+                setToken(e.target.value)
+                setError(null)
+              }}
+              placeholder="github_pat_…"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </Field>
+
+          {!repo && (
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              Le dépôt n’est pas encore renseigné, ou n’est pas sur GitHub. Cette voie ne vaut que
+              pour un dépôt GitHub — ailleurs, le dépôt manuel reste le chemin.
+            </p>
+          )}
+
+          {error && (
+            <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+              <span className="glyph glyph--warm">
+                <Icon name="info" size={18} />
+              </span>
+              <p className="meta" style={{ lineHeight: 1.55 }}>{error}</p>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            disabled={!token.trim() || !repo || busy}
+            onClick={() => void save()}
+          >
+            {busy ? 'Vérification…' : 'Vérifier et enregistrer'}
+          </button>
+        </>
+      )}
+
+      <ConfirmSheet
+        open={forgetting}
+        title="Oublier ce jeton ?"
+        text="La publication redeviendra manuelle : télécharger le fichier, puis le déposer sur le dépôt. Le jeton lui-même reste valide sur GitHub tant que vous ne l’y révoquez pas."
+        confirmLabel="Oublier"
+        onClose={() => setForgetting(false)}
+        onConfirm={async () => {
+          await forgetToken()
+          setSaved(false)
+          toast('Jeton retiré de cet appareil.')
+        }}
+      />
+    </div>
+  )
 }

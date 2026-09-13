@@ -115,6 +115,11 @@ sauvegarde JSON reste le filet.
   silencieusement au lancement et au retour au premier plan ; quand le
   professeur a redéposé son fichier, une pastille l'annonce sur l'accueil et
   sur le thème. Rien n'est importé sans l'aperçu et l'accord de l'élève.
+- **Publication en un bouton** — un jeton GitHub à portée restreinte, saisi une
+  fois dans les réglages de l'appareil de l'enseignant, permet à l'application
+  de déposer le fichier elle-même. Le jeton est rangé hors des réglages pour ne
+  jamais partir dans une sauvegarde, n'est envoyé qu'à `api.github.com`, et son
+  absence ramène simplement au dépôt manuel.
 - **Catalogue** — les jeux publiés et listés se parcourent dans l'application,
   par niveau puis par matière, l'index étant reconstruit à chaque publication.
 - **Partage par lien** — un thème se diffuse par un lien (ou un QR code projeté
@@ -277,6 +282,48 @@ forcer de lui-même — un forçage manuel reste possible, une fois le contenu
 remis côté source. Le pipeline valide ensuite chaque jeu (`scripts/check-sets.mjs`, `npm run check-sets`) :
 nom de fichier, format, identifiant de partage, cartes — sinon la publication
 échoue plutôt que de laisser un code mort.
+
+## Publier sans quitter l'application
+
+Déposer un fichier à la main — télécharger, ouvrir la forge, coller, valider —
+est le seul point pénible du circuit. Un **jeton d'accès GitHub** le supprime,
+sans rien changer pour les élèves.
+
+Le principe qui décide de tout : **l'appareil de l'enseignant peut parler à qui
+il veut ; celui des élèves, non.** Le jeton ne concerne que le premier. Les
+élèves continuent de lire un fichier statique servi par le même domaine que
+l'application, sans tiers, hors ligne compris.
+
+### Ce que l'application fait du jeton
+
+- **Il n'est pas dans les réglages.** Il est écrit sous une clé distincte du
+  magasin `meta` (`publishToken`), précisément pour ne pas figurer dans la
+  sauvegarde JSON — une sauvegarde se transmet, se pose sur un ordinateur
+  partagé, se perd ; un droit d'écriture n'a rien à y faire. Un contrôle
+  automatisé vérifie qu'il est absent du fichier exporté.
+- **Il ne part que vers `api.github.com`**, et seulement sur un geste de
+  publication ou de vérification.
+- **« Tout effacer » l'oublie aussi.** Effacer ses données, c'est aussi se
+  défaire du droit d'écrire.
+- **Rien n'en dépend.** Sans jeton, expiré ou révoqué, la feuille de
+  publication redevient ce qu'elle était : préparer le fichier, ouvrir la page
+  de dépôt, coller. Les deux boutons restent affichés sous le dépôt direct.
+
+### Le jeton à créer
+
+Sur GitHub : *Settings → Developer settings → Personal access tokens →
+Fine-grained tokens*. Un seul dépôt, une seule autorisation — **Contents** en
+lecture et écriture. Révocable d'un clic depuis la même page.
+
+L'application vérifie le jeton avant de l'enregistrer (`GET /repos/:owner/:repo`)
+et distingue les refus : 401 jeton expiré ou mal recopié, 403 droits
+insuffisants, 404 dépôt introuvable *ou* jeton non autorisé sur ce dépôt précis
+— GitHub ne les distingue pas, et le message le dit plutôt que de laisser
+chercher du mauvais côté.
+
+Le dépôt passe par l'API Contents : lecture de l'empreinte du fichier existant,
+puis `PUT` avec cette empreinte s'il y en a une (remplacement) ou sans (création).
+La branche n'est pas précisée, GitHub écrit sur la branche par défaut.
 
 ## Rappels et agenda
 

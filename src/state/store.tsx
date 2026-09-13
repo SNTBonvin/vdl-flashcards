@@ -14,6 +14,7 @@ import {
   type ReactNode,
 } from 'react'
 import * as idb from '../db/idb'
+import { forgetToken } from '../io/github'
 import {
   DEFAULT_SETTINGS,
   type Backup,
@@ -779,6 +780,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const wipe = useCallback(async () => {
     await idb.clearAll()
+    // Effacer ses données, c'est aussi se défaire du droit d'écrire sur le
+    // dépôt : laisser le jeton derrière serait le contraire de ce qui est
+    // demandé ici.
+    await forgetToken()
     dispatch({
       type: 'replaceAll',
       payload: {

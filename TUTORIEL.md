@@ -201,6 +201,30 @@ miroir : un fichier ajouté directement sur le miroir fait diverger les deux
 dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
 
+### Publier d'un seul bouton
+
+Le dépôt à la main — télécharger, ouvrir GitHub, coller, valider — peut être
+supprimé. **Réglages → Diffusion → Publier en un geste** : vous y collez un
+jeton GitHub, et « Publier » dépose le fichier tout seul.
+
+Le jeton à créer, sur GitHub : *Settings → Developer settings → Personal access
+tokens → Fine-grained tokens*. **Un seul dépôt** — celui du projet — et **une
+seule autorisation** : *Contents*, en lecture et écriture. Il s'annule d'un clic
+depuis la même page si vous perdez votre téléphone.
+
+Ce que l'application en fait :
+
+- il reste **sur cet appareil**, dans une case à part : il ne part **jamais**
+  dans la sauvegarde JSON, même quand vous changez de téléphone ;
+- il n'est envoyé **qu'à GitHub**, au moment où vous publiez ;
+- « Tout effacer » l'oublie aussi ;
+- s'il est absent, expiré ou révoqué, la feuille de publication redevient
+  exactement ce qu'elle était : le dépôt à la main reste toujours proposé, juste
+  en dessous.
+
+Rien ne change pour les élèves : ils lisent toujours un fichier servi par le
+site de l'application, sans passer par GitHub.
+
 ### Publier un lot sous son propre code
 
 Un lot se publie comme un thème, mais en gardant l'essentiel : **tous les lots
