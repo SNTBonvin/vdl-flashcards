@@ -90,6 +90,14 @@ sauvegarde JSON reste le filet.
   réellement, quota quotidien de cartes neuves compris (`countSession`, qui
   partage sa sélection avec `buildQueue`). Quand le quota retient des cartes,
   l'écran le dit et renvoie à demain plutôt que d'ouvrir une séance vide.
+- **Révision blanche** — une option de séance (« Ne pas modifier le
+  programme ») interroge sans rien écrire : ni échéance, ni historique, ni
+  compteur. C'est ce qu'il faut la veille d'un contrôle, où répondre « Su »
+  partout allongerait sinon tous les intervalles d'un coup. Non mémorisée d'une
+  séance à l'autre, pour ne pas rester allumée par mégarde.
+- **Aller plus loin** — quand le quota du jour retient des cartes, un bouton
+  permet d'en prendre dix de plus. L'application conseille un rythme, elle ne
+  l'impose pas.
 - **Trois modes de séance**, nommés par ce qu'ils font et non par leur
   mécanique :
   - *À revoir* : les cartes échues du jour, plus un quota de cartes neuves ;

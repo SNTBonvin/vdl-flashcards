@@ -10,6 +10,12 @@ export interface QueueOptions {
   introducedToday: Record<ID, number>
   settings: Settings
   now?: number
+  /**
+   * Cartes neuves autorisées au-delà du quota du jour. Budget **global**, pris
+   * dans l'ordre de création quel que soit le thème : « dix cartes de plus » se
+   * comprend sans avoir à raisonner thème par thème.
+   */
+  bonus?: number
 }
 
 export function isDue(card: Card, now = Date.now()): boolean {
@@ -58,7 +64,7 @@ export function buildQueue(cards: Card[], options: QueueOptions): Card[] {
   }
 
   const due = cards.filter((c) => isDue(c, now)).sort((a, b) => a.srs.due - b.srs.due)
-  const { taken: fresh } = pickFresh(cards, introducedToday, settings)
+  const { taken: fresh } = pickFresh(cards, introducedToday, settings, options.bonus ?? 0)
 
   const merged = settings.shuffle ? shuffle([...due, ...fresh]) : [...due, ...fresh]
   return merged.slice(0, limit)
@@ -76,9 +82,11 @@ function pickFresh(
   cards: Card[],
   introducedToday: Record<ID, number>,
   settings: Settings,
+  bonus = 0,
 ): { taken: Card[]; held: number } {
   const remaining: Record<ID, number> = {}
   const taken: Card[] = []
+  let extra = Math.max(0, bonus)
   let held = 0
 
   for (const card of cards.filter(isNew).sort((a, b) => a.createdAt - b.createdAt)) {
@@ -87,6 +95,11 @@ function pickFresh(
     }
     if (remaining[card.deckId] > 0) {
       remaining[card.deckId] -= 1
+      taken.push(card)
+    } else if (extra > 0) {
+      // Le budget supplémentaire se prend sur n'importe quel thème, dans
+      // l'ordre de création : « dix de plus » reste lisible.
+      extra -= 1
       taken.push(card)
     } else {
       held += 1
@@ -121,7 +134,7 @@ export function countSession(cards: Card[], options: Omit<QueueOptions, 'mode'>)
   const now = options.now ?? Date.now()
   const limit = Math.max(1, options.settings.maxPerSession)
   const due = cards.filter((c) => isDue(c, now)).length
-  const { taken, held } = pickFresh(cards, options.introducedToday, options.settings)
+  const { taken, held } = pickFresh(cards, options.introducedToday, options.settings, options.bonus ?? 0)
   return { due, fresh: taken.length, held, total: Math.min(limit, due + taken.length) }
 }
 

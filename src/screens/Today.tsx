@@ -84,6 +84,22 @@ export function TodayScreen() {
     navigate({ name: 'review' })
   }
 
+  /**
+   * Dépasser le quota du jour, en connaissance de cause. L'application conseille
+   * un rythme — elle ne l'impose pas à qui veut avancer. Dix cartes : assez pour
+   * que le geste serve, assez peu pour qu'il reste un choix et non une habitude.
+   */
+  const MORE = 10
+  const startMore = () => {
+    requestSession({
+      deckIds: allDeckIds,
+      mode: 'due',
+      label: 'Cartes en plus',
+      bonus: Math.min(MORE, session.held),
+    })
+    navigate({ name: 'review' })
+  }
+
   const today = new Date(now).toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
@@ -192,6 +208,13 @@ export function TodayScreen() {
               <Icon name="shuffle" size={18} />
               Me lancer un défi
             </button>
+            {session.held > 0 && (
+              <button type="button" className="btn btn--ghost btn--block" onClick={startMore}>
+                <Icon name="plus" size={18} />
+                Aller plus loin — {Math.min(MORE, session.held)}{' '}
+                {plural(Math.min(MORE, session.held), 'carte de plus', 'cartes de plus')}
+              </button>
+            )}
             {totals.hard > 0 && (
               <button type="button" className="btn btn--ghost btn--block" onClick={startHard}>
                 <Icon name="flag" size={18} />

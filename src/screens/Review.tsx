@@ -23,7 +23,7 @@ const MODES: { value: SessionMode; label: string; hint: string; help: string }[]
     value: 'quiz',
     label: 'Tout revoir',
     hint: 'Toutes les cartes des thèmes choisis, mélangées.',
-    help: 'Toutes les cartes des thèmes cochés, échues ou non, dans le désordre. À faire avant un contrôle, ou pour se tester d’un coup sur un chapitre entier. Cela ne dérègle pas le programme.',
+    help: 'Toutes les cartes des thèmes cochés, échues ou non, dans le désordre. À faire avant un contrôle, ou pour se tester d’un coup sur un chapitre entier. Attention : les réponses comptent et décalent les échéances — cochez « Ne pas modifier le programme » ci-dessous pour vous tester sans rien déranger.',
   },
   {
     value: 'hard',
@@ -38,6 +38,8 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
   const toast = useToast()
   const [queue, setQueue] = useState<Card[] | null>(null)
   const [label, setLabel] = useState('Révision')
+  /** Révision blanche : voir SessionRequest.dry. */
+  const [dry, setDry] = useState(false)
 
   useEffect(() => {
     onSessionChange(queue !== null)
@@ -45,13 +47,14 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
   }, [queue, onSessionChange])
 
   const startWith = useCallback(
-    (deckIds: ID[], mode: SessionMode, sessionLabel: string) => {
+    (deckIds: ID[], mode: SessionMode, sessionLabel: string, options?: StartOptions) => {
       const set = new Set(deckIds)
       const cards = store.cards.filter((c) => set.has(c.deckId))
       const built = buildQueue(cards, {
         mode,
         introducedToday: store.intro.counts,
         settings: store.settings,
+        bonus: options?.bonus,
       })
       // Garde-fou : une file vide affichait l'écran de fin de séance, « 0 % de
       // réussite, 0 réponse », ce qui se lit comme une panne. Mieux vaut ne pas
@@ -65,6 +68,7 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
         return 0
       }
       setLabel(sessionLabel)
+      setDry(options?.dry ?? false)
       setQueue(built)
       return built.length
     },
@@ -74,7 +78,11 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
   // Une demande venue d'un autre écran démarre la session directement.
   useEffect(() => {
     const request = takeSession()
-    if (request) startWith(request.deckIds, request.mode, request.label)
+    if (request)
+      startWith(request.deckIds, request.mode, request.label, {
+        bonus: request.bonus,
+        dry: request.dry,
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -83,10 +91,17 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
     <Session
       queue={queue}
       label={label}
+      dry={dry}
       onExit={() => setQueue(null)}
-      onRestart={(deckIds, mode, sessionLabel) => startWith(deckIds, mode, sessionLabel)}
+      onRestart={(deckIds, mode, sessionLabel) => startWith(deckIds, mode, sessionLabel, { dry })}
     />
   )
+}
+
+/** Réglages d'une séance qui ne survivent pas à la suivante. */
+export interface StartOptions {
+  bonus?: number
+  dry?: boolean
 }
 
 /* ------------------------------ Préparation ------------------------------ */
@@ -94,12 +109,18 @@ export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: b
 function ReviewSetup({
   onStart,
 }: {
-  onStart: (deckIds: ID[], mode: SessionMode, label: string) => number
+  onStart: (deckIds: ID[], mode: SessionMode, label: string, options?: StartOptions) => number
 }) {
   const store = useStore()
   const toast = useToast()
   const [mode, setMode] = useState<SessionMode>('due')
   const [selected, setSelected] = useState<ID[]>([])
+  /**
+   * Révision blanche. Volontairement **non mémorisé** dans les réglages : laissé
+   * allumé par mégarde, il ferait réviser sans jamais progresser, et rien ne le
+   * signalerait d'une séance à l'autre.
+   */
+  const [dry, setDry] = useState(false)
 
   const selectedSet = useMemo(() => new Set(selected), [selected])
 
@@ -270,6 +291,13 @@ function ReviewSetup({
           label="Inverser recto et verso"
           hint="La réponse est posée en question."
         />
+        <hr className="rule" />
+        <Toggle
+          checked={dry}
+          onChange={setDry}
+          label="Ne pas modifier le programme"
+          hint="Pour se tester sans rien déranger — la veille d’un contrôle, par exemple. Les réponses ne comptent pas et ne décalent aucune échéance."
+        />
       </section>
 
       <button
@@ -282,6 +310,7 @@ function ReviewSetup({
             selected,
             mode,
             names.length === 1 ? names[0] : `${names.length} thèmes`,
+            { dry },
           )
           if (started === 0) toast('Aucune carte à réviser avec ces réglages.', 'error')
         }}
@@ -311,11 +340,14 @@ const EMPTY_TALLY: Tally = { again: 0, hard: 0, good: 0 }
 function Session({
   queue,
   label,
+  dry,
   onExit,
   onRestart,
 }: {
   queue: Card[]
   label: string
+  /** Révision blanche : ni échéance modifiée, ni ligne d'historique. */
+  dry: boolean
   onExit: () => void
   onRestart: (deckIds: ID[], mode: SessionMode, label: string) => void
 }) {
@@ -339,15 +371,19 @@ function Session({
 
   const respond = async (grade: Grade) => {
     if (!card) return
-    const updated = await store.answer(card, grade)
+    // En révision blanche, rien n'est écrit : ni la progression de la carte, ni
+    // la ligne d'historique. Une séance qui ne compte pas ne doit pas non plus
+    // fausser les courbes ni le compteur du jour.
+    const updated = dry ? card : await store.answer(card, grade)
     setTally((t) => ({ ...t, [grade]: t[grade] + 1 }))
     setByDeck((current) => {
       const previous = current[card.deckId] ?? EMPTY_TALLY
       return { ...current, [card.deckId]: { ...previous, [grade]: previous[grade] + 1 } }
     })
 
-    // Une carte ratée revient avant la fin de la session.
-    const soon = updated.srs.due <= Date.now() + 11 * 60_000
+    // Une carte ratée revient avant la fin de la session — y compris à blanc,
+    // où c'est la seule chose qui distingue encore « raté » de « su ».
+    const soon = dry ? grade === 'again' : updated.srs.due <= Date.now() + 11 * 60_000
     setCards((current) => (soon ? [...current, updated] : current))
     setIndex((i) => i + 1)
     setRevealed(false)
@@ -398,7 +434,7 @@ function Session({
           <div className="stack stack-2" style={{ alignItems: 'center' }}>
             <h1>Session terminée</h1>
             <p className="meta">
-              {label} · {minutes} min
+              {label} · {minutes} min{dry && ' · à blanc'}
             </p>
           </div>
 
@@ -459,7 +495,9 @@ function Session({
               Terminer
             </button>
             <p className="meta" style={{ textAlign: 'center', lineHeight: 1.55 }}>
-              Les cartes ratées reviendront dès la prochaine séance, les autres à leur échéance.
+              {dry
+                ? 'Rien n’a été enregistré : les échéances sont inchangées, et cette séance ne figure pas dans vos statistiques.'
+                : 'Les cartes ratées reviendront dès la prochaine séance, les autres à leur échéance.'}
             </p>
           </div>
         </div>
@@ -480,6 +518,7 @@ function Session({
             </span>
             <span className="appbar__sub">
               {Math.min(index + 1, cards.length)} / {cards.length}
+              {dry && ' · à blanc'}
             </span>
           </div>
           <span className="chip mono">{formatCardBadge(card)}</span>

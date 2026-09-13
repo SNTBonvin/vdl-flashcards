@@ -112,6 +112,26 @@ ne sont pas perdues : elles sont visibles dans le thème, simplement pas
 programmées avant demain. Les modes **Tout revoir** et **Mes difficultés**
 restent accessibles, eux : ils ne dépendent pas du quota.
 
+Un bouton **« Aller plus loin — 10 cartes de plus »** permet de dépasser la
+limite du jour quand on le veut vraiment. L'application conseille un rythme,
+elle ne l'impose pas. Pour construire ses propres jeux, mieux vaut cependant
+monter le réglage une fois pour toutes que d'appuyer chaque jour.
+
+### Se tester sans dérégler le programme
+
+Réviser tout un chapitre la veille d'un contrôle et répondre « Su » partout
+**allonge tous les intervalles en même temps** : l'élève ne reverra plus rien
+pendant des semaines, et il aura oublié. C'est le piège du bachotage, et une
+réponse compte toujours, quel que soit le mode.
+
+D'où l'option **« Ne pas modifier le programme »**, dans les options de séance
+de l'écran Réviser. Cochée, on s'interroge normalement mais **rien n'est
+enregistré** : ni échéance décalée, ni ligne d'historique, ni compteur du jour.
+La séance porte la mention « à blanc » dans son en-tête et dans son bilan.
+
+Elle n'est jamais mémorisée d'une séance à l'autre : laissée allumée par
+mégarde, elle ferait réviser sans jamais progresser.
+
 Trois modes de séance, nommés par ce qu'ils font :
 
 - **À revoir** — les cartes échues du jour, plus un quota de cartes neuves.
