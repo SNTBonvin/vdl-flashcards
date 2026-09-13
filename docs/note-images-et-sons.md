@@ -20,37 +20,72 @@ façon à l'arrivée d'un média :
 
 ## Ce que ça change, couche par couche
 
-### 1. Le transport
+### 1. Le transport — l'image embarquée l'emporte
 
-Deux façons de mettre une image dans un jeu publié :
+*Révision du 13 septembre, après une remarque de Christophe Bonvin, qui
+signalait l'outil de la forge éducative convertissant les images en base64
+(`edu-md.forge.apps.education.fr/inserer-image.html`). La première version de
+cette note recommandait l'image **référencée**. C'était une erreur
+d'appréciation : l'image **embarquée en base64 dans la carte** est le meilleur
+premier pas, et pour une raison de fond plus que de commodité.*
 
-| | Image **dans** le JSON (data URI) | Image **à côté**, référencée |
-|---|---|---|
-| Poids du fichier | 20 cartes illustrées ≈ 1,8 Mo | reste à ~2 Ko |
-| Ce que l'élève télécharge | tout, avant même l'aperçu | le texte, puis les images |
-| Mise à jour d'une seule image | réécrit tout le jeu | remplace un fichier |
-| Complexité | faible | moyenne |
+**L'image devient une donnée de la carte, pas une ressource externe.** Six
+problèmes disparaissent d'un coup :
 
-**Retenir la seconde.** Les médias vont dans `public/media/`, le JSON ne porte
-que leurs noms. Le jeton de publication sait déjà déposer du binaire par l'API
-Contents (`src/io/github.ts`, `putFile` encode déjà en base64) : « Publier »
-pourrait téléverser les images au passage.
+| Problème avec l'image référencée | Avec le base64 dans la carte |
+|---|---|
+| Télécharger et ranger les médias à l'import | **rien à faire** : l'image arrive avec le texte |
+| Magasin `media` dans IndexedDB, `URL.createObjectURL` | inutile |
+| Règle `runtimeCaching` supplémentaire dans le service worker | inutile |
+| Sauvegarde JSON qui perdrait les images | elle les emporte d'elle-même |
+| Fichiers orphelins dans `public/media/` à la suppression d'une carte | n'existent pas |
+| Téléverser les médias en plus du JSON à la publication | un seul fichier, comme aujourd'hui |
 
-### 2. Le hors ligne — le point dur
+Le hors ligne, que cette note désignait comme « le point dur », cesse d'être un
+sujet : il n'y a plus rien à mettre en cache, rien à aller chercher, rien qui
+puisse manquer le jour du contrôle.
 
-Le service worker précache l'application, pas des médias arbitraires. La règle
-`runtimeCaching` actuelle (`vite.config.ts`) ne couvre que `/c/*.json` et
-`catalogue.json`.
+### 2. Le prix : +33 %, et un facteur 57 entre le bon et le mauvais usage
 
-Pour tenir la promesse « une fois reçues, les cartes n'ont plus besoin de
-réseau », il faut **télécharger les médias au moment de l'import et les ranger
-dans IndexedDB**, qui accepte les `Blob`. Un magasin `media` de plus, servi par
-`URL.createObjectURL` à l'affichage. C'est la seule solution honnête : compter
-sur le cache du navigateur laisserait des cartes muettes en contrôle.
+Le base64 coûte exactement un tiers de plus que le binaire. Tout se joue sur ce
+qu'on encode :
 
-Conséquences : une jauge de place occupée dans les réglages devient nécessaire
-(elle existe déjà, elle prendra du sens), et la protection du stockage
-(`navigator.storage.persist`) cesse d'être un confort.
+| | binaire | base64 | 5 cartes | 30 cartes |
+|---|---:|---:|---:|---:|
+| Photo de téléphone brute | 4 000 Ko | 5 333 Ko | **27 Mo** | **160 Mo** |
+| Redimensionnée 1600 px, JPEG 0,8 | 250 Ko | 333 Ko | 1,7 Mo | 10 Mo |
+| **Schéma 800 px, JPEG 0,75** | **70 Ko** | **93 Ko** | **0,5 Mo** | 2,8 Mo |
+| Schéma 800 px, WebP 0,75 | 40 Ko | 53 Ko | 0,3 Mo | 1,6 Mo |
+
+Entre la première ligne et la troisième, un facteur 57. **Le redimensionnement
+automatique n'est donc pas un confort mais la condition de viabilité** : sans
+lui, la première photo ajoutée depuis un téléphone rend le jeu indistribuable.
+
+Cible : 800 px de large, JPEG qualité 0,75, plafond dur par carte (300 Ko de
+base64) avec refus explicite au-delà. Et, à la publication, afficher le poids du
+fichier produit en avertissant au-delà du mégaoctet.
+
+### 2 bis. Trois pièges à connaître
+
+**L'outil edu-md ne sert pas tel quel.** Il produit du *markdown* :
+`![](data:image/png;base64,…)`. L'application affiche du texte brut — aucun
+rendu markdown nulle part, le recto est un simple `<p>{question}</p>`
+(`src/screens/Review.tsx`). Coller cette sortie afficherait quatre-vingt-dix
+kilo-octets de charabia. Il faut donc **un champ `image` dédié sur la carte**,
+pas un balisage dans le texte. C'est aussi plus sûr : rendre du markdown
+ouvrirait la porte à bien autre chose qu'une image.
+
+**Refuser le SVG.** Un `data:` URI en PNG, JPEG ou WebP est inerte dans une
+balise `img`. Un SVG, non : il peut porter du script. Liste blanche stricte des
+types acceptés — nécessité, pas précaution, dès lors qu'on accepte une chaîne
+collée depuis l'extérieur.
+
+**La vérification silencieuse relit le fichier publié** une fois par heure et
+par thème (`src/io/updates.ts`, ajoutée le 12 septembre). Sur un fichier devenu
+gros, ce serait coûteux — sauf que `fetchSet` demande `cache: 'no-cache'`, ce
+qui revalide et se contente d'un `304 Not Modified` tant que rien n'a bougé : le
+corps n'est pas retransmis. **Mais cela dépend des en-têtes de l'hébergeur** :
+à vérifier sur la Forge et sur Netlify avant de laisser grossir les fichiers.
 
 ### 3. L'asymétrie à accepter d'emblée
 
@@ -63,15 +98,16 @@ images sans s'en apercevoir.
 
 ### 4. Le reste
 
-- **Éditeur** : choisir une image depuis un téléphone et la **redimensionner
-  automatiquement** (sinon 4 Mo par carte). Cible raisonnable : 800 px de large,
-  JPEG qualité 0,75, soit 60 à 80 Ko.
+- **Éditeur** : choisir une image depuis un téléphone et la redimensionner sans
+  rien demander. Se fait en `canvas` + `toDataURL`, sans bibliothèque.
 - **Écran de révision** : mise en page du recto avec image, et lisibilité en
   thème sombre.
-- **CSV et texte collé ne peuvent rien porter.** Les imports actuels resteraient
-  texte ; le paquet JSON pourrait, lui, embarquer les médias.
-- **Sauvegarde** : l'export JSON intégral devrait inclure les médias, sous peine
-  de perdre les images en changeant de téléphone. Le fichier grossit d'autant.
+- **CSV et texte collé ne peuvent rien porter** — un champ de 93 Ko dans une
+  cellule de tableur est inexploitable. Ces imports resteraient texte ; le
+  paquet JSON, lui, emporte les images sans rien changer à son format.
+- **Sauvegarde** : elle emporte les images d'elle-même, puisque ce sont des
+  champs de carte. Le fichier grossit d'autant — la jauge de place des réglages
+  prend enfin tout son sens.
 - **Droits** : une photo trouvée en ligne et redistribuée à une classe engage
   l'enseignant. Un rappel discret à l'ajout serait de mise.
 
@@ -79,10 +115,17 @@ images sans s'en apercevoir.
 
 Commencer petit, dans cet ordre :
 
-1. **Image seule, au recto seulement**, référencée et non embarquée ;
-2. mise en cache dans IndexedDB à l'import ;
-3. redimensionnement automatique à l'ajout ;
-4. avertissement au partage par lien quand le jeu contient des images.
+1. **un champ `image` sur la carte**, contenant un `data:` URI — PNG, JPEG ou
+   WebP, jamais SVG — affiché au recto seulement ;
+2. **redimensionnement automatique** à l'ajout, avec plafond dur. C'est l'étape
+   qui décide de tout : sans elle, rien ne tient ;
+3. affichage du poids du jeu dans la feuille de publication ;
+4. avertissement au partage par lien quand le jeu contient des images, puisque
+   le lien ne peut pas les porter.
+
+Ce que cet ordre évite : le magasin de médias, la règle de cache, le
+téléversement séparé, la reprise du format de sauvegarde. Rien de tout cela
+n'est nécessaire tant que l'image vit dans la carte.
 
 Le son viendrait ensuite, par le même chemin, s'il se justifie — il concerne
 surtout les langues vivantes, moins la SVT et la SNT.
