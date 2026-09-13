@@ -98,14 +98,14 @@ export async function decodeShare(token: string): Promise<SharePayload> {
       marker === COMPRESSED ? await pipe(bytes, new DecompressionStream('deflate-raw')) : bytes
     json = new TextDecoder().decode(raw)
   } catch {
-    throw new ShareError('Ce lien est incomplet ou abîmé. Demandez qu’il vous soit renvoyé.')
+    throw new ShareError('Ce lien est incomplet ou abîmé. Demande qu’il te soit renvoyé.')
   }
 
   let payload: SharePayload
   try {
     payload = JSON.parse(json) as SharePayload
   } catch {
-    throw new ShareError('Ce lien est incomplet ou abîmé. Demandez qu’il vous soit renvoyé.')
+    throw new ShareError('Ce lien est incomplet ou abîmé. Demande qu’il te soit renvoyé.')
   }
 
   if (payload?.v !== 1 || !Array.isArray(payload.c) || !payload.t || !payload.s) {

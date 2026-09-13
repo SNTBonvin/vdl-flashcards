@@ -21,7 +21,7 @@ export function UpdateBanner({ update }: { update: AppUpdate }) {
             <span style={{ fontSize: 14.5, fontWeight: 600, letterSpacing: '-0.01em' }}>
               Nouvelle version disponible
             </span>
-            <span className="meta">Vos cartes et votre progression sont conservées.</span>
+            <span className="meta">Tes cartes et ta progression sont conservées.</span>
           </div>
           <button
             type="button"

@@ -120,9 +120,9 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
               <Icon name="info" size={18} />
             </span>
             <p className="meta" style={{ lineHeight: 1.55 }}>
-              Vous êtes dans Safari. Si l’application est installée sur votre écran d’accueil,
+              Tu es dans Safari. Si l’application est installée sur ton écran d’accueil,
               <strong> ces cartes n’y arriveront pas</strong> : sur iPhone, les deux ne partagent pas
-              leurs données. Copiez ce lien, ouvrez l’application, puis « Matières › Lien ou code ».
+              leurs données. Copie ce lien, ouvre l’application, puis « Matières › Lien ou code ».
             </p>
           </div>
           <button
@@ -133,7 +133,7 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
                 await navigator.clipboard.writeText(window.location.href)
                 toast('Lien copié.')
               } catch {
-                toast('Copie impossible : sélectionnez le lien dans la barre d’adresse.', 'error')
+                toast('Copie impossible : sélectionne le lien dans la barre d’adresse.', 'error')
               }
             }}
           >
@@ -152,7 +152,7 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
             <span className="listrow__title truncate">{payload.s}</span>
             <span className="meta">
               {cardCount} {plural(cardCount, 'carte')}
-              {existing ? ' · déjà dans vos cartes' : ''}
+              {existing ? ' · déjà dans tes cartes' : ''}
             </span>
           </div>
         </div>
@@ -172,8 +172,8 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
 
         <p className="meta" style={{ lineHeight: 1.55 }}>
           {existing
-            ? 'Vous avez déjà ce thème : les cartes seront mises à jour et votre progression sera conservée. Aucune de vos cartes ne sera supprimée.'
-            : `Les cartes seront ajoutées à la matière « ${payload.s} », créée si vous ne l’avez pas encore.`}
+            ? 'Tu as déjà ce thème : les cartes seront mises à jour et ta progression sera conservée. Aucune de tes cartes ne sera supprimée.'
+            : `Les cartes seront ajoutées à la matière « ${payload.s} », créée si tu ne l’as pas encore.`}
         </p>
       </section>
 

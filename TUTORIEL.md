@@ -244,8 +244,10 @@ code est vivant : `…/vdl-flashcards/c/LECODE.json`.
 
 ### Donner un lot pour une date
 
-Dans la fiche d'un lot, un champ **« À savoir pour le »**. Facultatif, il
-accompagne les cartes jusque chez l'élève — par lien comme par code.
+Un champ **« À savoir pour le »**, à deux endroits : dans la fiche d'un lot, et
+dans **Modifier le thème** pour un thème diffusé en entier. Facultatif, il
+accompagne les cartes jusque chez l'élève — par lien comme par code. Quand le
+lot en porte une, la sienne l'emporte sur celle du thème.
 
 Il fait une seule chose au calcul, mais elle compte. Une carte sue le 10 ne
 revient naturellement que le 16 : une échéance au 14 tomberait dans un trou, et
@@ -545,6 +547,12 @@ l'écran d'accueil ; sur Firefox, une fenêtre demande confirmation.
 Cela ne protège pas d'un effacement volontaire (vider les données du
 navigateur, désinstaller l'application) : la sauvegarde exportée reste le seul
 filet vraiment sûr.
+
+## Le tutoiement
+
+L'application tutoie partout, y compris dans les outils d'enseignant. C'est un
+outil d'élève avant tout, et le vouvoiement y sonnait comme un bulletin. Un
+contrôle automatisé vérifie qu'il n'en reste rien.
 
 ## Vérifier qu'un appareil est à jour
 

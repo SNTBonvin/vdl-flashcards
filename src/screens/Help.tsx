@@ -46,8 +46,8 @@ export function HelpScreen() {
         </div>
 
         <p className="meta" style={{ lineHeight: 1.6 }}>
-          Les cartes de l’exemple portent sur l’application elle-même : les réviser vous apprend à
-          vous en servir. Vous pourrez tout retirer d’un seul geste, sans toucher à vos propres
+          Les cartes de l’exemple portent sur l’application elle-même : les réviser t’apprend à
+          t’en servir. Tu pourras tout retirer d’un seul geste, sans toucher à tes propres
           matières.
         </p>
 
@@ -96,7 +96,7 @@ export function HelpScreen() {
       <Step
         icon="library"
         title="1. Ranger"
-        text="Une matière contient des thèmes, un thème contient des cartes. Créez d’abord une matière — Histoire-Géographie, Anglais — puis un thème par chapitre."
+        text="Une matière contient des thèmes, un thème contient des cartes. Crée d’abord une matière — Histoire-Géographie, Anglais — puis un thème par chapitre."
       />
 
       <Step
@@ -114,7 +114,7 @@ export function HelpScreen() {
       <Step
         icon="review"
         title="3. Réviser"
-        text="Répondez « Raté », « Difficile » ou « Su ». Une carte ratée revient tout de suite ; une carte sue s’espace de plus en plus. L’échéance calculée est affichée sur chaque bouton avant que vous répondiez."
+        text="Réponds « Raté », « Difficile » ou « Su ». Une carte ratée revient tout de suite ; une carte sue s’espace de plus en plus. L’échéance calculée est affichée sur chaque bouton avant que tu répondes."
       />
 
       <Step
@@ -126,13 +126,13 @@ export function HelpScreen() {
       <Step
         icon="move"
         title="Partager un thème"
-        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si vous corrigez une faute plus tard, rediffusez le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée. Pour ouvrir un lien ou un code reçu : « Matières › Lien ou code » — sur iPhone, c’est le seul chemin qui mène à l’application installée."
+        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si tu corriges une faute plus tard, rediffuse le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée. Pour ouvrir un lien ou un code reçu : « Matières › Lien ou code » — sur iPhone, c’est le seul chemin qui mène à l’application installée."
       />
 
       <Step
         icon="layers"
         title="Diffuser en plusieurs lots"
-        text="Quand un thème compte trop de cartes pour un QR code projetable, importez-les toutes dans le même thème, puis cochez-en une partie et créez un lot. Chaque lot se diffuse séparément, se modifie à tout moment et resservira à une autre classe. Chez l’élève, les lots d’un même thème se rejoignent dans ce thème."
+        text="Quand un thème compte trop de cartes pour un QR code projetable, importe-les toutes dans le même thème, puis coche-en une partie et crée un lot. Chaque lot se diffuse séparément, se modifie à tout moment et resservira à une autre classe. Chez l’élève, les lots d’un même thème se rejoignent dans ce thème."
       />
 
       <Step
@@ -144,7 +144,7 @@ export function HelpScreen() {
       <Step
         icon="upload"
         title="Publier sous un code"
-        text="Les lots et la publication sont masqués par défaut : activez « Outils d’enseignant » dans les réglages. « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
+        text="Les lots et la publication sont masqués par défaut : active « Outils d’enseignant » dans les réglages. « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
       />
 
       <Step
@@ -155,8 +155,8 @@ export function HelpScreen() {
 
       <Step
         icon="download"
-        title="Vos données"
-        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exportez la sauvegarde depuis les réglages. Pour donner ou retravailler un jeu de cartes, exportez plutôt un paquet — depuis un thème, une matière ou un lot, en CSV pour le tableur ou en JSON pour le réimporter ici."
+        title="Tes données"
+        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exporte la sauvegarde depuis les réglages. Pour donner ou retravailler un jeu de cartes, exporte plutôt un paquet — depuis un thème, une matière ou un lot, en CSV pour le tableur ou en JSON pour le réimporter ici."
       />
 
       <Step
@@ -222,7 +222,7 @@ export function HelpScreen() {
         <div className="card card--pad stack stack-3">
           <span className="eyebrow">Voir sa propre courbe</span>
           <p className="meta" style={{ lineHeight: 1.6 }}>
-            L’écran Statistiques trace, à partir de vos révisions, votre taux de réussite selon le
+            L’écran Statistiques trace, à partir de tes révisions, ton taux de réussite selon le
             temps écoulé depuis la dernière reprise. Là où la barre s’effondre, l’intervalle est
             devenu trop long : c’est le signal qu’il faut resserrer le rythme.
           </p>
@@ -261,7 +261,7 @@ export function HelpScreen() {
       <ConfirmSheet
         open={confirming}
         title="Retirer l’exemple ?"
-        text={`La matière « Démonstration », son thème et ses ${demoCards} ${plural(demoCards, 'carte')} seront supprimés. Vos propres matières ne sont pas concernées. Attention : si vous avez ajouté vos cartes à ce thème, elles partiront aussi.`}
+        text={`La matière « Démonstration », son thème et ses ${demoCards} ${plural(demoCards, 'carte')} seront supprimés. Tes propres matières ne sont pas concernées. Attention : si tu as ajouté tes cartes à ce thème, elles partiront aussi.`}
         confirmLabel="Retirer"
         onClose={() => setConfirming(false)}
         onConfirm={async () => {

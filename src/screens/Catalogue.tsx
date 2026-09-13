@@ -97,7 +97,7 @@ export function CatalogueScreen() {
         <EmptyState
           icon="inbox"
           title="Aucun jeu publié"
-          text="Le catalogue liste les jeux mis en ligne par vos professeurs. Un jeu peut aussi être diffusé par un code, sans figurer ici."
+          text="Le catalogue liste les jeux mis en ligne par tes professeurs. Un jeu peut aussi être diffusé par un code, sans figurer ici."
           action={
             <button
               type="button"
@@ -195,8 +195,8 @@ export function CatalogueScreen() {
           <Icon name="info" size={18} />
         </span>
         <p className="meta" style={{ lineHeight: 1.55 }}>
-          Ouvrir un jeu n’ajoute rien : vous verrez d’abord un aperçu. Une fois reçues, les cartes
-          sont sur votre appareil et n’ont plus besoin de réseau.
+          Ouvrir un jeu n’ajoute rien : tu verras d’abord un aperçu. Une fois reçues, les cartes sont
+          sur ton appareil et n’ont plus besoin de réseau.
         </p>
       </div>
     </main>

@@ -227,7 +227,7 @@ export function SubjectScreen({ id }: { id: string }) {
       <ConfirmSheet
         open={confirming}
         title={`Supprimer « ${subject.name} » ?`}
-        text={`Cette matière, ses ${decks.length} ${plural(decks.length, 'thème')} et ses ${counts.total} ${plural(counts.total, 'carte')} seront définitivement supprimés. Pensez à exporter une sauvegarde avant.`}
+        text={`Cette matière, ses ${decks.length} ${plural(decks.length, 'thème')} et ses ${counts.total} ${plural(counts.total, 'carte')} seront définitivement supprimés. Pense à exporter une sauvegarde avant.`}
         onClose={() => setConfirming(false)}
         onConfirm={async () => {
           await store.deleteSubject(subject.id)
@@ -248,20 +248,22 @@ export function DeckSheet({
 }: {
   open: boolean
   onClose: () => void
-  onSubmit: (name: string, description: string, reserve: boolean) => void
-  initial?: { name: string; description: string; reserve?: boolean }
+  onSubmit: (name: string, description: string, reserve: boolean, dueBy?: string) => void
+  initial?: { name: string; description: string; reserve?: boolean; dueBy?: string }
   title?: string
 }) {
   const [name, setName] = useState(initial?.name ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
   const [reserve, setReserve] = useState(initial?.reserve ?? false)
+  const [dueBy, setDueBy] = useState(initial?.dueBy ?? '')
 
   const submit = () => {
     if (!name.trim()) return
-    onSubmit(name.trim(), description.trim(), reserve)
+    onSubmit(name.trim(), description.trim(), reserve, dueBy || undefined)
     setName(initial?.name ?? '')
     setDescription(initial?.description ?? '')
     setReserve(initial?.reserve ?? false)
+    setDueBy(initial?.dueBy ?? '')
   }
 
   return (
@@ -285,12 +287,24 @@ export function DeckSheet({
             autoFocus
           />
         </Field>
-        <Field label="Description" hint="Facultatif — quelques mots pour vous repérer.">
+        <Field label="Description" hint="Facultatif — quelques mots pour t’y retrouver.">
           <textarea
             className="textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Institutions, dates clés, personnages"
+          />
+        </Field>
+
+        <Field
+          label="À savoir pour le"
+          hint="Facultatif. La date accompagne les cartes diffusées, et garantit un passage sur chacune la veille au plus tard."
+        >
+          <input
+            className="input mono"
+            type="date"
+            value={dueBy}
+            onChange={(e) => setDueBy(e.target.value)}
           />
         </Field>
 

@@ -145,7 +145,7 @@ export async function fetchCatalogue(): Promise<CatalogueEntry[]> {
     )
   }
   if (response.status === 404) return []
-  if (!response.ok) throw new CatalogError('Le site a répondu une erreur. Réessayez dans un moment.')
+  if (!response.ok) throw new CatalogError('Le site a répondu une erreur. Réessaie dans un moment.')
 
   const type = response.headers.get('content-type') ?? ''
   const text = await response.text()
@@ -183,14 +183,14 @@ export async function fetchSet(code: string): Promise<PublishedSet> {
     response = await fetch(setUrl(code), { cache: 'no-cache' })
   } catch {
     throw new CatalogError(
-      'Impossible de joindre le site. Vérifiez votre connexion, puis réessayez : une fois reçues, les cartes n’auront plus besoin de réseau.',
+      'Impossible de joindre le site. Vérifie ta connexion, puis réessaie : une fois reçues, les cartes n’auront plus besoin de réseau.',
     )
   }
 
-  const unknown = new CatalogError(`Aucun jeu ne porte le code « ${code} ». Vérifiez la saisie.`)
+  const unknown = new CatalogError(`Aucun jeu ne porte le code « ${code} ». Vérifie la saisie.`)
   if (response.status === 404) throw unknown
   if (!response.ok) {
-    throw new CatalogError('Le site a répondu une erreur. Réessayez dans un moment.')
+    throw new CatalogError('Le site a répondu une erreur. Réessaie dans un moment.')
   }
 
   // Beaucoup d'hébergements renvoient la page d'accueil, avec un code 200, pour

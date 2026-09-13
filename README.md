@@ -611,6 +611,16 @@ un conteneur flex, `margin-inline: auto` sur un enfant le réduit à la largeur
 de son contenu au lieu de le centrer à sa largeur maximale. D'où les
 `width: 100%` qui accompagnent chaque `max-width` dans ces media queries.
 
+## Registre
+
+**L'application tutoie partout**, outils d'enseignant compris. Ce n'est pas une
+familiarité de façade : l'application s'adresse d'abord à un élève de seconde,
+et le vouvoiement y sonnait comme un bulletin. Mélanger les deux registres — un
+accueil qui tutoie, des réglages qui vouvoient — était pire que l'un ou l'autre.
+
+Vérifiable : aucune occurrence de « vous », « votre », « vos » ni d'impératif en
+« -ez » ne doit subsister dans les chaînes affichées.
+
 ## Charte graphique
 
 Palette « Papier », accent unique vert sapin (`#275f4a`) sur fonds crème chauds,

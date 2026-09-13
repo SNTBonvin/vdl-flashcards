@@ -242,7 +242,7 @@ export function SettingsScreen() {
               <Icon name="info" size={18} />
             </span>
             <p className="meta" style={{ lineHeight: 1.55 }}>
-              Les rappels partent quand l’application est ouverte ou au premier plan. Sur iPhone, installez-la
+              Les rappels partent quand l’application est ouverte ou au premier plan. Sur iPhone, installe-la
               sur l’écran d’accueil (Partager → Sur l’écran d’accueil) pour que les notifications fonctionnent.
             </p>
           </div>
@@ -333,12 +333,12 @@ export function SettingsScreen() {
               <span className="listrow__title">Protection sur cet appareil</span>
               <span className="meta">
                 {persist === 'persisted'
-                  ? 'Le navigateur ne supprimera pas vos cartes pour faire de la place.'
+                  ? 'Le navigateur ne supprimera pas tes cartes pour faire de la place.'
                   : persist === 'unsupported'
-                    ? 'Ce navigateur ne sait pas protéger le stockage. Exportez la sauvegarde régulièrement.'
+                    ? 'Ce navigateur ne sait pas protéger le stockage. Exporte la sauvegarde régulièrement.'
                     : persist === 'denied'
-                      ? 'Le navigateur a refusé. Exportez la sauvegarde régulièrement.'
-                      : 'Sans protection, le navigateur peut effacer vos cartes s’il manque de place.'}
+                      ? 'Le navigateur a refusé. Exporte la sauvegarde régulièrement.'
+                      : 'Sans protection, le navigateur peut effacer tes cartes s’il manque de place.'}
               </span>
             </span>
             <span className={`chip ${persist === 'persisted' ? 'chip--ok' : 'chip--warn'}`}>
@@ -363,8 +363,8 @@ export function SettingsScreen() {
                 setPersist(granted ? 'persisted' : 'denied')
                 toast(
                   granted
-                    ? 'Vos cartes sont protégées sur cet appareil.'
-                    : 'Le navigateur a refusé. Pensez à exporter la sauvegarde.',
+                    ? 'Tes cartes sont protégées sur cet appareil.'
+                    : 'Le navigateur a refusé. Pense à exporter la sauvegarde.',
                   granted ? 'default' : 'error',
                 )
               }}
@@ -398,7 +398,7 @@ export function SettingsScreen() {
           <span className="grow stack" style={{ gap: 1 }}>
             <span className="listrow__title">Version installée</span>
             <span className="meta">
-              Comparez-la avec vos élèves pour vérifier qu’ils sont à jour.
+              Compare-la avec tes élèves pour vérifier qu’ils sont à jour.
             </span>
           </span>
           <span className="chip mono">
@@ -484,7 +484,7 @@ export function SettingsScreen() {
       <ConfirmSheet
         open={wiping}
         title="Tout effacer ?"
-        text="Toutes les matières, thèmes, cartes et l’historique de révision seront supprimés de cet appareil. Exportez d’abord une sauvegarde si vous souhaitez les conserver."
+        text="Toutes les matières, thèmes, cartes et l’historique de révision seront supprimés de cet appareil. Exporte d’abord une sauvegarde si tu souhaites les conserver."
         confirmLabel="Effacer"
         onClose={() => setWiping(false)}
         onConfirm={async () => {
@@ -567,7 +567,7 @@ function PublishToken() {
 
   const save = async () => {
     if (!repo) {
-      setError('Renseignez d’abord l’adresse du dépôt dans la feuille de publication.')
+      setError('Renseigne d’abord l’adresse du dépôt dans la feuille de publication.')
       return
     }
     setBusy(true)
@@ -594,14 +594,14 @@ function PublishToken() {
 
       <p className="meta" style={{ lineHeight: 1.6 }}>
         Sans jeton, publier veut dire télécharger un fichier puis le déposer à la main sur le
-        dépôt. Avec un jeton, l’application le dépose pour vous.
+        dépôt. Avec un jeton, l’application le dépose pour toi.
       </p>
 
       {saved ? (
         <>
           <p className="meta" style={{ lineHeight: 1.6 }}>
             Le jeton est enregistré sur cet appareil seulement. Il ne part jamais dans la
-            sauvegarde, et n’est envoyé qu’à GitHub, au moment où vous publiez.
+            sauvegarde, et n’est envoyé qu’à GitHub, au moment où tu publies.
           </p>
           <button
             type="button"
@@ -618,10 +618,10 @@ function PublishToken() {
             <span className="label">Comment en obtenir un</span>
             <p className="meta" style={{ lineHeight: 1.6 }}>
               Sur GitHub : <span className="mono">Settings → Developer settings → Personal access
-              tokens → Fine-grained tokens</span>. Donnez-lui accès au{' '}
+              tokens → Fine-grained tokens</span>. Donne-lui accès au{' '}
               <strong style={{ color: 'var(--ink)' }}>seul dépôt du projet</strong>, et une seule
               autorisation : <span className="mono">Contents</span> en lecture et écriture. Il
-              s’annule d’un clic depuis la même page si vous perdez votre téléphone.
+              s’annule d’un clic depuis la même page si tu perds ton téléphone.
             </p>
           </div>
 
@@ -672,7 +672,7 @@ function PublishToken() {
       <ConfirmSheet
         open={forgetting}
         title="Oublier ce jeton ?"
-        text="La publication redeviendra manuelle : télécharger le fichier, puis le déposer sur le dépôt. Le jeton lui-même reste valide sur GitHub tant que vous ne l’y révoquez pas."
+        text="La publication redeviendra manuelle : télécharger le fichier, puis le déposer sur le dépôt. Le jeton lui-même reste valide sur GitHub tant que tu ne l’y révoques pas."
         confirmLabel="Oublier"
         onClose={() => setForgetting(false)}
         onConfirm={async () => {
@@ -746,14 +746,14 @@ function VersionCheck() {
       {result === 'unsupported' && (
         <p className="meta" style={{ lineHeight: 1.55 }}>
           Ce navigateur ne gère pas les mises à jour hors ligne — en navigation privée, par exemple.
-          Rechargez la page pour obtenir la dernière version.
+          Recharge la page pour obtenir la dernière version.
         </p>
       )}
 
       {found ? (
         <>
           <p className="meta" style={{ lineHeight: 1.55 }}>
-            Une nouvelle version est prête. Vos cartes, votre historique et vos réglages sont
+            Une nouvelle version est prête. Tes cartes, ton historique et tes réglages sont
             conservés : seule l’application est remplacée.
           </p>
           <button type="button" className="btn btn--primary btn--block" onClick={update.apply}>

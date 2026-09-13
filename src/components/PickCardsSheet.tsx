@@ -272,8 +272,8 @@ export function PickCardsSheet({
             title="Aucune carte"
             text={
               pool.length === 0
-                ? 'Vos autres thèmes ne contiennent aucune carte à reprendre pour l’instant.'
-                : 'Essayez un autre mot, ou retirez un filtre. La recherche porte sur le recto, le verso et les étiquettes.'
+                ? 'Tes autres thèmes ne contiennent aucune carte à reprendre pour l’instant.'
+                : 'Essaie un autre mot, ou retire un filtre. La recherche porte sur le recto, le verso et les étiquettes.'
             }
           />
         ) : (

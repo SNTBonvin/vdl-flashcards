@@ -17,7 +17,7 @@ export const DEMO_SUBJECT_NAME = 'Démonstration'
 export const DEMO_SUBJECT_CODE = 'DEM'
 export const DEMO_DECK_NAME = 'Prise en main'
 export const DEMO_DECK_DESCRIPTION =
-  'Sept cartes pour découvrir l’application en la révisant. Supprimez ce thème quand vous n’en aurez plus besoin.'
+  'Sept cartes pour découvrir l’application en la révisant. Supprime ce thème quand tu n’en auras plus besoin.'
 
 export const DEMO_CARDS: { front: string; back: string; notes?: string }[] = [
   {
@@ -33,7 +33,7 @@ export const DEMO_CARDS: { front: string; back: string; notes?: string }[] = [
   },
   {
     front: 'Comment ajouter mes propres cartes ?',
-    back: 'Ouvrez un thème, puis « Ajouter une carte ».',
+    back: 'Ouvre un thème, puis « Ajouter une carte ».',
     notes:
       'Pour en créer plusieurs d’un coup, « Importer » accepte une liste collée : une carte par ligne, recto et verso séparés par un point-virgule ou une tabulation.',
   },
@@ -47,7 +47,7 @@ export const DEMO_CARDS: { front: string; back: string; notes?: string }[] = [
     front: 'Mes cartes partent-elles sur un serveur ?',
     back: 'Non. Tout reste sur cet appareil.',
     notes:
-      'Pour changer de téléphone, utilisez « Exporter la sauvegarde » dans les réglages, puis « Restaurer » sur le nouvel appareil.',
+      'Pour changer de téléphone, utilise « Exporter la sauvegarde » dans les réglages, puis « Restaurer » sur le nouvel appareil.',
   },
   {
     front: 'Que veut dire « archiver » une carte ?',

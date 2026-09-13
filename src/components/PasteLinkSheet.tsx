@@ -36,7 +36,7 @@ export function PasteLinkSheet({
     const found = resolveInput(value)
     if (!found) {
       setError(
-        'Ni lien ni code reconnu. Collez le lien entier, ou tapez le code donné par votre professeur.',
+        'Ni lien ni code reconnu. Colle le lien entier, ou tape le code donné par ton professeur.',
       )
       return
     }
@@ -49,7 +49,7 @@ export function PasteLinkSheet({
       setValue(text)
       setError(null)
     } catch {
-      setError('Le navigateur refuse l’accès au presse-papiers : collez le lien à la main.')
+      setError('Le navigateur refuse l’accès au presse-papiers : colle le lien à la main.')
     }
   }
 
@@ -72,8 +72,8 @@ export function PasteLinkSheet({
     >
       <div className="stack stack-5">
         <p className="meta" style={{ lineHeight: 1.6 }}>
-          Collez le lien reçu de votre professeur, ou tapez le code qu’il vous a donné. Vous
-          verrez un aperçu des cartes avant d’ajouter quoi que ce soit.
+          Colle le lien reçu de ton professeur, ou tape le code qu’il t’a donné. Tu verras un
+          aperçu des cartes avant d’ajouter quoi que ce soit.
         </p>
 
         <button type="button" className="btn btn--ghost btn--block" onClick={paste}>

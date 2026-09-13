@@ -100,7 +100,7 @@ export function DistributionSheet({
         }
       >
         <div className="stack stack-5">
-          <Field label="Intitulé" hint="Pour vous y retrouver. L’élève ne le voit pas.">
+          <Field label="Intitulé" hint="Pour t’y retrouver. L’élève ne le voit pas.">
             <input
               className="input"
               value={name}
@@ -238,7 +238,7 @@ export function DistributionSheet({
       <ConfirmSheet
         open={confirming}
         title={`Supprimer « ${lot.name} » ?`}
-        text="Seul le lot est supprimé : les cartes restent dans le thème, et ce que vos élèves ont déjà reçu n’est pas concerné."
+        text="Seul le lot est supprimé : les cartes restent dans le thème, et ce que tes élèves ont déjà reçu n’est pas concerné."
         onClose={() => setConfirming(false)}
         onConfirm={async () => {
           await store.deleteDistribution(lot.id)

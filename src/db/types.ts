@@ -60,6 +60,12 @@ export interface Deck {
    */
   setCode?: string
   /**
+   * Date à laquelle ce thème doit être su, « AAAA-MM-JJ ». Sert quand le thème
+   * est diffusé en entier, sans passer par un lot — celui-ci porte alors la
+   * sienne, qui l'emporte.
+   */
+  dueBy?: string
+  /**
    * Révision trouvée en ligne lors de la dernière vérification silencieuse.
    * Plus grande que `shareRev`, elle signale une mise à jour disponible — que
    * l'élève prend quand il veut, avec l'aperçu habituel.

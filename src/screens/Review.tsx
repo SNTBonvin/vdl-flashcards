@@ -23,7 +23,7 @@ const MODES: { value: SessionMode; label: string; hint: string; help: string }[]
     value: 'quiz',
     label: 'Tout revoir',
     hint: 'Toutes les cartes des thèmes choisis, mélangées.',
-    help: 'Toutes les cartes des thèmes cochés, échues ou non, dans le désordre. À faire avant un contrôle, ou pour se tester d’un coup sur un chapitre entier. Attention : les réponses comptent et décalent les échéances — cochez « Ne pas modifier le programme » ci-dessous pour vous tester sans rien déranger.',
+    help: 'Toutes les cartes des thèmes cochés, échues ou non, dans le désordre. À faire avant un contrôle, ou pour se tester d’un coup sur un chapitre entier. Attention : les réponses comptent et décalent les échéances — coche « Ne pas modifier le programme » ci-dessous pour te tester sans rien déranger.',
   },
   {
     value: 'hard',
@@ -164,7 +164,7 @@ function ReviewSetup({
         <EmptyState
           icon="review"
           title="Rien à réviser"
-          text="Créez d’abord une matière et un thème, puis ajoutez des cartes pour lancer une session."
+          text="Crée d’abord une matière et un thème, puis ajoute des cartes pour lancer une séance."
         />
       </main>
     )
@@ -316,7 +316,7 @@ function ReviewSetup({
         }}
       >
         {selected.length === 0
-          ? 'Choisissez un thème'
+          ? 'Choisis un thème'
           : preview === 0
             ? held > 0
               ? 'Quota du jour atteint'
@@ -485,7 +485,7 @@ function Session({
                 ))}
               </div>
               <p className="meta" style={{ lineHeight: 1.55 }}>
-                Touchez un thème pour reprendre aussitôt ses cartes difficiles.
+                Touche un thème pour reprendre aussitôt ses cartes difficiles.
               </p>
             </div>
           )}
@@ -496,7 +496,7 @@ function Session({
             </button>
             <p className="meta" style={{ textAlign: 'center', lineHeight: 1.55 }}>
               {dry
-                ? 'Rien n’a été enregistré : les échéances sont inchangées, et cette séance ne figure pas dans vos statistiques.'
+                ? 'Rien n’a été enregistré : les échéances sont inchangées, et cette séance ne compte pas dans tes statistiques.'
                 : 'Les cartes ratées reviendront dès la prochaine séance, les autres à leur échéance.'}
             </p>
           </div>
@@ -564,7 +564,7 @@ function Session({
         ) : (
           <>
             <span className="eyebrow" style={{ textAlign: 'center' }}>
-              Avez-vous réussi ?
+              Tu as réussi ?
             </span>
             <div className="grades">
               <button type="button" className="grade grade--again" onClick={() => void respond('again')}>

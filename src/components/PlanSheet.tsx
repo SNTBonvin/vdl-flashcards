@@ -68,7 +68,7 @@ export function PlanSheet({
       durationMinutes: 15,
       summary: `Réviser : ${deck.name}`,
       description:
-        'Reprise espacée. Ouvrez l’application et lancez une séance sur ce thème — ' +
+        'Reprise espacée. Ouvre l’application et lance une séance sur ce thème — ' +
         'quinze minutes suffisent.',
     }))
     download(icsFilename(deck.name), buildIcs(events), 'text/calendar')
@@ -92,7 +92,7 @@ export function PlanSheet({
         <div className="stack stack-5">
           <p className="meta" style={{ lineHeight: 1.6 }}>
             On oublie vite ce qu’on ne revoit pas : l’essentiel se joue dans les premiers jours.
-            Ces rendez-vous se posent dans l’agenda de votre téléphone, qui sonnera même
+            Ces rendez-vous se posent dans l’agenda de ton téléphone, qui sonnera même
             l’application fermée.
           </p>
 
@@ -116,7 +116,7 @@ export function PlanSheet({
             </span>
           </div>
 
-          <Field label="Heure" hint="Choisissez un moment où vous êtes disponible.">
+          <Field label="Heure" hint="Choisis un moment où tu es disponible.">
             <input
               className="input mono"
               type="time"
@@ -126,7 +126,7 @@ export function PlanSheet({
           </Field>
 
           <div className="stack stack-3">
-            <span className="eyebrow">Vos rendez-vous</span>
+            <span className="eyebrow">Tes rendez-vous</span>
             <div className="card">
               {dates.map((date, index) => (
                 <div key={index} className="listrow" style={{ cursor: 'default' }}>
@@ -159,8 +159,8 @@ export function PlanSheet({
               <Icon name="info" size={18} />
             </span>
             <p className="meta" style={{ lineHeight: 1.55 }}>
-              Sur iPhone, ouvrez le fichier téléchargé puis « Tout ajouter » pour le déposer dans
-              votre calendrier. Sur Android, il s’ouvre directement dans l’agenda. Réimporter un
+              Sur iPhone, ouvre le fichier téléchargé puis « Tout ajouter » pour le déposer dans
+              ton calendrier. Sur Android, il s’ouvre directement dans l’agenda. Réimporter un
               plan modifié met à jour les rendez-vous au lieu de les dupliquer.
             </p>
           </div>
@@ -181,7 +181,7 @@ export function PlanSheet({
       <ConfirmSheet
         open={removing}
         title="Retirer ce plan ?"
-        text="Les rendez-vous déjà ajoutés à votre agenda y restent : supprimez-les depuis l’agenda si vous n’en voulez plus."
+        text="Les rendez-vous déjà ajoutés à ton agenda y restent : supprime-les depuis l’agenda si tu n’en veux plus."
         confirmLabel="Retirer"
         onClose={() => setRemoving(false)}
         onConfirm={() => {

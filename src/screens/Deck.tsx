@@ -212,7 +212,7 @@ export function DeckScreen({ id }: { id: string }) {
           </span>
           <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
             <span className="listrow__title truncate">Partagé par {deck.sharedBy}</span>
-            <span className="meta">Vos réponses et votre progression vous appartiennent.</span>
+            <span className="meta">Tes réponses et ta progression t’appartiennent.</span>
           </span>
         </div>
       )}
@@ -518,8 +518,8 @@ export function DeckScreen({ id }: { id: string }) {
             title={filter === 'all' ? 'Aucune carte' : 'Aucune carte dans ce filtre'}
             text={
               filter === 'all'
-                ? 'Ajoutez vos cartes une par une, ou importez une liste depuis un tableur ou un autre logiciel.'
-                : 'Changez de filtre pour retrouver le reste des cartes de ce thème.'
+                ? 'Ajoute tes cartes une par une, ou importe une liste depuis un tableur ou un autre logiciel.'
+                : 'Change de filtre pour retrouver le reste des cartes de ce thème.'
             }
             action={
               filter === 'all' ? (
@@ -736,10 +736,15 @@ export function DeckScreen({ id }: { id: string }) {
       <DeckSheet
         open={editingDeck}
         title="Modifier le thème"
-        initial={{ name: deck.name, description: deck.description, reserve: deck.reserve }}
+        initial={{
+          name: deck.name,
+          description: deck.description,
+          reserve: deck.reserve,
+          dueBy: deck.dueBy,
+        }}
         onClose={() => setEditingDeck(false)}
-        onSubmit={async (name, description, reserve) => {
-          await store.updateDeck(deck.id, { name, description, reserve })
+        onSubmit={async (name, description, reserve, dueBy) => {
+          await store.updateDeck(deck.id, { name, description, reserve, dueBy })
           setEditingDeck(false)
           toast('Thème mis à jour.')
         }}
@@ -780,7 +785,7 @@ export function DeckScreen({ id }: { id: string }) {
       <ConfirmSheet
         open={claiming !== null}
         title="Cette carte deviendra la vôtre"
-        text={`En la modifiant, elle quitte les cartes reçues${deck.sharedBy ? ` de ${deck.sharedBy}` : ''} et devient une carte personnelle. Les corrections apportées au thème partagé ne s’y appliqueront plus, et votre progression sur cette carte est conservée.`}
+        text={`En la modifiant, elle quitte les cartes reçues${deck.sharedBy ? ` de ${deck.sharedBy}` : ''} et devient une carte personnelle. Les corrections apportées au thème partagé ne s’y appliqueront plus, et ta progression sur cette carte est conservée.`}
         confirmLabel="Modifier"
         onClose={() => setClaiming(null)}
         onConfirm={async () => {
@@ -797,7 +802,7 @@ export function DeckScreen({ id }: { id: string }) {
         deck={deck}
         cards={cards}
         onClose={() => setPublishing(false)}
-        onPublished={(code) => toast(`Code « ${code} » retenu. Déposez le fichier pour le rendre vivant.`)}
+        onPublished={(code) => toast(`Code « ${code} » retenu. Dépose le fichier pour le rendre vivant.`)}
       />
 
       {publishingLot && (
@@ -808,7 +813,7 @@ export function DeckScreen({ id }: { id: string }) {
           cards={cards.filter((c) => publishingLot.cardIds.includes(c.id))}
           onClose={() => setPublishingLot(null)}
           onPublished={(code) =>
-            toast(`Code « ${code} » retenu. Déposez le fichier pour le rendre vivant.`)
+            toast(`Code « ${code} » retenu. Dépose le fichier pour le rendre vivant.`)
           }
         />
       )}
@@ -857,7 +862,7 @@ export function DeckScreen({ id }: { id: string }) {
         }}
       />
 
-      <ShareSheet open={sharing} deck={deck} onClose={() => setSharing(false)} />
+      <ShareSheet open={sharing} deck={deck} dueBy={deck.dueBy} onClose={() => setSharing(false)} />
 
       <Sheet
         open={namingLot}
@@ -881,7 +886,7 @@ export function DeckScreen({ id }: { id: string }) {
         }
       >
         <div className="stack stack-5">
-          <Field label="Intitulé" hint="Pour vous y retrouver. L’élève ne le voit pas.">
+          <Field label="Intitulé" hint="Pour t’y retrouver. L’élève ne le voit pas.">
             <input
               className="input"
               value={lotName}
@@ -1021,7 +1026,7 @@ function MoveSheet({
           <EmptyState
             icon="layers"
             title="Aucun autre thème"
-            text="Créez d’abord un second thème pour pouvoir y déplacer des cartes."
+            text="Crée d’abord un second thème pour pouvoir y déplacer des cartes."
           />
         ) : (
           <div className="card">
@@ -1387,7 +1392,7 @@ function ReminderSheet({
               <p className="meta" style={{ lineHeight: 1.55 }}>
                 La notification de l’application ne part qu’à son ouverture : elle rappelle ce qui
                 est dû, elle ne réveille pas le téléphone. Pour être prévenu même application
-                fermée, ajoutez le rappel à votre agenda.
+                fermée, ajoute le rappel à ton agenda.
               </p>
             </div>
           </>
@@ -1462,7 +1467,7 @@ export function ImportSheet({
     >
       <div className="stack stack-5">
         <p className="meta" style={{ lineHeight: 1.6 }}>
-          Collez une liste, ou choisissez un fichier CSV, TSV ou JSON exporté depuis l’application.
+          Colle une liste, ou choisis un fichier CSV, TSV ou JSON exporté depuis l’application.
           Pour une liste collée : une carte par ligne, le recto puis le verso, séparés par une
           tabulation, un point-virgule ou une virgule. Les cartes iront dans « {deckName} ».
         </p>
@@ -1479,7 +1484,7 @@ export function ImportSheet({
           onChange={(e) => void pickFile(e.target.files?.[0])}
         />
 
-        <Field label="Ou collez vos cartes">
+        <Field label="Ou colle tes cartes">
           <textarea
             className="textarea mono"
             style={{ minHeight: 150, fontSize: 13 }}

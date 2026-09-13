@@ -80,7 +80,7 @@ export function ShareSheet({
       await navigator.clipboard.writeText(url)
       toast('Lien copié.')
     } catch {
-      toast('Copie impossible : sélectionnez le lien à la main.', 'error')
+      toast('Copie impossible : sélectionne le lien à la main.', 'error')
     }
   }
 
@@ -95,7 +95,7 @@ export function ShareSheet({
     },
     link: {
       tone: 'chip--warn',
-      text: 'Jeu trop volumineux pour un QR code : diffusez le lien. Certains ENT tronquent les liens très longs.',
+      text: 'Jeu trop volumineux pour un QR code : diffuse le lien. Certains ENT tronquent les liens très longs.',
     },
     'too-long': {
       tone: 'chip--err',
@@ -190,7 +190,7 @@ export function ShareSheet({
                 <Icon name="info" size={18} />
               </span>
               <p className="meta" style={{ lineHeight: 1.55 }}>
-                Si vous corrigez ce thème plus tard, rediffusez le lien : chez l’élève, le jeu sera
+                Si tu corriges ce thème plus tard, rediffuse le lien : chez l’élève, le jeu sera
                 mis à jour au lieu d’être dupliqué, et sa progression sera conservée.
               </p>
             </div>

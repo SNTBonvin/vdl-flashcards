@@ -123,7 +123,7 @@ export function TodayScreen() {
         <EmptyState
           icon="layers"
           title="Aucune carte pour l’instant"
-          text="Créez une matière, puis un thème, et ajoutez vos premières flashcards. Vous pouvez aussi partir d’un exemple pour voir comment tout s’articule."
+          text="Crée une matière, puis un thème, et ajoute tes premières flashcards. Tu peux aussi partir d’un exemple pour voir comment tout s’articule."
           action={
             <div className="stack stack-2" style={{ width: '100%', maxWidth: 280 }}>
               <button
@@ -196,9 +196,8 @@ export function TodayScreen() {
           </button>
         ) : (
           <>
-            {/* Le tutoiement est réservé à ce qui s'adresse à l'élève : ici,
-                c'est lui qu'on encourage, et « vous » sonnerait comme un
-                bulletin. */}
+            {/* L'application tutoie partout : c'est un outil d'élève, et le
+                vouvoiement y sonnait comme un bulletin. */}
             <p style={{ color: 'var(--ink-2)', fontSize: 15, lineHeight: 1.6 }}>
               {session.held > 0
                 ? // Les cartes existent et se voient dans le thème : taire le quota

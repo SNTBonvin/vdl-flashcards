@@ -141,7 +141,7 @@ export function PublishSheet({
       ...(lot ? { lot: lot.name } : {}),
       // L'échéance du lot voyage avec le jeu : chez l'élève, elle garantira un
       // passage sur chaque carte avant le jour dit.
-      ...(lot?.dueBy ? { dueBy: lot.dueBy } : {}),
+      ...((lot?.dueBy ?? deck.dueBy) ? { dueBy: lot?.dueBy ?? deck.dueBy } : {}),
       ...(deck.description ? { description: deck.description } : {}),
       // Le même identifiant que le partage par lien : chez l'élève, un jeu reçu
       // par code et un lot reçu par lien se rejoignent dans le même thème.
@@ -161,7 +161,7 @@ export function PublishSheet({
       await navigator.clipboard.writeText(content)
       toast('Contenu copié.')
     } catch {
-      toast('Copie impossible : téléchargez le fichier.', 'error')
+      toast('Copie impossible : télécharge le fichier.', 'error')
     }
   }
 
@@ -198,7 +198,7 @@ export function PublishSheet({
       setFailure(
         e instanceof PublishError
           ? e.message
-          : 'Le dépôt a échoué. Utilisez le dépôt manuel ci-dessous.',
+          : 'Le dépôt a échoué. Utilise le dépôt manuel ci-dessous.',
       )
     } finally {
       setSending(false)
@@ -275,7 +275,7 @@ export function PublishSheet({
 
         <Field
           label="Nom affiché"
-          hint="Ce que l’élève verra. Votre thème garde son nom de travail."
+          hint="Ce que l’élève verra. Ton thème garde son nom de travail."
         >
           <input
             className="input"
@@ -406,8 +406,8 @@ export function PublishSheet({
               ? 'Le fichier part directement sur le dépôt ; le site se reconstruit ensuite tout seul, en deux minutes environ. Chez ceux qui ont déjà reçu le jeu, la mise à jour se signale d’elle-même, sans doublon et sans toucher à leur progression.'
               : published
                 ? 'Sur la page qui s’ouvre : tout sélectionner, coller, valider. Deux minutes plus tard, le jeu est à jour chez ceux qui l’ont reçu — sans doublon et sans toucher à leur progression.'
-                : 'Sur la page qui s’ouvre : nommez le fichier, collez le contenu, validez. La publication prend environ deux minutes.'}{' '}
-            Gardez le même code : en changer créerait un second jeu.
+                : 'Sur la page qui s’ouvre : nomme le fichier, colle le contenu, valide. La publication prend environ deux minutes.'}{' '}
+            Garde le même code : en changer créerait un second jeu.
           </p>
         </div>
       </div>

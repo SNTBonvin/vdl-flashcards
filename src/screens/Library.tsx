@@ -74,7 +74,7 @@ export function LibraryScreen() {
             <EmptyState
               icon="search"
               title="Aucune carte trouvée"
-              text="Essayez un autre mot, ou vérifiez l’orthographe. La recherche porte sur le recto, le verso et les étiquettes."
+              text="Essaie un autre mot, ou vérifie l’orthographe. La recherche porte sur le recto, le verso et les étiquettes."
             />
           ) : (
             <div className="card">
@@ -104,7 +104,7 @@ export function LibraryScreen() {
         <EmptyState
           icon="folder"
           title="Aucune matière"
-          text="Les matières regroupent vos thèmes : Histoire, Anglais, Biologie… Commencez par en créer une."
+          text="Les matières regroupent tes thèmes : Histoire, Anglais, Biologie… Commence par en créer une."
           action={
             <div className="stack stack-2" style={{ width: '100%', maxWidth: 280 }}>
               <button
@@ -185,7 +185,7 @@ export function LibraryScreen() {
                 <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
                   <span className="listrow__title">Un lien ou un code reçu</span>
                   <span className="listrow__sub truncate">
-                    Ce que votre professeur vous a donné
+                    Ce que ton professeur t’a donné
                   </span>
                 </span>
                 <Icon name="chevron-right" size={18} />

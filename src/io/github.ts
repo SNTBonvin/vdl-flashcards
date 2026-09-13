@@ -83,20 +83,20 @@ function fail(status: number): PublishError {
     )
   if (status === 404)
     return new PublishError(
-      'Dépôt introuvable — ou le jeton n’a pas été autorisé sur ce dépôt précis. Vérifiez l’adresse et la portée du jeton.',
+      'Dépôt introuvable — ou le jeton n’a pas été autorisé sur ce dépôt précis. Vérifie l’adresse et la portée du jeton.',
     )
   if (status === 409 || status === 422)
     return new PublishError(
-      'Le fichier a changé sur le dépôt entre-temps. Rouvrez la feuille de publication et recommencez.',
+      'Le fichier a changé sur le dépôt entre-temps. Rouvre la feuille de publication et recommence.',
     )
-  return new PublishError(`GitHub a répondu une erreur (${status}). Réessayez dans un moment.`)
+  return new PublishError(`GitHub a répondu une erreur (${status}). Réessaie dans un moment.`)
 }
 
 async function call(path: string, token: string, init?: RequestInit): Promise<Response> {
   try {
     return await fetch(`${API}${path}`, { ...init, headers: headers(token) })
   } catch {
-    throw new PublishError('Impossible de joindre GitHub. Vérifiez votre connexion.')
+    throw new PublishError('Impossible de joindre GitHub. Vérifie ta connexion.')
   }
 }
 

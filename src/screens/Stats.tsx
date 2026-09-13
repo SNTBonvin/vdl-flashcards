@@ -159,7 +159,7 @@ export function StatsScreen() {
         <EmptyState
           icon="chart"
           title="Pas encore de statistiques"
-          text="Elles apparaîtront dès votre première session de révision."
+          text="Elles apparaîtront dès ta première séance de révision."
         />
       </main>
     )
@@ -206,7 +206,7 @@ export function StatsScreen() {
           <div className="card card--pad">
             <p className="meta" style={{ lineHeight: 1.6 }}>
               Pas encore assez de révisions pour tracer quoi que ce soit de fiable. Il en faut au
-              moins {CURVE_MIN} ; vous en êtes à {curveLogs.length}. Une courbe tracée sur moins que
+              moins {CURVE_MIN} ; tu en es à {curveLogs.length}. Une courbe tracée sur moins que
               cela ne montrerait que du hasard.
             </p>
           </div>
@@ -214,7 +214,7 @@ export function StatsScreen() {
           <>
             <div className="card card--pad stack stack-3">
               <div className="row row--between">
-                <span className="eyebrow">Votre courbe de l’oubli</span>
+                <span className="eyebrow">Ta courbe de l’oubli</span>
                 <span className="chip mono">% de réussite</span>
               </div>
               <BarChart
@@ -226,8 +226,8 @@ export function StatsScreen() {
                 }))}
               />
               <p className="meta" style={{ lineHeight: 1.55 }}>
-                Réussite selon le temps écoulé depuis la révision précédente. C’est votre mémoire à
-                vous, mesurée sur vos cartes : là où la barre s’effondre, l’intervalle est devenu
+                Réussite selon le temps écoulé depuis la révision précédente. C’est ta mémoire à
+                toi, mesurée sur tes cartes : là où la barre s’effondre, l’intervalle est devenu
                 trop long. Les barres grises reposent sur trop peu de réponses pour être crues.
               </p>
             </div>
@@ -250,7 +250,7 @@ export function StatsScreen() {
               />
               <p className="meta" style={{ lineHeight: 1.55 }}>
                 En plein, les cartes devenues solides — revues avec au moins trois semaines
-                d’écart. En pointillé, celles que vous avez découvertes. L’écart entre les deux,
+                d’écart. En pointillé, celles que tu as découvertes. L’écart entre les deux,
                 c’est le travail qui reste.
               </p>
             </div>

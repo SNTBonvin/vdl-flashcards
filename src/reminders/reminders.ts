@@ -88,7 +88,7 @@ export async function fireDueReminders(
     const body =
       count > 0
         ? `${count} carte${count > 1 ? 's' : ''} à réviser dans « ${deck.name} ».`
-        : `C'est l'heure de vous tester sur « ${deck.name} ».`
+        : `C'est l'heure de te tester sur « ${deck.name} ».`
     try {
       await show('Séance de révision', body, `deck-${deck.id}`)
       fired.push(deck.id)
