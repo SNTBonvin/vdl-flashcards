@@ -132,7 +132,7 @@ export function HelpScreen() {
       <Step
         icon="today"
         title="À savoir pour quand ?"
-        text="Quand tu ajoutes des cartes reçues, un champ « À savoir pour le » te propose de dire pour quand il faut les savoir — la date de ton contrôle, telle qu’elle est sur ton cahier de textes. Ce n’est pas obligatoire. Si tu la mets, chacune de ces cartes te sera proposée la veille au plus tard, même si son tour n’était pas encore venu. Une fois la date passée, elles reprennent leur rythme normal. Tu peux la changer ou la retirer à tout moment : bandeau du thème, bouton « Modifier »."
+        text="Quand tu ajoutes des cartes reçues, un champ « À savoir pour le » te propose de dire pour quand il faut les savoir — la date de ton contrôle, telle qu’elle est sur ton cahier de textes. Ce n’est pas obligatoire. Si tu la mets, chacune de ces cartes te sera proposée la veille au plus tard, même si son tour n’était pas encore venu. Une fois la date passée, elles reprennent leur rythme normal. Pour t’en fixer une sur un thème que tu as déjà : « Planifier mes révisions › Poser une échéance ». Pour la changer ou la retirer : le bandeau du thème, bouton « Modifier »."
       />
 
       <Step

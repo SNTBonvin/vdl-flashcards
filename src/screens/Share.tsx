@@ -206,7 +206,7 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
           hint="Facultatif. Mets la date de ton contrôle si tu la connais : ces cartes te seront proposées la veille au plus tard. Ensuite, elles reprennent leur rythme normal."
         >
           <input
-            className="input mono"
+            className="input mono input--date"
             type="date"
             value={dueBy}
             onChange={(e) => setDueBy(e.target.value)}

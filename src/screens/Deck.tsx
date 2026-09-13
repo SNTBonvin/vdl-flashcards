@@ -95,18 +95,24 @@ export function DeckScreen({ id }: { id: string }) {
   const deadlines = useMemo(() => upcomingDeadlines(cards, now), [cards, now])
 
   /**
-   * Retirer ou déplacer une échéance. Les deux gestes sont le même : la date
-   * change sur les cartes qui la portaient, et sur ce qui l'annonçait — la
+   * Poser, déplacer ou retirer une échéance — un seul geste à trois visages.
+   * La date change sur les cartes concernées, et sur ce qui l'annonçait — la
    * série, le thème — pour que rien n'affiche plus une date périmée.
+   *
+   * `from` vide signifie qu'il n'y avait pas d'échéance : elle se pose alors sur
+   * tout le thème, comme le fait « Modifier le thème ».
    */
   const moveDeadline = async (from: string, to?: string) => {
-    const ids = cards.filter((c) => c.dueBy === from).map((c) => c.id)
-    await store.setDueBy(ids, to)
-    for (const lot of lots.filter((l) => l.dueBy === from)) {
+    const concernees = from ? cards.filter((c) => c.dueBy === from) : cards
+    await store.setDueBy(
+      concernees.map((c) => c.id),
+      to,
+    )
+    for (const lot of lots.filter((l) => from && l.dueBy === from)) {
       await store.updateDistribution(lot.id, { dueBy: to })
     }
-    if (deck?.dueBy === from) await store.updateDeck(deck.id, { dueBy: to })
-    toast(to ? 'Échéance déplacée.' : 'Échéance retirée.')
+    if (deck && (deck.dueBy === from || !from)) await store.updateDeck(deck.id, { dueBy: to })
+    toast(to ? (from ? 'Échéance déplacée.' : 'Échéance posée.') : 'Échéance retirée.')
   }
 
   /**
@@ -890,6 +896,11 @@ export function DeckScreen({ id }: { id: string }) {
         open={planOpen}
         deck={deck}
         dueBy={deadlines[0]?.dueBy}
+        onSetDeadline={() => {
+          setPlanOpen(false)
+          setMovedTo('')
+          setMovingDeadline('')
+        }}
         onClose={() => setPlanOpen(false)}
         onSave={async (plan) => {
           await store.updateDeck(deck.id, { plan })
@@ -908,7 +919,7 @@ export function DeckScreen({ id }: { id: string }) {
           que dit son cahier de textes. */}
       <Sheet
         open={movingDeadline !== null}
-        title="Échéance"
+        title={movingDeadline ? 'Échéance' : 'Poser une échéance'}
         onClose={() => setMovingDeadline(null)}
         footer={
           <button
@@ -916,7 +927,7 @@ export function DeckScreen({ id }: { id: string }) {
             className="btn btn--primary btn--block"
             disabled={!movedTo}
             onClick={async () => {
-              if (movingDeadline) await moveDeadline(movingDeadline, movedTo)
+              if (movingDeadline !== null) await moveDeadline(movingDeadline, movedTo)
               setMovingDeadline(null)
             }}
           >
@@ -927,27 +938,33 @@ export function DeckScreen({ id }: { id: string }) {
         <div className="stack stack-5">
           <Field
             label="À savoir pour le"
-            hint="Les cartes concernées te seront proposées la veille au plus tard. Passée cette date, elles reprennent leur rythme normal."
+            hint={
+              movingDeadline
+                ? 'Les cartes concernées te seront proposées la veille au plus tard. Passée cette date, elles reprennent leur rythme normal.'
+                : `La date s’applique aux ${cards.length} cartes de ce thème. Chacune te sera proposée la veille au plus tard ; passée cette date, elles reprennent leur rythme normal.`
+            }
           >
             <input
-              className="input mono"
+              className="input mono input--date"
               type="date"
               value={movedTo}
               onChange={(e) => setMovedTo(e.target.value)}
             />
           </Field>
 
-          <button
-            type="button"
-            className="btn btn--danger btn--block"
-            onClick={async () => {
-              if (movingDeadline) await moveDeadline(movingDeadline)
-              setMovingDeadline(null)
-            }}
-          >
-            <Icon name="trash" size={17} />
-            Retirer l’échéance
-          </button>
+          {movingDeadline && (
+            <button
+              type="button"
+              className="btn btn--danger btn--block"
+              onClick={async () => {
+                await moveDeadline(movingDeadline)
+                setMovingDeadline(null)
+              }}
+            >
+              <Icon name="trash" size={17} />
+              Retirer l’échéance
+            </button>
+          )}
         </div>
       </Sheet>
 
@@ -1472,7 +1489,7 @@ function ReminderSheet({
         {enabled && (
           <>
             <Field label="Heure">
-              <input className="input mono" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+              <input className="input mono input--date" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
             </Field>
 
             <div className="field">

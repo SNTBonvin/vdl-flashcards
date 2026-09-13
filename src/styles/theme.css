@@ -597,6 +597,16 @@ a {
   line-height: 1.5;
 }
 
+/*
+ * Date et heure. Ces champs ne se saisissent pas, ils s'ouvrent : la cible doit
+ * être franche sous le pouce, et la date assez grande pour se relire d'un coup
+ * d'œil — c'est souvent la seule information qui compte dans la feuille.
+ */
+.input--date {
+  font-size: 17px;
+  padding: 15px 14px;
+}
+
 .select {
   padding-right: 36px;
   background-image: var(--select-arrow);

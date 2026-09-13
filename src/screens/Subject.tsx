@@ -301,7 +301,7 @@ export function DeckSheet({
           hint="Facultatif. La date accompagne les cartes diffusées, et garantit un passage sur chacune la veille au plus tard."
         >
           <input
-            className="input mono"
+            className="input mono input--date"
             type="date"
             value={dueBy}
             onChange={(e) => setDueBy(e.target.value)}

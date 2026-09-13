@@ -223,9 +223,12 @@ reçu quoi n'est enregistrée : l'application ne suit personne.
 
 ### Se fixer une échéance
 
-Un champ **« À savoir pour le »**, à trois endroits : dans la fiche d'une série,
-dans **Modifier le thème** pour un thème pris en entier, et — c'est le plus
-utile — **sur l'écran de réception**, au moment où l'élève ajoute les cartes.
+Un champ **« À savoir pour le »**, à quatre endroits : dans **Planifier mes
+révisions**, par le bouton **Poser une échéance** (c'est là qu'on la cherche) ;
+dans la fiche d'une série ; dans **Modifier le thème**, sous le crayon, pour un
+thème pris en entier ; et — c'est le plus utile — **sur l'écran de réception**,
+au moment où l'élève ajoute les cartes. Le thème qui en porte une l'affiche en
+bandeau, avec un bouton **Modifier** pour la déplacer ou la retirer.
 
 Ce troisième endroit change la répartition des rôles. Vous n'avez pas toujours
 la date du contrôle quand vous préparez le jeu ; l'élève, lui, l'a sous les yeux

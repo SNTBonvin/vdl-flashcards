@@ -33,6 +33,7 @@ export function PlanSheet({
   open,
   deck,
   dueBy,
+  onSetDeadline,
   onClose,
   onSave,
   onRemove,
@@ -41,6 +42,9 @@ export function PlanSheet({
   deck: Deck
   /** Échéance la plus proche portée par les cartes du thème, s'il y en a une. */
   dueBy?: string
+  /** Ouvre le choix d'une échéance. C'est ici qu'on la cherche : cette feuille
+      est celle des dates, et le crayon du thème n'annonce pas qu'il en tient une. */
+  onSetDeadline?: () => void
   onClose: () => void
   onSave: (plan: RevisionPlan) => void
   onRemove: () => void
@@ -117,16 +121,27 @@ export function PlanSheet({
             l’application fermée.
           </p>
 
-          <div className="card card--pad row" data-status={dueBy ? 'warn' : 'ok'} style={{ gap: 12 }}>
-            <span className="glyph glyph--warm">
-              <Icon name="today" size={18} />
-            </span>
-            <p className="meta" style={{ lineHeight: 1.55 }}>{hint}</p>
+          <div
+            className="card card--pad stack stack-3"
+            data-status={dueBy ? 'warn' : 'ok'}
+          >
+            <div className="row" style={{ gap: 12 }}>
+              <span className="glyph glyph--warm">
+                <Icon name="today" size={18} />
+              </span>
+              <p className="meta grow" style={{ lineHeight: 1.55 }}>{hint}</p>
+            </div>
+            {!dueBy && onSetDeadline && (
+              <button type="button" className="btn btn--ghost btn--block" onClick={onSetDeadline}>
+                <Icon name="today" size={17} />
+                Poser une échéance
+              </button>
+            )}
           </div>
 
           <Field label="Heure" hint="Choisis un moment où tu es disponible.">
             <input
-              className="input mono"
+              className="input mono input--date"
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}

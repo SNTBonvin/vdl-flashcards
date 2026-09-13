@@ -118,7 +118,7 @@ export function DistributionSheet({
             hint="Facultatif. L’élève verra la date, et l’application garantira un passage sur chaque carte la veille au plus tard."
           >
             <input
-              className="input mono"
+              className="input mono input--date"
               type="date"
               value={lot.dueBy ?? ''}
               onChange={(e) => {
