@@ -23,6 +23,7 @@ import { DEFAULT_REMINDER_TIME, WEEKDAYS, requestPermission } from '../reminders
 import type { Card, Reminder } from '../db/types'
 import { DAY_SHORT, formatDue } from '../lib/date'
 import { ImportError, parseCardsText, readFile, type ParsedRow } from '../io/transfer'
+import { cardKey } from '../io/share'
 import { ShareSheet } from '../components/ShareSheet'
 import { DistributionSheet } from '../components/DistributionSheet'
 import { PlanSheet } from '../components/PlanSheet'
@@ -725,6 +726,7 @@ export function DeckScreen({ id }: { id: string }) {
       <CardSheet
         open={editingCard !== null}
         card={editingCard === 'new' ? null : editingCard}
+        siblings={cards}
         onClose={() => setEditingCard(null)}
         onPickExisting={() => {
           setEditingCard(null)
@@ -1152,6 +1154,7 @@ export interface CardValues {
 export function CardSheet({
   open,
   card,
+  siblings = [],
   onClose,
   onSubmit,
   onDelete,
@@ -1160,6 +1163,8 @@ export function CardSheet({
 }: {
   open: boolean
   card: Card | null
+  /** Les autres cartes du thème, pour refuser deux fois le même recto. */
+  siblings?: Card[]
   onClose: () => void
   onSubmit: (values: CardValues) => void
   onDelete?: () => void
@@ -1191,8 +1196,21 @@ export function CardSheet({
   /** Seuil indicatif : au-delà, la carte porte presque toujours deux idées. */
   const longCard = front.trim().length > 180 || back.trim().length > 180
 
+  /**
+   * Deux cartes de même recto dans un thème : refusé, et pas par principe.
+   * C'est le recto qui identifie une carte à la réception d'une mise à jour
+   * (`cardKey`) : deux rectos identiques et l'on ne sait plus laquelle corriger,
+   * ni laquelle est celle de son auteur. La reprise d'une carte existante le
+   * refuse déjà — la saisie à la main le laissait passer.
+   */
+  const twin = useMemo(() => {
+    const key = cardKey(front)
+    if (!key) return null
+    return siblings.find((c) => c.id !== card?.id && cardKey(c.front) === key) ?? null
+  }, [front, siblings, card])
+
   const submit = () => {
-    if (!front.trim() || !back.trim()) return
+    if (!front.trim() || !back.trim() || twin) return
     onSubmit({
       front: front.trim(),
       back: back.trim(),
@@ -1225,7 +1243,7 @@ export function CardSheet({
               type="button"
               className="btn btn--primary grow"
               onClick={submit}
-              disabled={!front.trim() || !back.trim()}
+              disabled={!front.trim() || !back.trim() || twin !== null}
             >
               Enregistrer
             </button>
@@ -1260,6 +1278,21 @@ export function CardSheet({
               placeholder="1958"
             />
           </Field>
+
+          {twin && (
+            <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
+              <span className="glyph glyph--warm">
+                <Icon name="info" size={18} />
+              </span>
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                <strong>Ce recto existe déjà dans ce thème</strong> — la réponse enregistrée est
+                « {twin.back.length > 60 ? twin.back.slice(0, 60) + '…' : twin.back} ».
+                Modifie le recto pour distinguer les deux cartes : c’est lui qui sert à les
+                reconnaître, et deux rectos identiques se mélangeraient à la prochaine mise à jour
+                du jeu.
+              </p>
+            </div>
+          )}
 
           {longCard && (
             <div className="card card--pad row" data-status="warn" style={{ gap: 12 }}>

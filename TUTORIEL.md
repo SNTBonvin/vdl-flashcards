@@ -43,6 +43,12 @@ efficace : la carte qui contient deux idées n'en fixe aucune. L'éditeur le
 rappelle, et signale les cartes devenues trop longues — deux cartes valent
 souvent mieux qu'une.
 
+Il refuse par ailleurs **deux cartes de même recto dans un thème**, et demande
+d'en modifier un. Ce n'est pas une coquetterie : c'est le recto qui identifie
+une carte quand un jeu est mis à jour. Deux rectos identiques, et l'on ne sait
+plus laquelle corriger — ni, chez un élève, laquelle est la sienne. La casse et
+les espaces ne comptent pas dans la comparaison.
+
 ### Reprendre une carte déjà écrite
 
 Dans un thème → **Ajouter une carte** → **Reprendre une carte que j'ai déjà**.

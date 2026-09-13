@@ -215,7 +215,7 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
 
         <p className="meta" style={{ lineHeight: 1.55 }}>
           {existing
-            ? 'Tu as déjà ce thème : les cartes seront mises à jour et ta progression sera conservée. Aucune de tes cartes ne sera supprimée.'
+            ? 'Tu as déjà ce thème : les cartes nouvelles s’y ajouteront, celles que tu as déjà seront mises à jour, et ta progression sera conservée. Aucune de tes cartes ne sera supprimée.'
             : `Les cartes seront ajoutées à la matière « ${payload.s} », créée si tu ne l’as pas encore.`}
         </p>
       </section>

@@ -442,6 +442,10 @@ et toutes protègent le travail de celui qui reçoit :
   historique même si l'auteur en corrige le verso. Le lien porte un identifiant
   de partage stable, si bien qu'une rediffusion met le jeu à jour au lieu de le
   dupliquer.
+- **Deux cartes de même recto sont refusées dans un thème.** L'éditeur compare
+  le recto normalisé (`cardKey`, celui-là même qui sert à l'appariement) et
+  demande de le modifier. Sans ce garde-fou, la saisie à la main pouvait créer
+  la collision que tout le reste s'emploie à éviter.
 - **L'import ne touche jamais une carte personnelle.** L'appariement ne porte
   que sur les cartes venues du même partage. Si une carte personnelle occupe le
   même recto, elle est laissée intacte et la carte reçue n'est pas créée : ni
