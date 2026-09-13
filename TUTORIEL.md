@@ -259,8 +259,16 @@ impose pas.
 
 Une précaution enfin, pour que la date de l'élève lui appartienne vraiment : à
 la réception d'une **mise à jour**, le champ arrive pré-rempli avec la date que
-ses cartes portent déjà. Vos corrections n'effacent donc pas l'échéance qu'il
-s'était fixée — seul lui peut l'effacer, en vidant le champ.
+portent déjà les cartes de cet envoi. Vos corrections n'effacent donc pas
+l'échéance qu'il s'était fixée — seul lui peut l'effacer, en vidant le champ. La
+comparaison se fait carte à carte : une deuxième série arrivant dans un thème
+qui en contient déjà une ne se voit pas proposer la date de la première.
+
+**Plusieurs échéances peuvent coexister dans un même thème**, et c'est le cas
+courant : série 1 pour mardi, série 2 pour dimanche. Chaque carte porte la
+sienne, le thème affiche un bandeau par date et l'accueil un compte à rebours
+par date. Une carte présente dans les deux séries prend la date du dernier envoi
+reçu — c'est bien la dernière consigne qui vaut.
 
 **L'accumulation, elle, n'a besoin de rien.** Série 1 donnée le 7 pour le 14,
 série 2 le 14 pour le 21 : les deux restent dans la rotation et se mélangent

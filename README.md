@@ -488,8 +488,17 @@ exactement du même outil qu'un professeur. C'est aussi ce qui permet de la pose
 **à la réception** : `importShare` applique la date de la charge utile aux
 cartes de cet envoi — créées comme mises à jour —, si bien qu'il suffit à l'écran
 de réception de remplacer cette valeur par celle que l'élève a choisie. Le champ
-y est pré-rempli avec la date que ses cartes portent déjà : sans cela, une mise
-à jour diffusée sans date effacerait en silence l'échéance qu'il s'était fixée. La date suit la composition : une
+y est pré-rempli avec la date que portent déjà **les cartes de cet envoi** :
+sans cela, une mise à jour diffusée sans date effacerait en silence l'échéance
+qu'il s'était fixée. La comparaison porte sur les cartes de la charge utile et
+non sur le thème entier — une deuxième série arrivant dans un thème qui en
+contient déjà une hériterait sinon de la date de la première.
+
+Il en résulte que **plusieurs échéances coexistent dans un thème**, ce qui est le
+cas nominal : la date est sur la carte, pas sur le thème. `upcomingDeadlines`
+les regroupe par date, le thème affiche un bandeau par groupe et l'accueil un
+compte à rebours par groupe. Une carte appartenant à deux séries prend la date
+du dernier envoi reçu, puisque c'est lui qui la désigne en dernier. La date suit la composition : une
 carte ajoutée à une série qui en porte une la reçoit, une carte retirée la perd
 — à moins qu'une autre série lui en ait donné une différente, auquel cas la
 sienne est laissée en place.

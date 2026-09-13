@@ -3,7 +3,7 @@ import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { Icon } from '../components/Icon'
 import { EmptyState, Field, SectionHead, plural, useToast } from '../components/ui'
-import { decodeShare, ShareError, type SharePayload } from '../io/share'
+import { cardKey, decodeShare, ShareError, type SharePayload } from '../io/share'
 import { CatalogError, fetchSet, setToPayload } from '../io/catalog'
 import { isIosBrowser } from '../lib/storage'
 
@@ -63,19 +63,28 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
 
   /**
    * Date proposée par défaut : celle de l'envoi s'il en porte une, sinon celle
-   * que portent déjà les cartes de ce partage. Ce second cas n'est pas un
+   * que portent déjà **les cartes de cet envoi-là**. Ce second cas n'est pas un
    * détail : sans lui, une mise à jour diffusée sans date effacerait en silence
    * l'échéance que le destinataire s'était fixée.
+   *
+   * La comparaison se fait carte à carte, et non sur le thème entier : une
+   * deuxième série arrivant dans un thème qui en contient déjà une ne doit pas
+   * se voir proposer la date de la première. Elle n'est proposée que si toutes
+   * les cartes de cet envoi la portent déjà — c'est-à-dire, en pratique, quand
+   * on reçoit une nouvelle fois la même série.
    */
   const suggested = useMemo(() => {
     if (!payload) return ''
     if (payload.due) return payload.due
     const deck = store.decks.find((d) => d.shareId === payload.id)
     if (!deck) return ''
-    const dates = store.cards
-      .filter((c) => c.deckId === deck.id && c.sharedFrom === payload.id && !c.suspended)
-      .map((c) => c.dueBy ?? '')
-    return dates.length > 0 && dates.every((d) => d === dates[0]) ? dates[0] : ''
+    const here = new Map(
+      store.cards
+        .filter((c) => c.deckId === deck.id && c.sharedFrom === payload.id && !c.suspended)
+        .map((c) => [cardKey(c.front), c.dueBy ?? '']),
+    )
+    const dates = payload.c.map(([front]) => here.get(cardKey(front)) ?? '')
+    return dates.length > 0 && dates.every((d) => d !== '' && d === dates[0]) ? dates[0] : ''
   }, [payload, store.decks, store.cards])
 
   useEffect(() => {
