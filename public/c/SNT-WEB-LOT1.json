@@ -1,0 +1,80 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SNT-WEB-LOT1",
+  "publishedAt": "2026-09-13T09:13:33.482Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences Numériques et Technologies",
+  "deck": "Le web — Lot 1 - SNT - Web",
+  "lot": "Lot 1 - SNT - Web",
+  "shareId": "sh3y5n1d3m6r6u6g",
+  "rev": 1789290813482,
+  "cards": [
+    [
+      "Quelle est la différence entre Internet et le Web ?",
+      "Internet est un réseau de machines reliées par de la fibre optique. Le web a besoin d’internet pour fonctionner, mais ce sont deux choses différentes.",
+      null
+    ],
+    [
+      "En quelle année la barre du milliard de sites web est-elle franchie ?",
+      "2014.",
+      null
+    ],
+    [
+      "Sur quelles trois technologies le web repose-t-il ?",
+      "Le HTTP, le HTML et l’URL.",
+      null
+    ],
+    [
+      "En quelle année apparaît Mosaic, le premier navigateur web graphique ?",
+      "1993.",
+      null
+    ],
+    [
+      "Dans la représentation du web en toile, que sont les points et les fils ?",
+      "Les points sont les ressources (page web, image, texte) ; les fils sont les liens hypertexte.",
+      null
+    ],
+    [
+      "Qui a inventé le Web, et en quelle année ?",
+      "Tim Berners-Lee, en 1989.",
+      "Ingénieur britannique."
+    ],
+    [
+      "Que signifie le mot « web » ?",
+      "« Toile ». On le représente comme des points reliés par des fils.",
+      null
+    ],
+    [
+      "En quelle année le HTML 5 est-il développé ?",
+      "2014.",
+      "Il permet de lire les vidéos directement dans le navigateur."
+    ],
+    [
+      "En quelle année apparaît Google ?",
+      "1998.",
+      "Le premier moteur de recherche vraiment performant."
+    ],
+    [
+      "En quelle année a lieu le premier achat en ligne ?",
+      "1994.",
+      "Un album de Sting."
+    ],
+    [
+      "En quelle année apparaît YouTube ?",
+      "2006.",
+      null
+    ],
+    [
+      "En quelle année l’iPhone est-il commercialisé ?",
+      "2007.",
+      "Il permet de surfer sur le web depuis un téléphone."
+    ],
+    [
+      "En quelle année le cap du million de sites web publiés est-il atteint ?",
+      "1997.",
+      "Les moteurs de recherche sont alors à la peine."
+    ]
+  ]
+}
