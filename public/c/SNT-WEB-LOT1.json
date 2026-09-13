@@ -2,14 +2,14 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SNT-WEB-LOT1",
-  "publishedAt": "2026-09-13T09:13:33.482Z",
+  "publishedAt": "2026-09-13T09:20:22.630Z",
   "listed": true,
   "level": "2de",
   "subject": "Sciences Numériques et Technologies",
   "deck": "Le web — Lot 1 - SNT - Web",
   "lot": "Lot 1 - SNT - Web",
   "shareId": "sh3y5n1d3m6r6u6g",
-  "rev": 1789290813482,
+  "rev": 1789291222630,
   "cards": [
     [
       "Quelle est la différence entre Internet et le Web ?",
@@ -55,6 +55,11 @@
       "En quelle année apparaît Google ?",
       "1998.",
       "Le premier moteur de recherche vraiment performant."
+    ],
+    [
+      "Qu’est-ce qu’un navigateur web ?",
+      "Un logiciel ou une application qui permet d’afficher les pages web.",
+      "Firefox, Chrome, Edge, Opera, Safari…"
     ],
     [
       "En quelle année a lieu le premier achat en ligne ?",
