@@ -1,0 +1,65 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SNT-WEB-LOT2",
+  "publishedAt": "2026-09-13T09:19:18.514Z",
+  "listed": false,
+  "level": "2de",
+  "subject": "Sciences Numériques et Technologies",
+  "deck": "Le web — Lot 2 - SNT - Web",
+  "lot": "Lot 2 6 SNT - Web",
+  "shareId": "sh3y5n1d3m6r6u6g",
+  "rev": 1789291158514,
+  "cards": [
+    [
+      "À quoi sert le langage CSS ?",
+      "À mettre en forme les pages web : couleurs, police, alignements, marges… On parle de feuille de style.",
+      null
+    ],
+    [
+      "Que veut dire « le HTML est un langage balisé » ?",
+      "Le contenu est encadré par une balise ouvrante et une balise fermante.",
+      null
+    ],
+    [
+      "À quoi sert le HTTP ?",
+      "C’est le protocole de communication entre le serveur et le client web.",
+      null
+    ],
+    [
+      "Qu’est-ce qu’un navigateur web ?",
+      "Un logiciel ou une application qui permet d’afficher les pages web.",
+      "Firefox, Chrome, Edge, Opera, Safari…"
+    ],
+    [
+      "Que renvoie le serveur quand il connaît l’URL demandée ?",
+      "Il envoie les fichiers HTML et CSS au navigateur du client, qui les décode et affiche la page web.",
+      null
+    ],
+    [
+      "Écris en HTML un titre de niveau 1 contenant « Cours de SNT ».",
+      "<h1> Cours de SNT </h1>",
+      null
+    ],
+    [
+      "À quoi sert la balise html ?",
+      "C’est la balise principale : elle contient toutes les autres et indique que la page est codée en HTML.",
+      null
+    ],
+    [
+      "Qu’est-ce qu’un moteur de recherche ?",
+      "Un site web qui permet de faire des recherches.",
+      "Google, Bing, Ecosia…"
+    ],
+    [
+      "À quoi sert le HTML ?",
+      "C’est le langage d’écriture des pages web.",
+      null
+    ],
+    [
+      "À quoi sert l’URL ?",
+      "Elle donne une adresse unique à chaque page web et à chaque ressource.",
+      null
+    ]
+  ]
+}
