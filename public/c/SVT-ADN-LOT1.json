@@ -2,59 +2,55 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SVT-ADN-LOT1",
-  "publishedAt": "2026-09-14T14:50:47.625Z",
+  "publishedAt": "2026-09-14T14:55:17.044Z",
   "listed": true,
   "level": "2de",
   "subject": "Sciences de la Vie et de la Terre",
-  "deck": "ADN - Génétique - 2nde — SVT-ADN-LOT1",
-  "lot": "SVT-ADN-LOT1",
-  "description": "Classe de Seconde",
-  "shareId": "sh5z426a5w4k470t",
-  "rev": 1789397447625,
+  "deck": "Biodiversité — Lot 1 - Biodiversité Seconde",
+  "lot": "Lot 1 - Biodiversité Seconde",
+  "dueBy": "2026-09-21",
+  "description": "Classe de seconde",
+  "shareId": "sh0v0v0m3v5a2k24",
+  "rev": 1789397717044,
   "cards": [
     [
-      "Combien de nucléotides différents composent l'ADN ?",
-      "4",
+      "Qu'est-ce que la biocénose ?",
+      "L'ensemble des êtres vivants qui peuplent un écosystème.",
       null
     ],
     [
-      "Forme de l'ADN",
-      "Structure en double hélice (deux brins enroulés).",
+      "Comment estimer la richesse biologique ?",
+      "On réalise des comptages d'espèce et d'effectifs pour chaque espèce.",
       null
     ],
     [
-      "Complémentaire d'un nucléotide à Thymine (T)",
-      "Nucléotide à Adénine (A)",
+      "Quels sont les indicateurs qui servent à estimer la biodiversité dans un milieu ?",
+      "Le nombre d'espèce et l'hétérogénéité.",
       null
     ],
     [
-      "ADN",
-      "Acide Désoxyribonucléique, molécule support de l'information génétique.",
+      "Quels sont les 3 niveaux de biodiversité ?",
+      "1. Diversité des écosystèmes 2. Diversité des espèces 3. Diversité génétique (ou intraspécifique).",
       null
     ],
     [
-      "Si un brin contient A-T-C-G, le brin complémentaire est",
-      "T-A-G-C",
+      "Qu'est-ce que la biodiversité génétique ?",
+      "La diversité génétique qui existe entre les individus d'une même espèce.",
       null
     ],
     [
-      "Complémentaire d'un nucléotide à Adénine (A)",
-      "Nucléotide à Thymine (T)",
+      "Qu'est-ce qu'un écosystème ?",
+      "Un écosystème = une biocénose (êtres vivants) + un biotope (milieu de vie : température pH, salinité...)",
       null
     ],
     [
-      "Complémentaire d'un nucléotide à Guanine (G)",
-      "Nucléotide à Cytosine (C)",
+      "L'apparition d'une nouvelle espèce dans un milieu enrichit-elle forcément la biodiversité ?",
+      "Non car si c'est une espèce envahissante il peut y avoir une surabondance d'une espèce par rapport aux autres, ce qui appauvrit la biodiversité.",
       null
     ],
     [
-      "Liaisons entre les bases",
-      "Liaisons hydrogène qui maintiennent les deux brins d'ADN reliés entre eux.",
-      null
-    ],
-    [
-      "Complémentaire d'un nucléotide à Cytosine (C)",
-      "Nucléotide à Guanine (G)",
+      "Qu'est-ce que le biotope ?",
+      "Le milieu de vie d'un écosystème (conditions physico-chimiques : température pH salinité humidité...).",
       null
     ]
   ]
