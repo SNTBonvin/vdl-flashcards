@@ -187,7 +187,10 @@ sauvegarde JSON reste le filet.
   interdit.
 - **Ce que j'ai diffusé** — un inventaire des séries et des jeux publiés, toutes
   matières confondues, avec code, échéance, « à republier » et date de dernière
-  diffusion ; un appui mène droit à la fiche concernée.
+  diffusion ; un appui mène droit à la fiche concernée. C'est aussi **le seul
+  endroit d'où l'on publie** : la fiche de thème ne porte plus que « Partager »
+  et signale l'état de sa publication. Voir ce qui est en ligne et y ajouter sont
+  le même geste, et l'écran le plus fréquenté s'en trouve allégé.
 - **Rubrique « Pourquoi ça marche »** — l'aide explique en quatre principes ce
   que l'outil fait faire (se tester, espacer, revenir sur l'ancien, une idée par
   carte), avec les sources : DRANE de Bourgogne-Franche-Comté et académie de

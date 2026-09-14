@@ -30,6 +30,7 @@ export function DistributionSheet({
   onEditSelection: () => void
   /** Le lot copié devient celui affiché : on enchaîne sur sa modification. */
   onDuplicated: (copy: Distribution) => void
+  /** Mène à l'inventaire de diffusion, seul endroit d'où l'on publie. */
   onPublish: () => void
 }) {
   const store = useStore()
@@ -168,20 +169,18 @@ export function DistributionSheet({
             Modifier les cartes de la série
           </button>
 
-          <button
-            type="button"
-            className="btn btn--ghost btn--block"
-            disabled={cards.length === 0}
-            onClick={onPublish}
-          >
-            <Icon name="upload" size={18} />
-            {!lot.publishedAs
-              ? 'Publier cette série sous un code'
-              : lot.publishedCount !== cards.length ||
-                  cards.some((c) => c.updatedAt > (lot.publishedAt ?? 0))
-                ? 'Republier cette série'
-                : `Code ${lot.publishedAs}`}
-          </button>
+          {/* Publier se fait depuis « Ce que j'ai diffusé » : un seul endroit
+              pour tout ce qui est en ligne. La fiche en dit l'état, car c'est
+              ici qu'on modifie la série et donc ici qu'on s'en aperçoit. */}
+          {lot.publishedAs && (
+            <button type="button" className="btn btn--quiet btn--block" onClick={onPublish}>
+              <Icon name="upload" size={17} />
+              {lot.publishedCount !== cards.length ||
+              cards.some((c) => c.updatedAt > (lot.publishedAt ?? 0))
+                ? `Publiée sous ${lot.publishedAs} — à republier`
+                : `Publiée sous ${lot.publishedAs}`}
+            </button>
+          )}
 
           <button
             type="button"

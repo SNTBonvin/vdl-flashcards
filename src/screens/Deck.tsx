@@ -29,7 +29,6 @@ import { DistributionSheet } from '../components/DistributionSheet'
 import { PlanSheet } from '../components/PlanSheet'
 import { PickCardsSheet } from '../components/PickCardsSheet'
 import { ExportSheet, exportRows } from '../components/ExportSheet'
-import { PublishSheet } from '../components/PublishSheet'
 import { nextPlanDate } from '../reminders/plan'
 import { buildIcs, icsFilename } from '../io/ics'
 import { download } from '../io/transfer'
@@ -76,9 +75,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
   const [planOpen, setPlanOpen] = useState(false)
   const [picking, setPicking] = useState(false)
   const [exporting, setExporting] = useState(false)
-  const [publishing, setPublishing] = useState(false)
   /** Lot en cours de publication, le cas échéant. */
-  const [publishingLot, setPublishingLot] = useState<Distribution | null>(null)
   /** Modification d'une carte reçue, en attente de confirmation d'appropriation. */
   const [claiming, setClaiming] = useState<{ card: Card; values: CardValues } | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
@@ -394,20 +391,27 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         </button>
       </div>
 
+      {/* Publier a quitté cet écran : tout ce qui est en ligne se tient
+          désormais au même endroit, « Réglages › Diffusion › Ce que j'ai
+          diffusé ». Le thème ne garde que le partage, qui concerne tout le
+          monde — mais il signale ce qui attend d'être redéposé, car c'est ici
+          qu'on modifie les cartes et donc ici qu'on le découvre. */}
       {counts.total > 0 && !deck.reserve && (
-        <div className="row" style={{ gap: 10 }}>
-          <button type="button" className="btn btn--ghost grow" onClick={() => setSharing(true)}>
+        <div className="stack stack-2">
+          <button type="button" className="btn btn--ghost btn--block" onClick={() => setSharing(true)}>
             <Icon name="move" size={18} />
             {store.teacherMode ? 'Partager' : 'Partager ce thème'}
           </button>
-          {store.teacherMode && (
-            <button type="button" className="btn btn--ghost grow" onClick={() => setPublishing(true)}>
-              <Icon name="upload" size={18} />
-              {!deck.publishedAs
-                ? 'Publier'
-                : publicationStale
-                  ? 'Republier'
-                  : `Code ${deck.publishedAs}`}
+          {store.teacherMode && deck.publishedAs && (
+            <button
+              type="button"
+              className="btn btn--quiet btn--block"
+              onClick={() => navigate({ name: 'diffusion' })}
+            >
+              <Icon name="upload" size={17} />
+              {publicationStale
+                ? `Publié sous ${deck.publishedAs} — à republier`
+                : `Publié sous ${deck.publishedAs}`}
             </button>
           )}
         </div>
@@ -842,27 +846,6 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         }}
       />
 
-      <PublishSheet
-        open={publishing}
-        deck={deck}
-        cards={cards}
-        onClose={() => setPublishing(false)}
-        onPublished={(code) => toast(`Code « ${code} » retenu. Dépose le fichier pour le rendre vivant.`)}
-      />
-
-      {publishingLot && (
-        <PublishSheet
-          open
-          deck={deck}
-          lot={publishingLot}
-          cards={cards.filter((c) => publishingLot.cardIds.includes(c.id))}
-          onClose={() => setPublishingLot(null)}
-          onPublished={(code) =>
-            toast(`Code « ${code} » retenu. Dépose le fichier pour le rendre vivant.`)
-          }
-        />
-      )}
-
       <ExportSheet
         open={exporting}
         scopes={[
@@ -1025,9 +1008,8 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         }}
         onDuplicated={(copy) => setOpenLotId(copy.id)}
         onPublish={() => {
-          if (!openLot) return
-          setPublishingLot(openLot)
           setOpenLotId(null)
+          navigate({ name: 'diffusion' })
         }}
       />
 

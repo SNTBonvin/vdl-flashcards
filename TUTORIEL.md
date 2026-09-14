@@ -347,7 +347,13 @@ Un lien est long, et sur iPhone il n'atteint pas l'application installée. Un
 **code court** — « SVT-2DE-BIO1 » — se dicte en classe, s'écrit au tableau, et
 se tape dans l'application déjà ouverte. Plus de lien, plus de QR code.
 
-Dans un thème → **Publier**. Choisissez le code, le **nom affiché** — ce que
+*Réglages → Diffusion → **Ce que j'ai diffusé** → **Publier ou republier***, puis
+choisissez le thème ou la série. Publier a quitté la fiche de thème : tout ce qui
+est en ligne se tient au même endroit, et l'on y voit du même coup ce qui reste à
+redéposer. La fiche d'un thème, elle, signale simplement « Publié sous SVT-BIODIV
+— à republier » et mène ici.
+
+La feuille demande ensuite le code, le **nom affiché** — ce que
 verront vos élèves, votre thème gardant son nom de travail —, éventuellement le
 niveau, et décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
 fichier exact à déposer :
@@ -394,9 +400,9 @@ séries d'un thème portent le même identifiant de thème**. Chez l'élève, le
 successifs se rejoignent donc dans **un seul thème qui grossit**, au lieu de
 s'empiler en chapitres séparés.
 
-Fiche de la série → **Publier cette série sous un code**. Le code proposé la
-distingue (`SVT-BIODIVER-SERIE1`), et le nom affiché reprend « thème — série ». Le reste
-est identique : copier, déposer, deux minutes.
+Dans **Publier ou republier**, les séries apparaissent sous leur thème. Le code
+proposé les distingue (`SVT-BIODIVER-SERIE1`), et le nom affiché reprend
+« thème — série ». Le reste est identique : copier, déposer, deux minutes.
 
 Conséquence pratique : une seule liste de cartes, trois sélections par-dessus,
 trois codes — et une carte peut servir dans deux séries sans être révisée en

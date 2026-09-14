@@ -1,9 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../state/store'
 import { useRoute } from '../lib/router'
 import { Icon } from '../components/Icon'
-import { EmptyState, SectionHead, plural } from '../components/ui'
+import { EmptyState, SectionHead, Sheet, plural, useToast } from '../components/ui'
+import { PublishSheet } from '../components/PublishSheet'
 import { formatDeadline, isPast } from '../srs/deadline'
+import type { Card, Deck, Distribution } from '../db/types'
 
 /**
  * Inventaire de ce qu'on a diffusé : séries et jeux publiés.
@@ -19,9 +21,21 @@ import { formatDeadline, isPast } from '../srs/deadline'
  * C'est aussi pourquoi il ne montre que l'état local — republier, retirer du
  * catalogue ou corriger se font dans la fiche, où le contexte est complet.
  */
+/** Ce qu'on s'apprête à publier : un thème entier, ou une série. */
+type Cible = { deck: Deck; lot?: Distribution; cards: Card[] }
+
 export function DiffusionScreen() {
   const store = useStore()
+  const toast = useToast()
   const { navigate } = useRoute()
+  /** Choix de ce qu'on publie, puis feuille de publication. */
+  const [choix, setChoix] = useState(false)
+  const [cible, setCible] = useState<Cible | null>(null)
+
+  const ouvrir = (c: Cible) => {
+    setChoix(false)
+    setCible(c)
+  }
 
   const series = useMemo(() => {
     return store.distributions
@@ -74,6 +88,18 @@ export function DiffusionScreen() {
         <span className="eyebrow">Diffusion</span>
         <h1>Ce que j’ai diffusé</h1>
       </div>
+
+      {/* La publication a quitté la fiche de thème pour se tenir ici : l'endroit
+          où l'on voit déjà ce qui est en ligne est le bon endroit pour y
+          ajouter, ou pour redéposer ce qui a changé. */}
+      <button
+        type="button"
+        className="btn btn--primary btn--lg btn--block"
+        onClick={() => setChoix(true)}
+      >
+        <Icon name="upload" size={18} />
+        Publier ou republier
+      </button>
 
       {rien ? (
         <EmptyState
@@ -182,6 +208,104 @@ export function DiffusionScreen() {
             ))}
           </div>
         </section>
+      )}
+
+      <Sheet open={choix} title="Publier" onClose={() => setChoix(false)}>
+        <div className="stack stack-4">
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            Choisis ce que tu veux mettre en ligne. Un jeu déjà publié se
+            republie sous le même code : chez tes élèves, il se met à jour.
+          </p>
+
+          {store.subjects.map((subject) => {
+            const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
+            if (decks.length === 0) return null
+            return (
+              <div key={subject.id} className="stack stack-2">
+                <span className="eyebrow" style={{ paddingLeft: 2 }}>
+                  {subject.name}
+                </span>
+                <div className="card">
+                  {decks.map((deck) => {
+                    const cards = (store.cardsByDeck.get(deck.id) ?? []).filter((c) => !c.suspended)
+                    const lots = store.distributionsByDeck.get(deck.id) ?? []
+                    const stale =
+                      Boolean(deck.publishedAs) &&
+                      (cards.length !== deck.publishedCount ||
+                        cards.some((c) => c.updatedAt > (deck.publishedAt ?? 0)))
+                    return (
+                      <div key={deck.id}>
+                        <button
+                          type="button"
+                          className="listrow"
+                          disabled={cards.length === 0}
+                          onClick={() => ouvrir({ deck, cards })}
+                        >
+                          <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+                            <span className="listrow__title truncate">{deck.name}</span>
+                            <span className="listrow__sub truncate">
+                              Le thème entier · {cards.length} {plural(cards.length, 'carte')}
+                            </span>
+                          </span>
+                          {deck.publishedAs && (
+                            <span className={`chip mono ${stale ? 'chip--warn' : ''}`}>
+                              {stale ? 'à republier' : deck.publishedAs}
+                            </span>
+                          )}
+                          <Icon name="chevron-right" size={18} />
+                        </button>
+                        {lots.map((lot) => {
+                          const dans = cards.filter((c) => lot.cardIds.includes(c.id))
+                          const vieux =
+                            Boolean(lot.publishedAs) &&
+                            (lot.publishedCount !== dans.length ||
+                              dans.some((c) => c.updatedAt > (lot.publishedAt ?? 0)))
+                          return (
+                            <button
+                              key={lot.id}
+                              type="button"
+                              className="listrow"
+                              disabled={dans.length === 0}
+                              onClick={() => ouvrir({ deck, lot, cards: dans })}
+                            >
+                              <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+                                <span className="listrow__title truncate">
+                                  &nbsp;&nbsp;{lot.name}
+                                </span>
+                                <span className="listrow__sub truncate">
+                                  Série · {dans.length} {plural(dans.length, 'carte')}
+                                </span>
+                              </span>
+                              {lot.publishedAs && (
+                                <span className={`chip mono ${vieux ? 'chip--warn' : ''}`}>
+                                  {vieux ? 'à republier' : lot.publishedAs}
+                                </span>
+                              )}
+                              <Icon name="chevron-right" size={18} />
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </Sheet>
+
+      {cible && (
+        <PublishSheet
+          open
+          deck={cible.deck}
+          lot={cible.lot}
+          cards={cible.cards}
+          onClose={() => setCible(null)}
+          onPublished={(code) =>
+            toast(`Code « ${code} » retenu. Dépose le fichier pour le rendre vivant.`)
+          }
+        />
       )}
 
       {!rien && (
