@@ -76,11 +76,33 @@ export function TodayScreen() {
   // si le thème est mis de côté pour la révision.
   const updates = useMemo(() => pendingUpdates(store.decks), [store.decks])
 
-  /** Échéances annoncées par le professeur, la plus proche d'abord. */
-  const deadlines = useMemo(
-    () => upcomingDeadlines(store.studyCards, now).slice(0, 3),
-    [store.studyCards, now],
-  )
+  /**
+   * Échéances à venir, la plus proche d'abord, et de quoi les nommer.
+   *
+   * « 23 cartes pour lundi » ne dit pas quoi réviser. On rattache donc chaque
+   * échéance à ce qui la rend reconnaissable : la série si l'appareil en porte
+   * une qui la couvre — c'est le nom que l'élève s'est donné, ou celui qu'il a
+   * composé —, sinon les thèmes concernés, qui renvoient au cours.
+   */
+  const deadlines = useMemo(() => {
+    return upcomingDeadlines(store.studyCards, now)
+      .slice(0, 3)
+      .map((group) => {
+        // La série ne donne son nom que si elle couvre toute l'échéance :
+        // titrer « Contrôle de vendredi » au-dessus de sept cartes dont trois
+        // seulement en font partie serait plus trompeur que muet.
+        const serie = store.distributions.find((lot) => {
+          if (lot.dueBy !== group.dueBy) return false
+          const dans = new Set(lot.cardIds)
+          return group.cardIds.every((id) => dans.has(id))
+        })
+        const decks = group.decks.map((d) => ({
+          ...d,
+          name: store.decks.find((deck) => deck.id === d.deckId)?.name ?? 'Thème supprimé',
+        }))
+        return { ...group, serie, decks }
+      })
+  }, [store.studyCards, store.distributions, store.decks, now])
 
   const spiral = useMemo(
     () => spiralSuggestion(store.studyDecks, store.cardsByDeck, now),
@@ -264,24 +286,58 @@ export function TodayScreen() {
         <section className="stack stack-3">
           <SectionHead title={plural(deadlines.length, 'À savoir pour', 'À savoir pour')} />
           <div className="card">
-            {deadlines.map((group) => (
-              <div key={group.dueBy} className="listrow" style={{ cursor: 'default' }}>
-                <span className={`dot dot--${group.days <= 1 ? 'warn' : 'ok'}`} />
-                <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
-                  <span className="listrow__title truncate">
-                    {formatDeadline(group.dueBy, now)}
+            {deadlines.map((group) => {
+              // Un seul thème : la ligne y mène, et la série s'y ouvre le cas
+              // échéant. Plusieurs : il n'y a pas de destination unique, la
+              // ligne se contente de les nommer.
+              const seul = group.decks.length === 1 ? group.decks[0] : null
+              const contenu = (
+                <>
+                  <span className={`dot dot--${group.days <= 1 ? 'warn' : 'ok'}`} />
+                  <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+                    <span className="listrow__title truncate">
+                      {group.serie ? group.serie.name : formatDeadline(group.dueBy, now)}
+                    </span>
+                    <span className="listrow__sub truncate">
+                      {group.serie ? `${formatDeadline(group.dueBy, now)} · ` : ''}
+                      {group.decks
+                        .slice(0, 2)
+                        .map((d) => (group.decks.length > 1 ? `${d.name} (${d.count})` : d.name))
+                        .join(' · ')}
+                      {group.decks.length > 2 ? ` · +${group.decks.length - 2}` : ''}
+                    </span>
+                    <span className="listrow__sub">
+                      {group.total} {plural(group.total, 'carte')}
+                      {group.unseen > 0 &&
+                        ` · ${group.unseen} ${plural(group.unseen, 'pas encore vue', 'pas encore vues')}`}
+                    </span>
                   </span>
-                  <span className="listrow__sub">
-                    {group.total} {plural(group.total, 'carte')}
-                    {group.unseen > 0 &&
-                      ` · ${group.unseen} ${plural(group.unseen, 'pas encore vue', 'pas encore vues')}`}
+                  <span className={`chip mono ${group.days <= 1 ? 'chip--warn' : ''}`}>
+                    {group.days === 0 ? "c’est aujourd’hui" : group.days === 1 ? 'demain' : `J − ${group.days}`}
                   </span>
-                </span>
-                <span className={`chip mono ${group.days <= 1 ? 'chip--warn' : ''}`}>
-                  {group.days === 0 ? "c’est aujourd’hui" : group.days === 1 ? 'demain' : `J − ${group.days}`}
-                </span>
-              </div>
-            ))}
+                </>
+              )
+              return seul ? (
+                <button
+                  key={group.dueBy}
+                  type="button"
+                  className="listrow"
+                  onClick={() =>
+                    navigate({
+                      name: 'deck',
+                      id: seul.deckId,
+                      ...(group.serie ? { lot: group.serie.id } : {}),
+                    })
+                  }
+                >
+                  {contenu}
+                </button>
+              ) : (
+                <div key={group.dueBy} className="listrow" style={{ cursor: 'default' }}>
+                  {contenu}
+                </div>
+              )
+            })}
           </div>
         </section>
       )}

@@ -100,7 +100,8 @@ sauvegarde JSON reste le filet.
   l'envoi s'il y en a une, sinon par celle que les cartes portent déjà. Celui
   qui reçoit connaît la date du contrôle ; celui qui donne, pas toujours. Elle garantit un
   passage sur chaque carte la veille au plus tard (`srs/deadline`), affiche un
-  compte à rebours, puis devient inerte. La date est écrite **sur les cartes**,
+  compte à rebours nommé — la série quand elle couvre toute l'échéance, sinon
+  les thèmes concernés et leur nombre de cartes —, puis devient inerte. La date est écrite **sur les cartes**,
   la série ne faisant que les désigner : celui qui la pose en voit donc l'effet
   sur ses propres révisions, et un élève se sert du même mécanisme qu'un
   professeur — il peut composer sa série, s'en fixer l'échéance et la partager

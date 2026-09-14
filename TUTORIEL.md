@@ -255,10 +255,17 @@ et répondre ce jour-là fait repartir le calcul normalement. Un seul passage es
 garanti, pas un par jour. Une fois la date passée, l'échéance devient inerte et
 les cartes rejoignent le cycle ordinaire.
 
-L'accueil affiche un compte à rebours — « dimanche 20 · 3 cartes · J − 7 » — et
-le thème un bandeau avec un bouton **Modifier**, qui permet de déplacer la date
-ou de la retirer : l'appareil appartient à l'élève, une date annoncée ne s'y
-impose pas.
+L'accueil affiche un compte à rebours, et **nomme ce qui est à savoir** : la
+série quand elle couvre toute l'échéance — « Contrôle de vendredi · vendredi 18 ·
+Le web · 3 cartes · J − 4 » —, sinon la date et les thèmes concernés avec leur
+nombre de cartes — « lundi 21 · Biodiversité (14) · Le web (9) · 23 cartes ».
+Une date seule ne dit pas quoi réviser ; un nom de thème renvoie au cours et au
+cahier. Quand un seul thème est concerné, la ligne y mène directement, sur la
+fiche de la série s'il y en a une.
+
+Le thème, lui, porte un bandeau avec un bouton **Modifier**, qui permet de
+déplacer la date ou de la retirer : l'appareil appartient à l'élève, une date
+annoncée ne s'y impose pas.
 
 **La date du destinataire l'emporte sur la vôtre.** À une **mise à jour**, le
 champ arrive pré-rempli avec la date que portent déjà les cartes de cet envoi, et

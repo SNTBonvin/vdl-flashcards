@@ -73,6 +73,14 @@ export interface DeadlineGroup {
   total: number
   /** Parmi elles, celles jamais vues. */
   unseen: number
+  /**
+   * Thèmes concernés et nombre de cartes dans chacun, du plus fourni au moins
+   * fourni. « 23 cartes pour lundi » ne dit pas quoi réviser ; « Le web, 14
+   * cartes » se rattache à un cours et à un cahier.
+   */
+  decks: { deckId: string; count: number }[]
+  /** Identifiants des cartes concernées, pour retrouver la série d'origine. */
+  cardIds: string[]
 }
 
 /**
@@ -80,18 +88,40 @@ export interface DeadlineGroup {
  * lointaine. Les dates passées sont écartées : elles n'ont plus rien à dire.
  */
 export function upcomingDeadlines(cards: Card[], now = Date.now()): DeadlineGroup[] {
-  const groups = new Map<string, { total: number; unseen: number }>()
+  interface Acc {
+    total: number
+    unseen: number
+    decks: Map<string, number>
+    cardIds: string[]
+  }
+  const groups = new Map<string, Acc>()
 
   for (const card of cards) {
     if (!card.dueBy || card.suspended || isPast(card.dueBy, now)) continue
-    const group = groups.get(card.dueBy) ?? { total: 0, unseen: 0 }
+    const group = groups.get(card.dueBy) ?? {
+      total: 0,
+      unseen: 0,
+      decks: new Map<string, number>(),
+      cardIds: [],
+    }
     group.total += 1
     if (card.srs.state === 'new') group.unseen += 1
+    group.decks.set(card.deckId, (group.decks.get(card.deckId) ?? 0) + 1)
+    group.cardIds.push(card.id)
     groups.set(card.dueBy, group)
   }
 
   return [...groups.entries()]
-    .map(([dueBy, group]) => ({ dueBy, days: daysLeft(dueBy, now) ?? 0, ...group }))
+    .map(([dueBy, group]) => ({
+      dueBy,
+      days: daysLeft(dueBy, now) ?? 0,
+      total: group.total,
+      unseen: group.unseen,
+      cardIds: group.cardIds,
+      decks: [...group.decks.entries()]
+        .map(([deckId, count]) => ({ deckId, count }))
+        .sort((a, b) => b.count - a.count),
+    }))
     .sort((a, b) => a.days - b.days)
 }
 
