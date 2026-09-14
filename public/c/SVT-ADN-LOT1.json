@@ -1,0 +1,61 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SVT-ADN-LOT1",
+  "publishedAt": "2026-09-14T14:50:47.625Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences de la Vie et de la Terre",
+  "deck": "ADN - Génétique - 2nde — SVT-ADN-LOT1",
+  "lot": "SVT-ADN-LOT1",
+  "description": "Classe de Seconde",
+  "shareId": "sh5z426a5w4k470t",
+  "rev": 1789397447625,
+  "cards": [
+    [
+      "Combien de nucléotides différents composent l'ADN ?",
+      "4",
+      null
+    ],
+    [
+      "Forme de l'ADN",
+      "Structure en double hélice (deux brins enroulés).",
+      null
+    ],
+    [
+      "Complémentaire d'un nucléotide à Thymine (T)",
+      "Nucléotide à Adénine (A)",
+      null
+    ],
+    [
+      "ADN",
+      "Acide Désoxyribonucléique, molécule support de l'information génétique.",
+      null
+    ],
+    [
+      "Si un brin contient A-T-C-G, le brin complémentaire est",
+      "T-A-G-C",
+      null
+    ],
+    [
+      "Complémentaire d'un nucléotide à Adénine (A)",
+      "Nucléotide à Thymine (T)",
+      null
+    ],
+    [
+      "Complémentaire d'un nucléotide à Guanine (G)",
+      "Nucléotide à Cytosine (C)",
+      null
+    ],
+    [
+      "Liaisons entre les bases",
+      "Liaisons hydrogène qui maintiennent les deux brins d'ADN reliés entre eux.",
+      null
+    ],
+    [
+      "Complémentaire d'un nucléotide à Cytosine (C)",
+      "Nucléotide à Guanine (G)",
+      null
+    ]
+  ]
+}
