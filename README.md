@@ -507,11 +507,14 @@ exactement du même outil qu'un professeur. C'est aussi ce qui permet de la pose
 **à la réception** : `importShare` applique la date de la charge utile aux
 cartes de cet envoi — créées comme mises à jour —, si bien qu'il suffit à l'écran
 de réception de remplacer cette valeur par celle que l'élève a choisie. Le champ
-y est pré-rempli avec la date que portent déjà **les cartes de cet envoi** :
-sans cela, une mise à jour diffusée sans date effacerait en silence l'échéance
-qu'il s'était fixée. La comparaison porte sur les cartes de la charge utile et
-non sur le thème entier — une deuxième série arrivant dans un thème qui en
-contient déjà une hériterait sinon de la date de la première.
+y est pré-rempli par **la date que portent déjà les cartes de cet envoi**, la
+date de la charge utile ne servant qu'à défaut — donc à la première réception.
+Cet ordre n'est pas indifférent : un même jeu publié sert plusieurs classes, qui
+n'ont pas cours le même jour ; chacune pose sa date à la réception, et une
+correction republiée ensuite ne doit pas venir leur proposer celle d'une autre.
+La comparaison porte sur les cartes de la charge utile et non sur le thème
+entier — une deuxième série arrivant dans un thème qui en contient déjà une
+hériterait sinon de la date de la première.
 
 Il en résulte que **plusieurs échéances coexistent dans un thème**, ce qui est le
 cas nominal : la date est sur la carte, pas sur le thème. `upcomingDeadlines`

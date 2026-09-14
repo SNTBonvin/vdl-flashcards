@@ -260,11 +260,19 @@ le thème un bandeau avec un bouton **Modifier**, qui permet de déplacer la dat
 ou de la retirer : l'appareil appartient à l'élève, une date annoncée ne s'y
 impose pas.
 
-Une précaution enfin, pour que la date de l'élève lui appartienne vraiment : à
-la réception d'une **mise à jour**, le champ arrive pré-rempli avec la date que
-portent déjà les cartes de cet envoi. Vos corrections n'effacent donc pas
-l'échéance qu'il s'était fixée — seul lui peut l'effacer, en vidant le champ. La
-comparaison se fait carte à carte : une deuxième série arrivant dans un thème
+**La date du destinataire l'emporte sur la vôtre.** À une **mise à jour**, le
+champ arrive pré-rempli avec la date que portent déjà les cartes de cet envoi, et
+non avec celle du fichier : vos corrections ne bousculent donc jamais l'échéance
+qu'un élève s'est fixée — seul lui peut la changer. Votre date ne sert que
+lorsqu'il n'en a aucune, c'est-à-dire à la première réception.
+
+C'est ce qui règle le cas de **plusieurs classes sur un même code**. Publiez le
+jeu **sans date**, annoncez la sienne à chaque classe — elles la posent à la
+réception —, et corrigez le jeu autant de fois qu'il faut : chacune garde la
+sienne. Une date sur un jeu publié ne vaut que pour **une seule classe**, puisque
+c'est elle qui sera proposée à tous ceux qui découvrent le jeu.
+
+La comparaison se fait carte à carte : une deuxième série arrivant dans un thème
 qui en contient déjà une ne se voit pas proposer la date de la première.
 
 **Plusieurs échéances peuvent coexister dans un même thème**, et c'est le cas

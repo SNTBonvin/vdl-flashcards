@@ -62,29 +62,37 @@ export function ShareScreen({ token, code }: { token?: string; code?: string }) 
   }, [token, code])
 
   /**
-   * Date proposée par défaut : celle de l'envoi s'il en porte une, sinon celle
-   * que portent déjà **les cartes de cet envoi-là**. Ce second cas n'est pas un
-   * détail : sans lui, une mise à jour diffusée sans date effacerait en silence
-   * l'échéance que le destinataire s'était fixée.
+   * Date proposée par défaut.
    *
-   * La comparaison se fait carte à carte, et non sur le thème entier : une
-   * deuxième série arrivant dans un thème qui en contient déjà une ne doit pas
-   * se voir proposer la date de la première. Elle n'est proposée que si toutes
-   * les cartes de cet envoi la portent déjà — c'est-à-dire, en pratique, quand
-   * on reçoit une nouvelle fois la même série.
+   * **Celle que le destinataire s'est déjà fixée l'emporte**, et la date de
+   * l'envoi ne sert que lorsqu'il n'en a aucune — c'est-à-dire à la première
+   * réception. La raison tient à un usage courant : un même jeu publié sert à
+   * plusieurs classes, qui n'ont pas cours le même jour. Chacune pose sa date à
+   * la réception ; une correction republiée ensuite ne doit pas venir leur
+   * proposer celle d'une autre classe, qu'un élève pressé accepterait sans
+   * regarder. Il peut toujours la changer à la main.
+   *
+   * La comparaison se fait carte à carte, sur les seules cartes de cet envoi
+   * déjà présentes : une deuxième série arrivant dans un thème qui en contient
+   * déjà une ne doit pas hériter de la date de la première.
    */
   const suggested = useMemo(() => {
     if (!payload) return ''
-    if (payload.due) return payload.due
     const deck = store.decks.find((d) => d.shareId === payload.id)
-    if (!deck) return ''
-    const here = new Map(
-      store.cards
-        .filter((c) => c.deckId === deck.id && c.sharedFrom === payload.id && !c.suspended)
-        .map((c) => [cardKey(c.front), c.dueBy ?? '']),
-    )
-    const dates = payload.c.map(([front]) => here.get(cardKey(front)) ?? '')
-    return dates.length > 0 && dates.every((d) => d !== '' && d === dates[0]) ? dates[0] : ''
+    if (deck) {
+      const here = new Map(
+        store.cards
+          .filter((c) => c.deckId === deck.id && c.sharedFrom === payload.id && !c.suspended)
+          .map((c) => [cardKey(c.front), c.dueBy ?? '']),
+      )
+      const connues = payload.c
+        .map(([front]) => here.get(cardKey(front)))
+        .filter((d): d is string => d !== undefined)
+      if (connues.length > 0 && connues[0] !== '' && connues.every((d) => d === connues[0])) {
+        return connues[0]
+      }
+    }
+    return payload.due ?? ''
   }, [payload, store.decks, store.cards])
 
   useEffect(() => {
