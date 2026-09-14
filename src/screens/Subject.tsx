@@ -243,12 +243,18 @@ export function DeckSheet({
   open,
   onClose,
   onSubmit,
+  onDelete,
   initial,
   title = 'Nouveau thème',
 }: {
   open: boolean
   onClose: () => void
   onSubmit: (name: string, description: string, reserve: boolean, dueBy?: string) => void
+  /**
+   * Suppression du thème. Elle vit ici plutôt que dans une barre d'icônes :
+   * un geste irréversible n'a rien à faire à un pouce du crayon.
+   */
+  onDelete?: () => void
   initial?: { name: string; description: string; reserve?: boolean; dueBy?: string }
   title?: string
 }) {
@@ -316,6 +322,16 @@ export function DeckSheet({
           label="Thème de réserve"
           hint="Un vivier de cartes mises de côté : elles restent cherchables et reprenables, mais sortent des révisions, des compteurs et des statistiques."
         />
+
+        {onDelete && (
+          <>
+            <hr className="rule" />
+            <button type="button" className="btn btn--danger btn--block" onClick={onDelete}>
+              <Icon name="trash" size={17} />
+              Supprimer ce thème
+            </button>
+          </>
+        )}
       </div>
     </Sheet>
   )

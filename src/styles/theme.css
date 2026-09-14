@@ -328,6 +328,56 @@ a {
   background: var(--border);
 }
 
+/* Description d'un thème : repliée à deux lignes, dépliable d'un appui. */
+.deck-desc {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0 2px;
+  font: inherit;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+/* ---------------- Barre de commandes secondaires ----------------
+   Des liens, pas des boutons : ils restent atteignables sans se disputer le
+   regard avec l'action principale. Une commande qu'on utilise une fois par
+   trimestre ne doit pas peser autant que celle qu'on utilise chaque jour. */
+.quietbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 0 4px;
+}
+.quietbar__item {
+  background: transparent;
+  border: 0;
+  padding: 4px 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.quietbar__item:active {
+  color: var(--primary);
+}
+.quietbar__item[data-on] {
+  color: var(--primary);
+  border-bottom-color: var(--primary-light);
+}
+
+/* Icône de commande réduite, pour les en-têtes de section. */
+.icon-btn--sm {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+}
+
 /* ---------------- Rubrique repliable ----------------
    Les réglages tiennent en six rubriques ; dépliées toutes ensemble, elles
    font un mur de deux mille pixels où l'on cherche le réglage qu'on est venu

@@ -34,7 +34,12 @@ Trois niveaux : une **matière** contient des **thèmes**, un thème contient de
 1. *Matières* → **Nouvelle matière** (par exemple « Histoire-Géographie », avec
    l'abréviation « HG » affichée en pastille).
 2. Dans la matière → **Nouveau thème** (un par chapitre).
-3. Dans le thème → **Ajouter une carte**.
+3. Dans le thème → **Ajouter une carte**. Un thème encore vide propose ce bouton
+   en grand ; ensuite, les commandes qui touchent les cartes — ajouter, importer,
+   exporter — se rangent au-dessus de la liste, sous le **+** et le **⋯** de la
+   ligne « Cartes ». Ce qui concerne le thème entier — planifier, partager,
+   rappel, modifier, supprimer — tient dans la barre de liens sous le bouton
+   « Réviser ».
 
 ### Une idée par carte
 

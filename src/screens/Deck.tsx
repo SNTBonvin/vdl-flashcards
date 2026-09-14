@@ -55,6 +55,9 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
   const [confirming, setConfirming] = useState(false)
   const [reminderOpen, setReminderOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
+  /** Feuille des outils de cartes : importer, exporter, reprendre. */
+  const [cardTools, setCardTools] = useState(false)
+  const [descOpen, setDescOpen] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | 'new' | null>(null)
   const [sharing, setSharing] = useState(false)
   /**
@@ -248,10 +251,17 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         </div>
       )}
 
+      {/* La description se lit une fois, puis jamais : deux lignes suffisent, et
+          le reste se déplie d'un appui. */}
       {deck.description && (
-        <p style={{ color: 'var(--ink-2)', fontSize: 14.5, lineHeight: 1.6, padding: '0 2px' }}>
+        <button
+          type="button"
+          className={`deck-desc${descOpen ? '' : ' clamp-2'}`}
+          onClick={() => setDescOpen((v) => !v)}
+          aria-expanded={descOpen}
+        >
           {deck.description}
-        </p>
+        </button>
       )}
 
       <StatRow
@@ -269,39 +279,69 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         }
       />
 
-      <div className="row" style={{ gap: 10 }}>
-        {!deck.reserve && (
-          <>
-            <button
-              type="button"
-              className="btn btn--primary grow"
-              disabled={counts.total === 0}
-              onClick={() => start(waiting > 0 ? 'due' : 'quiz')}
-            >
-              <Icon name="review" size={18} />
-              {waiting > 0 ? `Réviser ${waiting}` : 'Tout revoir'}
-            </button>
-            <button
-              type="button"
-              className={`icon-btn${deck.reminder?.enabled ? ' chip--accent' : ''}`}
-              onClick={() => setReminderOpen(true)}
-              aria-label="Rappel"
-            >
-              <Icon name={deck.reminder?.enabled ? 'bell' : 'bell-off'} size={18} />
-            </button>
-          </>
+      {/* Une seule action de plein poids : réviser. Tout le reste se range
+          selon ce qu'il touche — le thème entier sous la barre de liens
+          discrets, les cartes dans l'en-tête de leur propre section. Les
+          commandes avaient jusqu'ici le même poids : « Importer » occupait
+          autant de place que « Réviser », pour un usage cent fois moindre. */}
+      {/* Un thème vide n'a rien à réviser : lui proposer quand même le bouton
+          revient à promettre ce qu'on ne peut pas tenir. On propose alors de le
+          remplir, ce qui est la seule chose à y faire. */}
+      {counts.total === 0 ? (
+        <div className="row" style={{ gap: 10 }}>
+          <button
+            type="button"
+            className="btn btn--primary grow"
+            onClick={() => setEditingCard('new')}
+          >
+            <Icon name="plus" size={18} />
+            Ajouter une carte
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost grow"
+            onClick={() => setImportOpen(true)}
+          >
+            <Icon name="upload" size={18} />
+            Importer
+          </button>
+        </div>
+      ) : (
+        !deck.reserve && (
+          <button
+            type="button"
+            className="btn btn--primary btn--lg btn--block"
+            onClick={() => start(waiting > 0 ? 'due' : 'quiz')}
+          >
+            <Icon name="review" size={18} />
+            {waiting > 0 ? `Réviser ${waiting}` : 'Tout revoir'}
+          </button>
+        )
+      )}
+
+      <div className="quietbar">
+        {counts.total > 0 && !deck.reserve && (
+          <button type="button" className="quietbar__item" onClick={() => setPlanOpen(true)}>
+            {nextReprise ? `Reprise ${formatDue(nextReprise.getTime())}` : 'Planifier'}
+          </button>
         )}
-        {deck.reserve && <span className="grow" />}
-        <button type="button" className="icon-btn" onClick={() => setEditingDeck(true)} aria-label="Modifier le thème">
-          <Icon name="edit" size={18} />
-        </button>
-        <button
-          type="button"
-          className="icon-btn icon-btn--danger"
-          onClick={() => setConfirming(true)}
-          aria-label="Supprimer"
-        >
-          <Icon name="trash" size={18} />
+        {counts.total > 0 && !deck.reserve && (
+          <button type="button" className="quietbar__item" onClick={() => setSharing(true)}>
+            Partager
+          </button>
+        )}
+        {!deck.reserve && (
+          <button
+            type="button"
+            className="quietbar__item"
+            data-on={deck.reminder?.enabled || undefined}
+            onClick={() => setReminderOpen(true)}
+          >
+            {deck.reminder?.enabled ? 'Rappel activé' : 'Rappel'}
+          </button>
+        )}
+        <button type="button" className="quietbar__item" onClick={() => setEditingDeck(true)}>
+          Modifier
         </button>
       </div>
 
@@ -362,59 +402,22 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
           </button>
         ))}
 
-      {counts.total > 0 && !deck.reserve && (
-        <button type="button" className="btn btn--ghost btn--block" onClick={() => setPlanOpen(true)}>
-          <Icon name="today" size={18} />
-          {nextReprise
-            ? `Prochaine reprise ${formatDue(nextReprise.getTime())}`
-            : 'Planifier mes révisions'}
-        </button>
-      )}
-
-      <div className="row" style={{ gap: 10 }}>
-        <button type="button" className="btn btn--ghost grow" onClick={() => setEditingCard('new')}>
-          <Icon name="plus" size={18} />
-          Ajouter une carte
-        </button>
-        <button type="button" className="btn btn--ghost grow" onClick={() => setImportOpen(true)}>
-          <Icon name="upload" size={18} />
-          Importer
-        </button>
-        <button
-          type="button"
-          className="icon-btn"
-          onClick={() => setExporting(true)}
-          disabled={counts.total === 0}
-          aria-label="Exporter ce thème"
-        >
-          <Icon name="download" size={18} />
-        </button>
-      </div>
-
       {/* Publier a quitté cet écran : tout ce qui est en ligne se tient
           désormais au même endroit, « Réglages › Diffusion › Ce que j'ai
           diffusé ». Le thème ne garde que le partage, qui concerne tout le
           monde — mais il signale ce qui attend d'être redéposé, car c'est ici
           qu'on modifie les cartes et donc ici qu'on le découvre. */}
-      {counts.total > 0 && !deck.reserve && (
-        <div className="stack stack-2">
-          <button type="button" className="btn btn--ghost btn--block" onClick={() => setSharing(true)}>
-            <Icon name="move" size={18} />
-            {store.teacherMode ? 'Partager' : 'Partager ce thème'}
-          </button>
-          {store.teacherMode && deck.publishedAs && (
-            <button
-              type="button"
-              className="btn btn--quiet btn--block"
-              onClick={() => navigate({ name: 'diffusion' })}
-            >
-              <Icon name="upload" size={17} />
-              {publicationStale
-                ? `Publié sous ${deck.publishedAs} — à republier`
-                : `Publié sous ${deck.publishedAs}`}
-            </button>
-          )}
-        </div>
+      {store.teacherMode && deck.publishedAs && (
+        <button
+          type="button"
+          className="btn btn--quiet btn--block"
+          onClick={() => navigate({ name: 'diffusion' })}
+        >
+          <Icon name="upload" size={17} />
+          {publicationStale
+            ? `Publié sous ${deck.publishedAs} — à republier`
+            : `Publié sous ${deck.publishedAs}`}
+        </button>
       )}
 
       {/* Une série sert autant à l'élève qu'au professeur : « ces quinze cartes,
@@ -480,17 +483,37 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         <SectionHead
           title="Cartes"
           aside={
-            counts.total > 0 ? (
+            <span className="row" style={{ gap: 6 }}>
+              {counts.total > 0 && (
+                <button
+                  type="button"
+                  className="btn btn--quiet"
+                  onClick={() =>
+                    setSelection(selecting ? null : { ids: new Set(), editing: null })
+                  }
+                >
+                  {selecting ? 'Annuler' : 'Sélectionner'}
+                </button>
+              )}
+              {/* Ajouter et importer agissent sur les cartes : ils se rangent
+                  au-dessus des cartes, et non trois blocs plus haut. */}
               <button
                 type="button"
-                className="btn btn--quiet"
-                onClick={() =>
-                  setSelection(selecting ? null : { ids: new Set(), editing: null })
-                }
+                className="icon-btn icon-btn--sm"
+                onClick={() => setEditingCard('new')}
+                aria-label="Ajouter une carte"
               >
-                {selecting ? 'Annuler' : 'Sélectionner'}
+                <Icon name="plus" size={17} />
               </button>
-            ) : undefined
+              <button
+                type="button"
+                className="icon-btn icon-btn--sm"
+                onClick={() => setCardTools(true)}
+                aria-label="Importer ou exporter"
+              >
+                <Icon name="more" size={18} strokeWidth={2.6} />
+              </button>
+            </span>
           }
         />
 
@@ -783,6 +806,10 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
       <DeckSheet
         open={editingDeck}
         title="Modifier le thème"
+        onDelete={() => {
+          setEditingDeck(false)
+          setConfirming(true)
+        }}
         initial={{
           name: deck.name,
           description: deck.description,
@@ -901,6 +928,54 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
       {/* Déplacer une échéance, ou la retirer. Le même geste des deux côtés :
           celui qui l'a posée corrige sa date, celui qui l'a reçue l'ajuste à ce
           que dit son cahier de textes. */}
+      {/* Les outils de cartes, réunis : ils ne sont ni quotidiens ni urgents,
+          mais chacun mérite mieux qu'une icône sans nom. */}
+      <Sheet open={cardTools} title="Les cartes de ce thème" onClose={() => setCardTools(false)}>
+        <div className="stack stack-3">
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => {
+              setCardTools(false)
+              setEditingCard('new')
+            }}
+          >
+            <Icon name="plus" size={18} />
+            Ajouter une carte
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => {
+              setCardTools(false)
+              setImportOpen(true)
+            }}
+          >
+            <Icon name="upload" size={18} />
+            Importer des cartes
+          </button>
+          <p className="meta" style={{ lineHeight: 1.55, marginTop: -4 }}>
+            Une liste collée, ou un fichier CSV, TSV ou JSON. Les cartes
+            s’ajoutent : rien n’est remplacé.
+          </p>
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            disabled={counts.total === 0}
+            onClick={() => {
+              setCardTools(false)
+              setExporting(true)
+            }}
+          >
+            <Icon name="download" size={18} />
+            Exporter ce thème
+          </button>
+          <p className="meta" style={{ lineHeight: 1.55, marginTop: -4 }}>
+            En CSV pour le tableur, en JSON pour le réimporter ailleurs.
+          </p>
+        </div>
+      </Sheet>
+
       <Sheet
         open={movingDeadline !== null}
         title={movingDeadline ? 'Échéance' : 'Poser une échéance'}

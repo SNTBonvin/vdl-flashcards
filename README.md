@@ -115,6 +115,15 @@ sauvegarde JSON reste le filet.
 - **Aller plus loin** — quand le quota du jour retient des cartes, un bouton
   permet d'en prendre dix de plus. L'application conseille un rythme, elle ne
   l'impose pas.
+- **Fiche de thème hiérarchisée** — une seule action de plein poids
+  (« Réviser N »), une barre de liens discrets pour ce qui touche le thème
+  entier (planifier, partager, rappel, modifier), et les commandes qui touchent
+  les cartes — ajouter, importer, exporter — rangées dans l'en-tête de la
+  section « Cartes », au-dessus de la liste qu'elles concernent. Les sept
+  commandes de même poids qui précédaient la première carte se réduisent à deux.
+  « Supprimer le thème » descend dans la feuille de modification : rien
+  d'irréversible ne vit dans une barre d'icônes. Un thème vide propose d'être
+  rempli plutôt que d'être révisé, et sa description se replie à deux lignes.
 - **Réglages en rubriques repliables** — six rubriques (Apparence, Révision,
   Rappels, Diffusion, Données, À propos), refermées par défaut et ouvertes une
   à la fois. Chacune affiche son état sans qu'on l'ouvre — « 20 nouvelles par
