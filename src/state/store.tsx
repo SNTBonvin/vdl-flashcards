@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from 'react'
 import * as idb from '../db/idb'
-import { forgetToken } from '../io/github'
+import { forgetToken, readToken } from '../io/github'
 import {
   DEFAULT_SETTINGS,
   type Backup,
@@ -63,6 +63,14 @@ interface IntroTracker {
 
 interface State {
   ready: boolean
+  /**
+   * Un jeton de publication est-il enregistré sur cet appareil ?
+   *
+   * Le jeton lui-même ne passe jamais par ici — il vit dans sa case à part, et
+   * rien d'autre que le dépôt sur GitHub n'a à le lire. Seule sa présence
+   * compte : c'est elle qui distingue l'appareil de celui qui publie.
+   */
+  hasToken: boolean
   subjects: Subject[]
   decks: Deck[]
   cards: Card[]
@@ -73,7 +81,7 @@ interface State {
 }
 
 type Action =
-  | { type: 'loaded'; payload: Omit<State, 'ready'> }
+  | { type: 'loaded'; payload: Omit<State, 'ready' | 'hasToken'> }
   | { type: 'subjects'; payload: Subject[] }
   | { type: 'decks'; payload: Deck[] }
   | { type: 'deck:patch'; id: ID; patch: Partial<Omit<Deck, 'id'>> }
@@ -81,11 +89,13 @@ type Action =
   | { type: 'logs'; payload: ReviewLog[] }
   | { type: 'distributions'; payload: Distribution[] }
   | { type: 'settings'; payload: Settings }
+  | { type: 'token'; payload: boolean }
   | { type: 'intro'; payload: IntroTracker }
-  | { type: 'replaceAll'; payload: Omit<State, 'ready' | 'intro'> }
+  | { type: 'replaceAll'; payload: Omit<State, 'ready' | 'intro' | 'hasToken'> }
 
 const INITIAL: State = {
   ready: false,
+  hasToken: false,
   subjects: [],
   decks: [],
   cards: [],
@@ -98,7 +108,8 @@ const INITIAL: State = {
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'loaded':
-      return { ...action.payload, ready: true }
+      // hasToken est conservé : il est lu à part, et peut arriver avant.
+      return { ...state, ...action.payload, ready: true }
     case 'subjects':
       return { ...state, subjects: action.payload }
     case 'decks':
@@ -118,6 +129,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, distributions: action.payload }
     case 'settings':
       return { ...state, settings: action.payload }
+    case 'token':
+      return { ...state, hasToken: action.payload }
     case 'intro':
       return { ...state, intro: action.payload }
     case 'replaceAll':
@@ -193,6 +206,15 @@ export interface Store extends State {
   /** Ajoute ou met à jour un thème reçu par lien. */
   importShare(payload: SharePayload, setCode?: string): Promise<ImportResult>
 
+  /**
+   * Outils de diffusion visibles ? Un jeton enregistré suffit — c'est
+   * l'appareil de celui qui publie —, et le réglage « Je publie à la main »
+   * couvre le cas de celui qui dépose ses fichiers lui-même.
+   */
+  teacherMode: boolean
+  /** Relit la présence du jeton après l'avoir enregistré ou oublié. */
+  refreshToken(): Promise<void>
+
   saveSettings(patch: Partial<Settings>): Promise<void>
   restore(backup: Backup): Promise<void>
   wipe(): Promise<void>
@@ -218,6 +240,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         idb.getMeta<IntroTracker>('intro'),
       ])
       if (cancelled) return
+      // La présence du jeton décide de l'interface : elle se lit au démarrage,
+      // avec le reste, pour qu'aucun écran ne s'affiche d'abord sans elle.
+      const token = await readToken().catch(() => '')
+      if (cancelled) return
+      dispatch({ type: 'token', payload: token.length > 0 })
 
       const today = dayKey()
       dispatch({
@@ -820,12 +847,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
+  const refreshToken = useCallback(async () => {
+    const token = await readToken().catch(() => '')
+    dispatch({ type: 'token', payload: token.length > 0 })
+  }, [])
+
   const wipe = useCallback(async () => {
     await idb.clearAll()
     // Effacer ses données, c'est aussi se défaire du droit d'écrire sur le
     // dépôt : laisser le jeton derrière serait le contraire de ce qui est
     // demandé ici.
     await forgetToken()
+    dispatch({ type: 'token', payload: false })
     dispatch({
       type: 'replaceAll',
       payload: {
@@ -878,6 +911,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => ({
       ...state,
       ...indexes,
+      teacherMode: state.hasToken || state.settings.teacherTools,
+      refreshToken,
       createSubject,
       updateSubject,
       deleteSubject,
@@ -913,6 +948,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [
       state,
       indexes,
+      refreshToken,
       createSubject,
       updateSubject,
       deleteSubject,

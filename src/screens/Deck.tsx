@@ -44,7 +44,7 @@ import type { Distribution, ID } from '../db/types'
  */
 type Filter = 'all' | 'due' | 'new' | 'hard' | 'shared' | 'own' | 'archived'
 
-export function DeckScreen({ id }: { id: string }) {
+export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }) {
   const store = useStore()
   const { navigate } = useRoute()
   const toast = useToast()
@@ -69,7 +69,8 @@ export function DeckScreen({ id }: { id: string }) {
   const [lotName, setLotName] = useState('')
   // Les feuilles de lot sont repérées par identifiant, pas par objet : le lot
   // change pendant qu'elles sont ouvertes (renommage, sélection modifiée).
-  const [openLotId, setOpenLotId] = useState<ID | null>(null)
+  // « #/deck/<id>/<série> » : l'inventaire mène droit à la fiche de la série.
+  const [openLotId, setOpenLotId] = useState<ID | null>(lotFromUrl ?? null)
   const [sharingLotId, setSharingLotId] = useState<ID | null>(null)
   const [movingTo, setMovingTo] = useState(false)
   const [planOpen, setPlanOpen] = useState(false)
@@ -397,9 +398,9 @@ export function DeckScreen({ id }: { id: string }) {
         <div className="row" style={{ gap: 10 }}>
           <button type="button" className="btn btn--ghost grow" onClick={() => setSharing(true)}>
             <Icon name="move" size={18} />
-            {store.settings.teacherTools ? 'Partager' : 'Partager ce thème'}
+            {store.teacherMode ? 'Partager' : 'Partager ce thème'}
           </button>
-          {store.settings.teacherTools && (
+          {store.teacherMode && (
             <button type="button" className="btn btn--ghost grow" onClick={() => setPublishing(true)}>
               <Icon name="upload" size={18} />
               {!deck.publishedAs
@@ -418,7 +419,7 @@ export function DeckScreen({ id }: { id: string }) {
           la première série — ou d'emblée avec les outils d'enseignant, pour qui
           en composera de toute façon : rien de nouveau chez qui n'en veut pas,
           et le chemin ordinaire reste « Sélectionner » dans la liste. */}
-      {!deck.reserve && (store.settings.teacherTools ? counts.total > 0 : lots.length > 0) && (
+      {!deck.reserve && (store.teacherMode ? counts.total > 0 : lots.length > 0) && (
         <section className="stack stack-3">
           <SectionHead
             title="Séries"

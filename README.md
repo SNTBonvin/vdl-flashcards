@@ -173,9 +173,15 @@ sauvegarde JSON reste le filet.
 - **Courbes d'apprentissage** — sa propre courbe de l'oubli (réussite selon
   l'intervalle écoulé) et la montée de l'acquis, par thème, tracées en SVG sans
   bibliothèque et seulement au-delà de trente réponses.
-- **Outils d'enseignant** — la publication est masquée par défaut, et la
-  section « Séries » n'apparaît alors qu'à partir de la première série créée :
-  un élève ne voit que ce qui le concerne, sans que rien lui soit interdit.
+- **Outils d'enseignant** — c'est la **présence d'un jeton de publication** qui
+  les fait apparaître (`store.teacherMode`), sans réglage à trouver : l'appareil
+  qui peut publier est celui de quelqu'un qui publie. Un réglage « Je publie à
+  la main » couvre le dépôt manuel et sert de filet quand un jeton est révoqué.
+  Ailleurs, un élève ne voit que ce qui le concerne, sans que rien lui soit
+  interdit.
+- **Ce que j'ai diffusé** — un inventaire des séries et des jeux publiés, toutes
+  matières confondues, avec code, échéance, « à republier » et date de dernière
+  diffusion ; un appui mène droit à la fiche concernée.
 - **Rubrique « Pourquoi ça marche »** — l'aide explique en quatre principes ce
   que l'outil fait faire (se tester, espacer, revenir sur l'ancien, une idée par
   carte), avec les sources : DRANE de Bourgogne-Franche-Comté et académie de

@@ -280,16 +280,42 @@ réglage — c'est le fonctionnement normal de la répétition espacée.
 
 ## Les outils d'enseignant
 
-La publication sous un code ne sert qu'à celui qui diffuse. Elle est donc
-**éteinte par défaut** : *Réglages → Diffusion → **Outils d'enseignant***. Le
-même réglage fait apparaître la section **Séries** d'emblée, avant même qu'il en
-existe une. Sans lui, l'application reste entière pour réviser, créer, modifier,
-partager ses propres cartes — et s'y fixer une échéance.
+**C'est le jeton qui décide.** L'appareil où un jeton GitHub est enregistré est
+celui de quelqu'un qui publie : les outils de diffusion y apparaissent d'office —
+le bouton **Publier**, la section **Séries** dès l'ouverture d'un thème, le
+tableau par matière sur l'accueil, et l'écran **Ce que j'ai diffusé**. Partout
+ailleurs, l'application est celle d'un élève : réviser, créer, modifier, partager
+ses cartes, s'y fixer une échéance — rien de plus à lire, rien à décider.
 
-Ce n'est pas une serrure — n'importe qui peut les allumer, et ils n'agissent
-que sur l'appareil de qui les utilise. C'est un rangement : un élève n'a pas à
-voir des outils dont il n'a que faire. Publier suppose d'avoir les droits sur
-le dépôt, et aucun réglage ne les donne.
+Le chemin : *Réglages → Diffusion → **Configurer la publication***, où l'on
+renseigne l'adresse du dépôt puis le jeton. Le jeton est vérifié à
+l'enregistrement ; il n'est accepté que s'il ouvre vraiment ce dépôt en écriture.
+
+**Si vous publiez à la main**, sans jeton — en déposant vos fichiers vous-même
+sur le dépôt — un réglage **« Je publie à la main »**, au même endroit, fait
+apparaître les mêmes outils. C'est aussi le filet quand un jeton est révoqué.
+
+Ce n'est pas une serrure : n'importe qui peut allumer ce réglage, et il n'agit
+que sur l'appareil de qui l'utilise. C'est un rangement — un élève n'a pas à
+voir des outils dont il n'a que faire. Publier suppose d'avoir les droits sur le
+dépôt, et aucun réglage ne les donne.
+
+### Ce que j'ai diffusé
+
+*Réglages → Diffusion → **Ce que j'ai diffusé***. Un inventaire de ce qui est
+sorti de l'appareil, en deux listes.
+
+**Séries** — toutes matières confondues : l'intitulé, la matière et le thème, le
+nombre de cartes, et des pastilles qui disent l'essentiel sans rien ouvrir —
+l'échéance à venir, le code si elle est publiée, **« à republier »** quand des
+cartes ont changé depuis le dépôt, « hors catalogue », la date de dernière
+diffusion ou « jamais diffusé ».
+
+**Jeux publiés** — les thèmes publiés en entier, avec leur code, leur nom
+d'affichage quand il diffère du vôtre, et les mêmes pastilles.
+
+Un appui ouvre le thème, la fiche de la série dépliée : de quoi republier,
+rediffuser ou corriger sans avoir à retrouver où elle se cachait.
 ## Publier sous un code court
 
 Un lien est long, et sur iPhone il n'atteint pas l'application installée. Un
@@ -409,7 +435,7 @@ verra jamais.
 La consigne à donner à la classe tient en une phrase :
 
 > Copiez le lien, ouvrez l'application depuis l'écran d'accueil, puis
-> **Matières → Lien ou code**, et collez.
+> **Lien ou code reçu** — c'est sur l'écran d'accueil, en bas —, et collez.
 
 Plus simple encore : donnez-leur le **code**, qu'ils tapent au même endroit.
 Rien à copier, rien à ouvrir dans le mauvais navigateur.

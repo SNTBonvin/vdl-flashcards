@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { pendingUpdates } from '../io/updates'
 import { useStore } from '../state/store'
 import { requestSession } from '../state/session'
@@ -8,6 +8,7 @@ import { formatDeadline, upcomingDeadlines } from '../srs/deadline'
 import { spiralSuggestion } from '../srs/spiral'
 import { isReminderPending } from '../reminders/reminders'
 import { Icon } from '../components/Icon'
+import { PasteLinkSheet } from '../components/PasteLinkSheet'
 import { EmptyState, SectionHead, StatRow, plural } from '../components/ui'
 import { DAY_MS, dayKey, formatDue, startOfDay } from '../lib/date'
 
@@ -15,6 +16,14 @@ export function TodayScreen() {
   const store = useStore()
   const { navigate } = useRoute()
   const now = Date.now()
+  /**
+   * Coller un lien ou taper un code depuis l'accueil.
+   *
+   * C'était jusqu'ici enfoui dans « Matières ». Or c'est le tout premier geste
+   * de l'élève à qui l'on vient de dicter un code, et souvent le seul de la
+   * journée : le faire chercher sur un autre écran n'avait aucune raison d'être.
+   */
+  const [pasting, setPasting] = useState(false)
 
   const totals = useMemo(() => countCards(store.studyCards, now), [store.studyCards, now])
 
@@ -137,6 +146,14 @@ export function TodayScreen() {
               <button
                 type="button"
                 className="btn btn--ghost btn--block"
+                onClick={() => setPasting(true)}
+              >
+                <Icon name="inbox" size={18} />
+                Lien ou code reçu
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--block"
                 onClick={() => navigate({ name: 'help' })}
               >
                 <Icon name="sparkle" size={18} />
@@ -144,6 +161,18 @@ export function TodayScreen() {
               </button>
             </div>
           }
+        />
+        <PasteLinkSheet
+          open={pasting}
+          onClose={() => setPasting(false)}
+          onResolved={(result) => {
+            setPasting(false)
+            navigate(
+              'token' in result
+                ? { name: 'share', token: result.token }
+                : { name: 'set', code: result.code },
+            )
+          }}
         />
       </main>
     )
@@ -359,7 +388,33 @@ export function TodayScreen() {
       {/* L'élève n'a pas besoin d'un tableau de bord par matière sur l'accueil :
           il a un onglet pour cela. L'enseignant, qui surveille plusieurs
           matières, y gagne. */}
-      {store.settings.teacherTools && (
+      <div className="card">
+        <button type="button" className="listrow" onClick={() => setPasting(true)}>
+          <span className="glyph glyph--warm">
+            <Icon name="inbox" size={18} />
+          </span>
+          <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+            <span className="listrow__title">Lien ou code reçu</span>
+            <span className="listrow__sub truncate">Ajouter des cartes qu’on t’a partagées</span>
+          </span>
+          <Icon name="chevron-right" size={18} />
+        </button>
+      </div>
+
+      <PasteLinkSheet
+        open={pasting}
+        onClose={() => setPasting(false)}
+        onResolved={(result) => {
+          setPasting(false)
+          navigate(
+            'token' in result
+              ? { name: 'share', token: result.token }
+              : { name: 'set', code: result.code },
+          )
+        }}
+      />
+
+      {store.teacherMode && (
       <section className="stack stack-3">
         <SectionHead
           title="Par matière"

@@ -54,6 +54,8 @@ export function SettingsScreen() {
   const [pendingRestore, setPendingRestore] = useState<ReturnType<typeof parseBackup> | null>(null)
   const [wiping, setWiping] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  /** Dépliage de la configuration de publication, chez qui n'en a pas encore. */
+  const [publishSetup, setPublishSetup] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [persist, setPersist] = useState<PersistState | null>(null)
   const [usage, setUsage] = useState<number | null>(null)
@@ -249,25 +251,69 @@ export function SettingsScreen() {
         </div>
       </section>
 
-      {/* ---------------- Diffusion ---------------- */}
+      {/* ---------------- Diffusion ----------------
+          C'est le jeton qui décide, désormais, de ce que l'appareil montre.
+          Celui qui l'a enregistré publie : les outils apparaissent d'eux-mêmes,
+          sans réglage à trouver. Les autres — c'est-à-dire les élèves — n'ont
+          qu'une ligne à lire et rien à décider. */}
       <section className="stack stack-3">
         <SectionHead title="Diffusion" />
-        <div className="card card--pad stack stack-4">
-          <Toggle
-            checked={store.settings.teacherTools}
-            onChange={(v) => void store.saveSettings({ teacherTools: v })}
-            label="Outils d’enseignant"
-            hint="Fait apparaître la publication sous un code, et le bouton qui crée une série même quand il n’y en a encore aucune. Les séries elles-mêmes restent accessibles à tous."
-          />
-          {store.settings.teacherTools && (
-            <p className="meta" style={{ lineHeight: 1.55 }}>
-              Ces outils n’agissent que sur cet appareil : publier suppose d’avoir les droits sur
-              le dépôt, et rien ici ne les donne.
+        {store.teacherMode ? (
+          <>
+            <div className="card card--pad stack stack-3">
+              <button
+                type="button"
+                className="btn btn--ghost btn--block"
+                onClick={() => navigate({ name: 'diffusion' })}
+              >
+                <Icon name="layers" size={18} />
+                Ce que j’ai diffusé
+              </button>
+              <p className="meta" style={{ lineHeight: 1.55 }}>
+                Toutes tes séries et tous tes jeux publiés, avec leur code et ce qui reste à
+                republier.
+              </p>
+            </div>
+            <PublishToken />
+            <div className="card card--pad stack stack-4">
+              <Toggle
+                checked={store.settings.teacherTools}
+                onChange={(v) => void store.saveSettings({ teacherTools: v })}
+                label="Je publie à la main"
+                hint="À garder allumé si tu déposes tes fichiers toi-même sur le dépôt, sans jeton : les outils de diffusion restent alors visibles."
+              />
+            </div>
+          </>
+        ) : (
+          <div className="card card--pad stack stack-3">
+            <p className="meta" style={{ lineHeight: 1.6 }}>
+              Tu peux publier tes propres jeux sous un code court, à condition de tenir le dépôt du
+              projet. Les outils apparaissent dès qu’un jeton GitHub est enregistré ici.
             </p>
-          )}
-        </div>
+            <button
+              type="button"
+              className="btn btn--ghost btn--block"
+              onClick={() => setPublishSetup(true)}
+            >
+              <Icon name="upload" size={18} />
+              Configurer la publication
+            </button>
+          </div>
+        )}
 
-        {store.settings.teacherTools && <PublishToken />}
+        {!store.teacherMode && publishSetup && (
+          <>
+            <PublishToken />
+            <div className="card card--pad stack stack-4">
+              <Toggle
+                checked={store.settings.teacherTools}
+                onChange={(v) => void store.saveSettings({ teacherTools: v })}
+                label="Je publie à la main"
+                hint="Sans jeton, publier veut dire déposer le fichier soi-même sur le dépôt. Ce réglage fait apparaître les outils quand même."
+              />
+            </div>
+          </>
+        )}
       </section>
 
       {/* ---------------- Données ---------------- */}
@@ -575,9 +621,10 @@ function PublishToken() {
     try {
       await checkAccess(repo, token.trim())
       await saveToken(token)
+      await store.refreshToken()
       setToken('')
       setSaved(true)
-      toast('Jeton enregistré sur cet appareil.')
+      toast('Jeton enregistré. Les outils de diffusion sont là.')
     } catch (e) {
       setError(e instanceof PublishError ? e.message : 'Vérification impossible.')
     } finally {
@@ -625,6 +672,22 @@ function PublishToken() {
             </p>
           </div>
 
+          <Field
+            label="Dépôt du projet"
+            hint="L’adresse GitHub où vivent les jeux publiés. Elle sert aussi à la feuille de publication."
+          >
+            <input
+              className="input mono"
+              style={{ fontSize: 12.5 }}
+              value={store.settings.publishRepo}
+              onChange={(e) => void store.saveSettings({ publishRepo: e.target.value.trim() })}
+              placeholder="https://github.com/compte/projet"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </Field>
+
           <Field label="Jeton" hint="Collé une fois, il reste sur cet appareil.">
             <input
               className="input mono"
@@ -642,10 +705,10 @@ function PublishToken() {
             />
           </Field>
 
-          {!repo && (
+          {!repo && store.settings.publishRepo.trim() !== '' && (
             <p className="meta" style={{ lineHeight: 1.55 }}>
-              Le dépôt n’est pas encore renseigné, ou n’est pas sur GitHub. Cette voie ne vaut que
-              pour un dépôt GitHub — ailleurs, le dépôt manuel reste le chemin.
+              Cette adresse n’est pas un dépôt GitHub. Le dépôt en un geste ne vaut que pour
+              GitHub — ailleurs, le dépôt manuel reste le chemin.
             </p>
           )}
 
@@ -672,11 +735,12 @@ function PublishToken() {
       <ConfirmSheet
         open={forgetting}
         title="Oublier ce jeton ?"
-        text="La publication redeviendra manuelle : télécharger le fichier, puis le déposer sur le dépôt. Le jeton lui-même reste valide sur GitHub tant que tu ne l’y révoques pas."
+        text="Les outils de diffusion disparaîtront de cet appareil, à moins d’allumer « Je publie à la main » — publier voudra alors dire télécharger le fichier et le déposer soi-même. Le jeton lui-même reste valide sur GitHub tant que tu ne l’y révoques pas."
         confirmLabel="Oublier"
         onClose={() => setForgetting(false)}
         onConfirm={async () => {
           await forgetToken()
+          await store.refreshToken()
           setSaved(false)
           toast('Jeton retiré de cet appareil.')
         }}

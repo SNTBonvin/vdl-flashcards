@@ -19,6 +19,7 @@ import { SettingsScreen } from './screens/Settings'
 import { ShareScreen } from './screens/Share'
 import { HelpScreen } from './screens/Help'
 import { CatalogueScreen } from './screens/Catalogue'
+import { DiffusionScreen } from './screens/Diffusion'
 
 export function App() {
   return (
@@ -112,13 +113,14 @@ function Shell() {
       {route.name === 'today' && <TodayScreen />}
       {route.name === 'library' && <LibraryScreen />}
       {route.name === 'subject' && <SubjectScreen id={route.id} />}
-      {route.name === 'deck' && <DeckScreen id={route.id} />}
+      {route.name === 'deck' && <DeckScreen key={route.id} id={route.id} lot={route.lot} />}
       {route.name === 'review' && <ReviewScreen onSessionChange={setSessionOpen} />}
       {route.name === 'stats' && <StatsScreen />}
       {route.name === 'settings' && <SettingsScreen />}
       {route.name === 'share' && <ShareScreen token={route.token} />}
       {route.name === 'set' && <ShareScreen code={route.code} />}
       {route.name === 'catalogue' && <CatalogueScreen />}
+      {route.name === 'diffusion' && <DiffusionScreen />}
       {route.name === 'help' && <HelpScreen />}
 
       {/* Masqué pendant une session : on n'interrompt pas une révision en cours. */}
@@ -133,7 +135,8 @@ function Shell() {
                 (route.name === 'subject' ||
                   route.name === 'deck' ||
                   route.name === 'catalogue')) ||
-              (tab.name === 'settings' && (route.name === 'stats' || route.name === 'help'))
+              (tab.name === 'settings' &&
+                (route.name === 'stats' || route.name === 'help' || route.name === 'diffusion'))
             return (
               <button
                 key={tab.name}
@@ -176,7 +179,8 @@ function AppBar({ route }: { route: Route }) {
     route.name === 'deck' ||
     route.name === 'stats' ||
     route.name === 'help' ||
-    route.name === 'catalogue'
+    route.name === 'catalogue' ||
+    route.name === 'diffusion'
 
   const titles: Record<string, string> = {
     today: 'Aujourd’hui',
@@ -187,6 +191,7 @@ function AppBar({ route }: { route: Route }) {
     share: 'Thème partagé',
     set: 'Jeu publié',
     catalogue: 'Catalogue',
+    diffusion: 'Diffusion',
     help: 'Prise en main',
   }
 

@@ -126,7 +126,7 @@ export function HelpScreen() {
       <Step
         icon="move"
         title="Partager un thème"
-        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si tu corriges une faute plus tard, rediffuse le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée. Pour ouvrir un lien ou un code reçu : « Matières › Lien ou code » — sur iPhone, c’est le seul chemin qui mène à l’application installée."
+        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si tu corriges une faute plus tard, rediffuse le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée. Pour ouvrir un lien ou un code reçu : « Lien ou code reçu », sur l’accueil ou dans « Matières » — sur iPhone, c’est le seul chemin qui mène à l’application installée."
       />
 
       <Step
@@ -150,7 +150,7 @@ export function HelpScreen() {
       <Step
         icon="upload"
         title="Publier sous un code"
-        text="La publication est masquée par défaut : active « Outils d’enseignant » dans les réglages. « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
+        text="La publication apparaît d’elle-même sur l’appareil où un jeton GitHub est enregistré — « Réglages › Diffusion › Configurer la publication » —, ou si tu allumes « Je publie à la main ». « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
       />
 
       <Step

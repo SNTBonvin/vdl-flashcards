@@ -6,7 +6,7 @@ export type Route =
   | { name: 'today' }
   | { name: 'library' }
   | { name: 'subject'; id: string }
-  | { name: 'deck'; id: string }
+  | { name: 'deck'; id: string; lot?: string }
   | { name: 'review' }
   | { name: 'stats' }
   | { name: 'settings' }
@@ -17,6 +17,8 @@ export type Route =
   | { name: 'set'; code: string }
   /** Liste des jeux publiés et visibles. */
   | { name: 'catalogue' }
+  /** Inventaire de ce qu'on a diffusé : séries et jeux publiés. */
+  | { name: 'diffusion' }
 
 export function parseHash(hash: string): Route {
   const path = hash.replace(/^#\/?/, '').split('?')[0]
@@ -26,8 +28,12 @@ export function parseHash(hash: string): Route {
       return { name: 'library' }
     case 'subject':
       return param ? { name: 'subject', id: param } : { name: 'library' }
-    case 'deck':
-      return param ? { name: 'deck', id: param } : { name: 'library' }
+    case 'deck': {
+      // « #/deck/<id>/<série> » ouvre le thème et déplie la série : c'est ce qui
+      // permet à l'inventaire de mener droit à la fiche, sans faire chercher.
+      const lot = path.split('/')[2]
+      return param ? { name: 'deck', id: param, ...(lot ? { lot } : {}) } : { name: 'library' }
+    }
     case 'review':
       return { name: 'review' }
     case 'stats':
@@ -42,6 +48,8 @@ export function parseHash(hash: string): Route {
       return param ? { name: 'set', code: param.toUpperCase() } : { name: 'today' }
     case 'catalogue':
       return { name: 'catalogue' }
+    case 'diffusion':
+      return { name: 'diffusion' }
     default:
       return { name: 'today' }
   }
@@ -52,7 +60,7 @@ export function toPath(route: Route): string {
     case 'subject':
       return `#/subject/${route.id}`
     case 'deck':
-      return `#/deck/${route.id}`
+      return route.lot ? `#/deck/${route.id}/${route.lot}` : `#/deck/${route.id}`
     case 'share':
       return `#/p/${route.token}`
     case 'set':
