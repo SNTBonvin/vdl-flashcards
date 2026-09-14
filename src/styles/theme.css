@@ -328,6 +328,74 @@ a {
   background: var(--border);
 }
 
+/* ---------------- Rubrique repliable ----------------
+   Les réglages tiennent en six rubriques ; dépliées toutes ensemble, elles
+   font un mur de deux mille pixels où l'on cherche le réglage qu'on est venu
+   changer. Refermées, chacune tient en une ligne qui dit son état — c'est
+   souvent tout ce qu'on venait vérifier. */
+.fold {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.fold::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: transparent;
+  transition: background 0.16s ease;
+}
+.fold[data-open]::before {
+  background: var(--primary);
+}
+/* La rubrique ouverte se teinte : le vert dit où l'on est, sans rien encadrer. */
+.fold[data-open] .fold__head {
+  background: var(--primary-tint);
+}
+.fold__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 15px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.fold__head:focus-visible {
+  outline: 2px solid var(--primary-light);
+  outline-offset: -2px;
+}
+.fold__title {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+}
+.fold__chev {
+  color: var(--ink-4);
+  transition: transform 0.18s ease;
+  flex: none;
+}
+.fold[data-open] .fold__chev {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fold::before,
+  .fold__chev {
+    transition: none;
+  }
+}
+.fold__body {
+  padding: 2px 15px 16px;
+}
+
 .rule {
   height: 1px;
   background: var(--rule);

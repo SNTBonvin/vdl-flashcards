@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon'
 import {
   ConfirmSheet,
   Field,
-  SectionHead,
+  Fold,
   Sheet,
   Toggle,
   plural,
@@ -56,6 +56,13 @@ export function SettingsScreen() {
   const [aboutOpen, setAboutOpen] = useState(false)
   /** Dépliage de la configuration de publication, chez qui n'en a pas encore. */
   const [publishSetup, setPublishSetup] = useState(false)
+  /**
+   * Rubrique ouverte, une seule à la fois. Aucune au départ : l'écran s'ouvre
+   * sur six lignes qui disent chacune leur état, et l'on n'ouvre que celle
+   * qu'on est venu changer.
+   */
+  const [ouverte, setOuverte] = useState<string | null>(null)
+  const bascule = (nom: string) => setOuverte((current) => (current === nom ? null : nom))
   const [exporting, setExporting] = useState(false)
   const [persist, setPersist] = useState<PersistState | null>(null)
   const [usage, setUsage] = useState<number | null>(null)
@@ -105,8 +112,19 @@ export function SettingsScreen() {
       </div>
 
       {/* ---------------- Apparence ---------------- */}
-      <section className="stack stack-3">
-        <SectionHead title="Apparence" />
+      <Fold
+        icon="sparkle"
+        title="Apparence"
+        summary={
+          theme.mode === 'auto'
+            ? `Automatique — actuellement ${theme.resolved === 'dark' ? 'sombre' : 'clair'}`
+            : theme.mode === 'dark'
+              ? 'Sombre'
+              : 'Clair'
+        }
+        open={ouverte === 'apparence'}
+        onToggle={() => bascule('apparence')}
+      >
         <div className="card card--pad stack stack-3">
           <div className="seg">
             {THEMES.map((item) => (
@@ -127,11 +145,16 @@ export function SettingsScreen() {
               : 'Réglage propre à cet appareil.'}
           </span>
         </div>
-      </section>
+      </Fold>
 
       {/* ---------------- Révision ---------------- */}
-      <section className="stack stack-3">
-        <SectionHead title="Révision" />
+      <Fold
+        icon="review"
+        title="Révision"
+        summary={`${store.settings.newPerDay} ${plural(store.settings.newPerDay, 'nouvelle', 'nouvelles')} par jour · ${store.settings.maxInterval} jours au plus`}
+        open={ouverte === 'revision'}
+        onToggle={() => bascule('revision')}
+      >
         <div className="card card--pad stack stack-5">
           <Field
             label="Nouvelles cartes par jour"
@@ -187,11 +210,22 @@ export function SettingsScreen() {
             hint="La réponse devient la question."
           />
         </div>
-      </section>
+      </Fold>
 
       {/* ---------------- Rappels ---------------- */}
-      <section className="stack stack-3">
-        <SectionHead title="Rappels" />
+      <Fold
+        icon="bell"
+        title="Rappels"
+        summary={
+          permission === 'unsupported'
+            ? 'Non pris en charge par ce navigateur'
+            : store.settings.notificationsEnabled && permission === 'granted'
+              ? 'Notifications autorisées'
+              : 'Éteints'
+        }
+        open={ouverte === 'rappels'}
+        onToggle={() => bascule('rappels')}
+      >
         <div className="card card--pad stack stack-4">
           <Toggle
             checked={store.settings.notificationsEnabled && permission === 'granted'}
@@ -242,15 +276,26 @@ export function SettingsScreen() {
             </p>
           </div>
         </div>
-      </section>
+      </Fold>
 
       {/* ---------------- Diffusion ----------------
           C'est le jeton qui décide, désormais, de ce que l'appareil montre.
           Celui qui l'a enregistré publie : les outils apparaissent d'eux-mêmes,
           sans réglage à trouver. Les autres — c'est-à-dire les élèves — n'ont
           qu'une ligne à lire et rien à décider. */}
-      <section className="stack stack-3">
-        <SectionHead title="Diffusion" />
+      <Fold
+        icon="upload"
+        title="Diffusion"
+        summary={
+          store.hasToken
+            ? 'Jeton en place — publication en un geste'
+            : store.settings.teacherTools
+              ? 'Dépôt à la main'
+              : 'Non configurée'
+        }
+        open={ouverte === 'diffusion'}
+        onToggle={() => bascule('diffusion')}
+      >
         {store.teacherMode ? (
           <>
             <div className="card card--pad stack stack-3">
@@ -307,11 +352,20 @@ export function SettingsScreen() {
             </div>
           </>
         )}
-      </section>
+      </Fold>
 
       {/* ---------------- Données ---------------- */}
-      <section className="stack stack-3">
-        <SectionHead title="Données" />
+      <Fold
+        icon="shield"
+        title="Données"
+        summary={
+          persist === 'persisted'
+            ? 'Sur cet appareil · protégées de l’effacement'
+            : 'Sauvegarde, import, export'
+        }
+        open={ouverte === 'donnees'}
+        onToggle={() => bascule('donnees')}
+      >
         <div className="card card--pad stack stack-4">
           <p className="meta" style={{ lineHeight: 1.6 }}>
             Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers
@@ -427,11 +481,16 @@ export function SettingsScreen() {
             Tout effacer
           </button>
         </div>
-      </section>
+      </Fold>
 
       {/* ---------------- À propos ---------------- */}
-      <section className="stack stack-3">
-        <SectionHead title="À propos" />
+      <Fold
+        icon="info"
+        title="À propos"
+        summary={`${APP_VERSION} · ${APP_BUILD_DATE}`}
+        open={ouverte === 'apropos'}
+        onToggle={() => bascule('apropos')}
+      >
 
         <div className="card card--pad row row--between">
           <span className="grow stack" style={{ gap: 1 }}>
@@ -476,7 +535,7 @@ export function SettingsScreen() {
             <Icon name="chevron-right" size={18} />
           </div>
         </button>
-      </section>
+      </Fold>
 
       {/* ---------------- Feuilles ---------------- */}
 

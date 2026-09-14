@@ -560,7 +560,13 @@ les connaissances pour de bon.
 
 Deux fichiers différents, deux usages qu'il ne faut pas confondre.
 
-**La sauvegarde** (*Réglages → Exporter la sauvegarde*) contient tout : cartes,
+Les réglages se présentent en **six rubriques repliables** — Apparence,
+Révision, Rappels, Diffusion, Données, À propos —, refermées par défaut et
+ouvertes une à la fois. Chacune affiche son état sans qu'on l'ouvre : « 20
+nouvelles par jour · 90 jours au plus », « Jeton en place ». Les chemins indiqués
+dans ce guide (*Réglages → Données → …*) désignent donc la rubrique à déplier.
+
+**La sauvegarde** (*Réglages → Données → Exporter la sauvegarde*) contient tout : cartes,
 progression, séries et réglages. C'est le fichier pour **changer d'appareil**, et
 sa restauration **remplace** ce qui est sur le téléphone.
 

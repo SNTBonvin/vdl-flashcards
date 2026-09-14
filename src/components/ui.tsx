@@ -254,4 +254,46 @@ export function SectionHead({ title, aside }: { title: string; aside?: ReactNode
   )
 }
 
+/**
+ * Rubrique repliable.
+ *
+ * Refermée, elle tient en une ligne qui dit son état — « 20 par jour · 90 jours
+ * au plus » — ce qui est souvent tout ce qu'on venait vérifier. L'ouverture est
+ * un geste, et une seule rubrique ouverte à la fois garde l'écran lisible.
+ */
+export function Fold({
+  icon,
+  title,
+  summary,
+  open,
+  onToggle,
+  children,
+}: {
+  icon: IconName
+  title: string
+  /** État courant, lu sans ouvrir. */
+  summary?: string
+  open: boolean
+  onToggle: () => void
+  children: ReactNode
+}) {
+  return (
+    <section className="fold" data-open={open || undefined}>
+      <button type="button" className="fold__head" aria-expanded={open} onClick={onToggle}>
+        <span className="glyph">
+          <Icon name={icon} size={18} />
+        </span>
+        <span className="grow stack" style={{ gap: 2, minWidth: 0 }}>
+          <span className="fold__title">{title}</span>
+          {summary && <span className="listrow__sub truncate">{summary}</span>}
+        </span>
+        <span className="fold__chev">
+          <Icon name="chevron-down" size={18} />
+        </span>
+      </button>
+      {open && <div className="fold__body stack stack-4">{children}</div>}
+    </section>
+  )
+}
+
 export const plural = (n: number, one: string, many = `${one}s`) => (n > 1 ? many : one)

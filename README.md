@@ -115,6 +115,12 @@ sauvegarde JSON reste le filet.
 - **Aller plus loin** — quand le quota du jour retient des cartes, un bouton
   permet d'en prendre dix de plus. L'application conseille un rythme, elle ne
   l'impose pas.
+- **Réglages en rubriques repliables** — six rubriques (Apparence, Révision,
+  Rappels, Diffusion, Données, À propos), refermées par défaut et ouvertes une
+  à la fois. Chacune affiche son état sans qu'on l'ouvre — « 20 nouvelles par
+  jour · 90 jours au plus », « Jeton en place » —, ce qui est souvent tout ce
+  qu'on venait vérifier ; l'écran passe ainsi d'un mur de deux mille pixels à
+  une page.
 - **Trois séances, aucun réglage préalable** — l'écran Réviser ne demande rien
   avant de partir : trois cartes, trois séances, chacune annonçant son compte et
   portant son bouton. *Révision du jour* (les cartes échues plus le quota de
