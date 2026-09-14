@@ -115,17 +115,16 @@ sauvegarde JSON reste le filet.
 - **Aller plus loin** — quand le quota du jour retient des cartes, un bouton
   permet d'en prendre dix de plus. L'application conseille un rythme, elle ne
   l'impose pas.
-- **Trois modes de séance**, nommés par ce qu'ils font et non par leur
-  mécanique :
-  - *À revoir* : les cartes échues du jour, plus un quota de cartes neuves ;
-  - *Tout revoir* : toutes les cartes des thèmes cochés, échues ou non,
-    mélangées — plusieurs thèmes et plusieurs matières peuvent être
-    combinées ;
-  - *Mes difficultés* : uniquement les cartes déjà ratées.
-
-  Un encart explique la différence au-dessus du sélecteur ; une croix le ferme
-  définitivement, et un réglage (« Réviser » → « Expliquer les modes de
-  séance ») le fait revenir.
+- **Trois séances, aucun réglage préalable** — l'écran Réviser ne demande rien
+  avant de partir : trois cartes, trois séances, chacune annonçant son compte et
+  portant son bouton. *Révision du jour* (les cartes échues plus le quota de
+  neuves) est la seule à prendre l'action principale ; *Tout revoir* ouvre la
+  liste des thèmes et démarre au thème choisi, une première ligne « Tous mes
+  thèmes » repassant tout d'un coup ; *Mes difficultés* ne reprend que les
+  cartes déjà ratées. La portée et les options de séance — thèmes, mélange,
+  inversion, révision blanche — descendent dans une feuille « Ajuster », résumée
+  par une ligne d'état en bas d'écran. L'écran demandait auparavant trois
+  décisions à quelqu'un qui en avait déjà pris une en ouvrant l'onglet.
 - **Réponses** — « Raté », « Difficile », « Su », avec l'échéance calculée
   affichée sur chaque bouton avant de répondre.
 - **Rappels** — horaire et jours de la semaine par thème, recopiables dans

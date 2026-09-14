@@ -4,34 +4,20 @@ import { takeSession } from '../state/session'
 import { buildQueue, countCards, countSession, type SessionMode } from '../srs/queue'
 import { formatDelay, previewDelay } from '../srs/scheduler'
 import { Icon } from '../components/Icon'
-import { EmptyState, SectionHead, Toggle, plural, useToast } from '../components/ui'
+import { EmptyState, SectionHead, Sheet, Toggle, plural, useToast } from '../components/ui'
 import type { Card, Grade, ID } from '../db/types'
 
 /**
- * Les libellés disent ce que la séance contient, et non comment elle est
- * calculée : « Programmé » et « Interrogation » supposaient de connaître le
- * fonctionnement pour choisir.
+ * Écran Réviser.
+ *
+ * Trois séances possibles, trois cartes : plus de « mode » à choisir avant de
+ * partir. Chacune annonce ce qu'elle contient et porte son propre bouton, la
+ * révision du jour étant la seule à prendre l'action principale — les deux
+ * autres sont des détours, utiles mais occasionnels. Le choix des thèmes et les
+ * options de séance descendent dans une feuille « Ajuster », qui ne s'ouvre que
+ * pour qui en a l'usage : un écran de préparation demandait trois décisions à
+ * quelqu'un qui en avait déjà pris une en ouvrant l'onglet.
  */
-const MODES: { value: SessionMode; label: string; hint: string; help: string }[] = [
-  {
-    value: 'due',
-    label: 'À revoir',
-    hint: 'Les cartes échues du jour, plus quelques nouvelles.',
-    help: 'Les cartes que l’application juge mûres pour aujourd’hui, plus quelques neuves. C’est la séance à faire tous les jours : la plus courte, et la plus efficace.',
-  },
-  {
-    value: 'quiz',
-    label: 'Tout revoir',
-    hint: 'Toutes les cartes des thèmes choisis, mélangées.',
-    help: 'Toutes les cartes des thèmes cochés, échues ou non, dans le désordre. À faire avant un contrôle, ou pour se tester d’un coup sur un chapitre entier. Attention : les réponses comptent et décalent les échéances — coche « Ne pas modifier le programme » ci-dessous pour te tester sans rien déranger.',
-  },
-  {
-    value: 'hard',
-    label: 'Mes difficultés',
-    hint: 'Uniquement les cartes déjà ratées.',
-    help: 'Uniquement les cartes déjà ratées au moins une fois, les plus fautives d’abord. Quand il reste dix minutes et qu’on veut qu’elles servent.',
-  },
-]
 
 export function ReviewScreen({ onSessionChange }: { onSessionChange: (running: boolean) => void }) {
   const store = useStore()
@@ -113,47 +99,83 @@ function ReviewSetup({
 }) {
   const store = useStore()
   const toast = useToast()
-  const [mode, setMode] = useState<SessionMode>('due')
-  const [selected, setSelected] = useState<ID[]>([])
+
   /**
-   * Révision blanche. Volontairement **non mémorisé** dans les réglages : laissé
-   * allumé par mégarde, il ferait réviser sans jamais progresser, et rien ne le
-   * signalerait d'une séance à l'autre.
+   * Portée de la séance. `null` signifie « tous les thèmes » — l'état normal,
+   * et celui qu'on ne devrait jamais avoir à choisir. Restreindre reste
+   * possible, mais devient un geste délibéré plutôt qu'un préalable.
+   */
+  const [scope, setScope] = useState<ID[] | null>(null)
+  const [adjusting, setAdjusting] = useState(false)
+  const [picking, setPicking] = useState(false)
+  /**
+   * Révision blanche. Volontairement **non mémorisée** dans les réglages :
+   * laissée allumée par mégarde, elle ferait réviser sans jamais progresser,
+   * et rien ne le signalerait d'une séance à l'autre.
    */
   const [dry, setDry] = useState(false)
 
-  const selectedSet = useMemo(() => new Set(selected), [selected])
+  const allIds = useMemo(() => store.studyDecks.map((d) => d.id), [store.studyDecks])
+  const deckIds = scope ?? allIds
+  const scopeSet = useMemo(() => new Set(deckIds), [deckIds])
+  const inScope = useMemo(
+    () => store.cards.filter((c) => scopeSet.has(c.deckId)),
+    [store.cards, scopeSet],
+  )
 
-  const preview = useMemo(() => {
-    const cards = store.cards.filter((c) => selectedSet.has(c.deckId))
-    return buildQueue(cards, {
-      mode,
-      introducedToday: store.intro.counts,
-      settings: store.settings,
-    }).length
-  }, [store.cards, store.intro.counts, store.settings, selectedSet, mode])
+  const compte = useCallback(
+    (mode: SessionMode) =>
+      buildQueue(inScope, {
+        mode,
+        introducedToday: store.intro.counts,
+        settings: store.settings,
+      }).length,
+    [inScope, store.intro.counts, store.settings],
+  )
+
+  const daily = useMemo(() => compte('due'), [compte])
+  const hard = useMemo(() => compte('hard'), [compte])
+  const total = useMemo(() => inScope.filter((c) => !c.suspended).length, [inScope])
 
   /**
-   * Cartes neuves retenues par le quota du jour. « Aucune carte à réviser » est
-   * vrai mais muet : quand c'est le quota qui bloque, le dire évite de croire à
+   * Cartes neuves retenues par le quota du jour. « Rien à réviser » est vrai
+   * mais muet : quand c'est le quota qui retient, le dire évite de croire à
    * une perte de cartes.
    */
-  const held = useMemo(() => {
-    if (mode !== 'due') return 0
-    const cards = store.cards.filter((c) => selectedSet.has(c.deckId))
-    return countSession(cards, {
-      introducedToday: store.intro.counts,
-      settings: store.settings,
-    }).held
-  }, [store.cards, store.intro.counts, store.settings, selectedSet, mode])
+  const session = useMemo(
+    () =>
+      countSession(inScope, {
+        introducedToday: store.intro.counts,
+        settings: store.settings,
+      }),
+    [inScope, store.intro.counts, store.settings],
+  )
+  const held = session.held
+  /** Portée vidée à la main : ce n'est pas « rien à réviser », c'est « rien de coché ». */
+  const vide = scope !== null && scope.length === 0
 
-  const toggle = (deckId: ID) =>
-    setSelected((current) =>
-      current.includes(deckId) ? current.filter((id) => id !== deckId) : [...current, deckId],
-    )
+  /** Dépasser le quota du jour, en connaissance de cause. */
+  const MORE = 10
 
-  const allIds = store.studyDecks.map((d) => d.id)
-  const allSelected = selected.length === allIds.length && allIds.length > 0
+  const start = (mode: SessionMode, ids: ID[], sessionLabel: string, options?: StartOptions) => {
+    const started = onStart(ids, mode, sessionLabel, options)
+    if (started === 0) toast('Aucune carte à réviser avec ces réglages.', 'error')
+  }
+
+  const scopeLabel =
+    scope === null
+      ? `Tous les thèmes · ${allIds.length} ${plural(allIds.length, 'thème')}`
+      : scope.length === 1
+        ? (store.decks.find((d) => d.id === scope[0])?.name ?? '1 thème')
+        : `${scope.length} ${plural(scope.length, 'thème')} sur ${allIds.length}`
+
+  const optionsLabel = [
+    store.settings.shuffle ? 'mélangées' : 'ordre du thème',
+    store.settings.reverse ? 'inversées' : null,
+    dry ? 'à blanc' : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   if (store.studyDecks.length === 0) {
     return (
@@ -176,73 +198,165 @@ function ReviewSetup({
         <h1>Réviser</h1>
       </div>
 
-      <section className="stack stack-3">
-        <SectionHead title="Mode" />
-        <div className="seg">
-          {MODES.map((item) => (
-            <button
-              key={item.value}
-              type="button"
-              className="seg__item"
-              aria-pressed={mode === item.value}
-              onClick={() => setMode(item.value)}
-            >
-              {item.label}
-            </button>
-          ))}
+      {/* --------------------------- Révision du jour ---------------------------
+          La séance quotidienne est la seule qui mérite l'action principale : les
+          deux autres sont des détours, utiles mais occasionnels. */}
+      <section className="card card--pad stack stack-4" data-status={daily > 0 ? 'ok' : 'run'}>
+        <div className="row row--between">
+          <span className="listrow__title" style={{ fontSize: 17 }}>
+            Révision du jour
+          </span>
+          <span className="stat__value" style={{ fontSize: 22 }}>
+            {daily}
+          </span>
         </div>
-        <p className="meta" style={{ padding: '0 2px', lineHeight: 1.55 }}>
-          {MODES.find((m) => m.value === mode)?.hint}
-        </p>
 
-        {store.settings.showReviewHelp && (
-          <div className="card card--pad stack stack-3" data-status="run">
-            <div className="row row--between">
-              <span className="eyebrow">Quel mode choisir ?</span>
-              <button
-                type="button"
-                className="icon-btn icon-btn--bare"
-                onClick={() => void store.saveSettings({ showReviewHelp: false })}
-                aria-label="Masquer ces explications"
-              >
-                <Icon name="close" size={18} />
-              </button>
-            </div>
-            {MODES.map((item) => (
-              <div key={item.value} className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
-                <span
-                  className="dot"
-                  style={{ marginTop: 7, background: 'var(--primary-fill)', flex: 'none' }}
-                />
-                <p className="meta" style={{ lineHeight: 1.55 }}>
-                  <strong style={{ color: 'var(--ink)' }}>{item.label}</strong> — {item.help}
-                </p>
-              </div>
-            ))}
-            <p className="meta" style={{ lineHeight: 1.55, color: 'var(--ink-4)' }}>
-              Ces explications se réaffichent depuis les réglages.
+        {vide ? (
+          <p className="meta" style={{ lineHeight: 1.55 }}>
+            Aucun thème coché. Ouvre « Ajuster », en bas, pour en choisir au moins un — ou reviens
+            à tous tes thèmes d’un geste.
+          </p>
+        ) : daily > 0 ? (
+          <>
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              {session.due > 0
+                ? `${session.due} ${plural(session.due, 'carte échue', 'cartes échues')}${
+                    session.fresh > 0
+                      ? `, plus ${session.fresh} ${plural(session.fresh, 'nouvelle', 'nouvelles')}`
+                      : ''
+                  }.`
+                : `${session.fresh} ${plural(session.fresh, 'carte nouvelle', 'cartes nouvelles')} pour commencer.`}{' '}
+              C’est le rythme conseillé.
             </p>
-          </div>
+            <button
+              type="button"
+              className="btn btn--primary btn--lg btn--block"
+              onClick={() => start('due', deckIds, 'Révision du jour', { dry })}
+            >
+              <Icon name="review" size={18} />
+              Commencer
+            </button>
+          </>
+        ) : held > 0 ? (
+          <>
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              Quota du jour atteint : {held} {plural(held, 'carte neuve', 'cartes neuves')} t’attendent
+              demain. L’étalement est précisément ce qui fait retenir — mais rien ne t’oblige à
+              t’arrêter là.
+            </p>
+            <button
+              type="button"
+              className="btn btn--ghost btn--block"
+              onClick={() =>
+                start('due', deckIds, 'Aller plus loin', {
+                  dry,
+                  bonus: Math.min(MORE, held),
+                })
+              }
+            >
+              <Icon name="plus" size={18} />
+              Aller plus loin — {Math.min(MORE, held)} cartes de plus
+            </button>
+          </>
+        ) : (
+          <p className="meta" style={{ lineHeight: 1.55 }}>
+            C’est fait pour aujourd’hui. Reviens demain — ou sers-toi d’une des deux séances
+            ci-dessous.
+          </p>
         )}
       </section>
 
-      <section className="stack stack-3">
-        <SectionHead
-          title="Thèmes"
-          aside={
+      {/* ------------------------------ Tout revoir ------------------------------ */}
+      <section className="card card--pad stack stack-4">
+        <div className="row row--between">
+          <span className="listrow__title" style={{ fontSize: 17 }}>
+            Tout revoir
+          </span>
+          <span className="stat__value" style={{ fontSize: 22 }}>
+            {total}
+          </span>
+        </div>
+        <p className="meta" style={{ lineHeight: 1.55 }}>
+          Un thème entier, échues ou non, dans le désordre. Avant un contrôle. Les réponses
+          comptent : pour te tester sans rien déranger, passe la séance « à blanc » dans Ajuster.
+        </p>
+        <button
+          type="button"
+          className="btn btn--ghost btn--block"
+          onClick={() => setPicking(true)}
+        >
+          <Icon name="layers" size={18} />
+          Choisir un thème
+        </button>
+      </section>
+
+      {/* ---------------------------- Mes difficultés ---------------------------- */}
+      <section className="card card--pad stack stack-4">
+        <div className="row row--between">
+          <span className="listrow__title" style={{ fontSize: 17 }}>
+            Mes difficultés
+          </span>
+          <span className="stat__value" style={{ fontSize: 22 }}>
+            {hard}
+          </span>
+        </div>
+        <p className="meta" style={{ lineHeight: 1.55 }}>
+          Les cartes déjà ratées, les plus fautives d’abord. Quand il reste dix minutes et qu’on
+          veut qu’elles servent.
+        </p>
+        <button
+          type="button"
+          className="btn btn--ghost btn--block"
+          disabled={hard === 0 || vide}
+          onClick={() => start('hard', deckIds, 'Mes difficultés', { dry })}
+        >
+          <Icon name="flag" size={18} />
+          {hard === 0 ? 'Aucune carte ratée' : 'Commencer'}
+        </button>
+      </section>
+
+      {/* L'ajustement existe, mais ne se réclame pas : une ligne, tout en bas,
+          qui dit l'état courant plutôt qu'un formulaire à remplir d'avance. */}
+      <div className="row row--between" style={{ gap: 10, padding: '0 2px' }}>
+        <span className="meta truncate">
+          {scopeLabel} · {optionsLabel}
+        </span>
+        <button type="button" className="btn btn--quiet" onClick={() => setAdjusting(true)}>
+          Ajuster
+        </button>
+      </div>
+
+      {/* ------------------------------- Feuilles ------------------------------- */}
+
+      <Sheet open={picking} title="Tout revoir" onClose={() => setPicking(false)}>
+        <div className="stack stack-4">
+          <p className="meta" style={{ lineHeight: 1.6 }}>
+            Choisis le thème à repasser en entier. La séance démarre aussitôt.
+          </p>
+
+          {/* Repasser plusieurs thèmes d'un coup reste possible : c'est ce que
+              faisait l'ancien écran en cochant tout, et cela sert la veille
+              d'un contrôle qui porte sur deux chapitres. */}
+          <div className="card">
             <button
               type="button"
-              className="btn btn--quiet"
-              onClick={() => setSelected(allSelected ? [] : allIds)}
+              className="listrow"
+              disabled={total === 0}
+              onClick={() => {
+                setPicking(false)
+                start('quiz', allIds, `${allIds.length} thèmes`, { dry })
+              }}
             >
-              {allSelected ? 'Tout décocher' : 'Tout cocher'}
+              <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                <span className="listrow__title">Tous mes thèmes</span>
+                <span className="listrow__sub">
+                  {total} {plural(total, 'carte')}, toutes matières confondues
+                </span>
+              </span>
+              <Icon name="chevron-right" size={18} />
             </button>
-          }
-        />
-
-        <div className="stack stack-4">
+          </div>
           {store.subjects.map((subject) => {
-            // Les thèmes de réserve ne se révisent pas : ils ne sont pas proposés.
             const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
             if (decks.length === 0) return null
             return (
@@ -250,22 +364,27 @@ function ReviewSetup({
                 <span className="eyebrow" style={{ paddingLeft: 2 }}>
                   {subject.name}
                 </span>
-                <div className="picker">
+                <div className="card">
                   {decks.map((deck) => {
                     const counts = countCards(store.cardsByDeck.get(deck.id) ?? [])
-                    const waiting = counts.due + counts.fresh
                     return (
                       <button
                         key={deck.id}
                         type="button"
-                        className="chip chip--select"
-                        aria-pressed={selectedSet.has(deck.id)}
-                        onClick={() => toggle(deck.id)}
+                        className="listrow"
+                        disabled={counts.total === 0}
+                        onClick={() => {
+                          setPicking(false)
+                          start('quiz', [deck.id], deck.name, { dry })
+                        }}
                       >
-                        {deck.name}
-                        <span style={{ opacity: 0.65 }}>
-                          {mode === 'due' ? waiting : mode === 'hard' ? counts.hard : counts.total}
+                        <span className="grow stack" style={{ gap: 1, minWidth: 0 }}>
+                          <span className="listrow__title truncate">{deck.name}</span>
+                          <span className="listrow__sub">
+                            {counts.total} {plural(counts.total, 'carte')}
+                          </span>
                         </span>
+                        <Icon name="chevron-right" size={18} />
                       </button>
                     )
                   })}
@@ -274,58 +393,103 @@ function ReviewSetup({
             )
           })}
         </div>
-      </section>
+      </Sheet>
 
-      <section className="card card--pad stack stack-4">
-        <span className="eyebrow">Options de session</span>
-        <Toggle
-          checked={store.settings.shuffle}
-          onChange={(v) => void store.saveSettings({ shuffle: v })}
-          label="Mélanger les cartes"
-          hint="Évite d’apprendre l’ordre plutôt que le contenu."
-        />
-        <hr className="rule" />
-        <Toggle
-          checked={store.settings.reverse}
-          onChange={(v) => void store.saveSettings({ reverse: v })}
-          label="Inverser recto et verso"
-          hint="La réponse est posée en question."
-        />
-        <hr className="rule" />
-        <Toggle
-          checked={dry}
-          onChange={setDry}
-          label="Ne pas modifier le programme"
-          hint="Pour se tester sans rien déranger — la veille d’un contrôle, par exemple. Les réponses ne comptent pas et ne décalent aucune échéance."
-        />
-      </section>
-
-      <button
-        type="button"
-        className="btn btn--primary btn--lg btn--block"
-        disabled={selected.length === 0 || preview === 0}
-        onClick={() => {
-          const names = store.decks.filter((d) => selectedSet.has(d.id)).map((d) => d.name)
-          const started = onStart(
-            selected,
-            mode,
-            names.length === 1 ? names[0] : `${names.length} thèmes`,
-            { dry },
-          )
-          if (started === 0) toast('Aucune carte à réviser avec ces réglages.', 'error')
-        }}
+      <Sheet
+        open={adjusting}
+        title="Ajuster"
+        onClose={() => setAdjusting(false)}
+        footer={
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            onClick={() => setAdjusting(false)}
+          >
+            C’est noté
+          </button>
+        }
       >
-        {selected.length === 0
-          ? 'Choisis un thème'
-          : preview === 0
-            ? held > 0
-              ? 'Quota du jour atteint'
-              : 'Aucune carte à réviser'
-            : `Commencer — ${preview} ${plural(preview, 'carte')}`}
-      </button>
+        <div className="stack stack-5">
+          <div className="stack stack-3">
+            <div className="row row--between">
+              <span className="eyebrow">Thèmes</span>
+              <button
+                type="button"
+                className="btn btn--quiet"
+                onClick={() => setScope(scope === null ? [] : null)}
+              >
+                {scope === null ? 'Aucun' : 'Tous'}
+              </button>
+            </div>
+            <p className="meta" style={{ lineHeight: 1.55 }}>
+              Par défaut, tes séances portent sur tous tes thèmes. Coche pour t’en tenir à
+              quelques-uns.
+            </p>
+            {store.subjects.map((subject) => {
+              const decks = (store.decksBySubject.get(subject.id) ?? []).filter((d) => !d.reserve)
+              if (decks.length === 0) return null
+              return (
+                <div key={subject.id} className="stack stack-2">
+                  <span className="eyebrow" style={{ paddingLeft: 2 }}>
+                    {subject.name}
+                  </span>
+                  <div className="picker">
+                    {decks.map((deck) => {
+                      const on = scopeSet.has(deck.id)
+                      return (
+                        <button
+                          key={deck.id}
+                          type="button"
+                          className="chip chip--select"
+                          aria-pressed={on}
+                          onClick={() =>
+                            setScope(
+                              on
+                                ? deckIds.filter((id) => id !== deck.id)
+                                : [...deckIds, deck.id],
+                            )
+                          }
+                        >
+                          <span className="truncate" style={{ maxWidth: 190 }}>
+                            {deck.name}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <hr className="rule" />
+
+          <Toggle
+            checked={store.settings.shuffle}
+            onChange={(v) => void store.saveSettings({ shuffle: v })}
+            label="Mélanger les cartes"
+            hint="Évite d’apprendre l’ordre plutôt que le contenu."
+          />
+          <hr className="rule" />
+          <Toggle
+            checked={store.settings.reverse}
+            onChange={(v) => void store.saveSettings({ reverse: v })}
+            label="Inverser recto et verso"
+            hint="La réponse est posée en question."
+          />
+          <hr className="rule" />
+          <Toggle
+            checked={dry}
+            onChange={setDry}
+            label="Ne pas modifier le programme"
+            hint="Pour se tester sans rien déranger — la veille d’un contrôle, par exemple. Les réponses ne comptent pas et ne décalent aucune échéance. Cette option s’éteint en quittant l’écran."
+          />
+        </div>
+      </Sheet>
     </main>
   )
 }
+
 
 /* -------------------------------- Session -------------------------------- */
 

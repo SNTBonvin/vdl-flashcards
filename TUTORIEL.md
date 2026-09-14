@@ -116,8 +116,8 @@ même jour trois semaines plus tard.
 Quand le quota est atteint, l'accueil le dit — « C'est fait pour aujourd'hui,
 N cartes neuves t'attendent demain » — et ne propose plus de séance. Les cartes
 ne sont pas perdues : elles sont visibles dans le thème, simplement pas
-programmées avant demain. Les modes **Tout revoir** et **Mes difficultés**
-restent accessibles, eux : ils ne dépendent pas du quota.
+programmées avant demain. Les séances **Tout revoir** et **Mes difficultés**
+restent accessibles, elles : elles ne dépendent pas du quota.
 
 Un bouton **« Aller plus loin — 10 cartes de plus »** permet de dépasser la
 limite du jour quand on le veut vraiment. L'application conseille un rythme,
@@ -131,27 +131,37 @@ Réviser tout un chapitre la veille d'un contrôle et répondre « Su » partout
 pendant des semaines, et il aura oublié. C'est le piège du bachotage, et une
 réponse compte toujours, quel que soit le mode.
 
-D'où l'option **« Ne pas modifier le programme »**, dans les options de séance
-de l'écran Réviser. Cochée, on s'interroge normalement mais **rien n'est
+D'où l'option **« Ne pas modifier le programme »**, dans **Ajuster**, en bas de
+l'écran Réviser. Cochée, on s'interroge normalement mais **rien n'est
 enregistré** : ni échéance décalée, ni ligne d'historique, ni compteur du jour.
 La séance porte la mention « à blanc » dans son en-tête et dans son bilan.
 
 Elle n'est jamais mémorisée d'une séance à l'autre : laissée allumée par
 mégarde, elle ferait réviser sans jamais progresser.
 
-Trois modes de séance, nommés par ce qu'ils font :
+### Trois séances, aucun réglage préalable
 
-- **À revoir** — les cartes échues du jour, plus un quota de cartes neuves.
-  C'est la séance quotidienne : la plus courte, et la plus efficace ;
-- **Tout revoir** — tout un thème, échéances ou non, et l'on peut mélanger
-  plusieurs thèmes et plusieurs matières. À faire avant un contrôle : cela ne
-  dérègle pas le programme ;
+L'écran Réviser ne demande rien avant de partir : il propose trois séances, sur
+trois cartes, chacune annonçant ce qu'elle contient.
+
+- **Révision du jour** — les cartes échues, plus un quota de cartes neuves.
+  C'est la séance quotidienne, la plus courte et la plus efficace ; c'est la
+  seule à porter le bouton principal. Quand tout est à jour, elle le dit ; quand
+  c'est le quota qui retient, elle propose d'aller plus loin ;
+- **Tout revoir** — un thème entier, échues ou non, dans le désordre. Le bouton
+  ouvre la liste des thèmes, et la séance démarre au thème choisi. Une première
+  ligne, **Tous mes thèmes**, repasse tout d'un coup pour un contrôle qui porte
+  sur plusieurs chapitres. **Attention : les réponses comptent** et décalent les
+  échéances — pour se tester sans rien déranger, passez la séance « à blanc »
+  dans Ajuster ;
 - **Mes difficultés** — uniquement les cartes déjà ratées, les plus fautives
   d'abord.
 
-Un encart rappelle la différence au-dessus du sélecteur. La croix le ferme pour
-de bon ; **Réglages → Réviser → Expliquer les modes de séance** le fait
-revenir.
+Tout en bas, une ligne dit la portée et les options courantes — « Tous les
+thèmes · 4 thèmes · mélangées » — et **Ajuster** l'ouvre : le choix des thèmes,
+le mélange, l'inversion recto-verso et la révision blanche. Par défaut, une
+séance porte sur tous les thèmes ; restreindre reste possible, mais devient un
+geste délibéré au lieu d'un préalable.
 
 ## Partager un thème à ses élèves
 

@@ -186,13 +186,6 @@ export function SettingsScreen() {
             label="Inverser recto et verso"
             hint="La réponse devient la question."
           />
-
-          <Toggle
-            checked={store.settings.showReviewHelp}
-            onChange={(v) => void store.saveSettings({ showReviewHelp: v })}
-            label="Expliquer les modes de séance"
-            hint="L’encart « quel mode choisir ? » sur l’écran Réviser, que l’on peut y refermer d’une croix."
-          />
         </div>
       </section>
 

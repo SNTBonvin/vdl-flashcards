@@ -266,6 +266,8 @@ export interface Settings {
    */
   teacherTools: boolean
   /** Encart « quel mode choisir ? » sur l'écran Réviser. */
+  /** Encart d’aide de l’écran Réviser, du temps où il fallait choisir un mode.
+   *  Plus lu : chaque séance porte désormais sa propre explication. */
   showReviewHelp: boolean
 }
 

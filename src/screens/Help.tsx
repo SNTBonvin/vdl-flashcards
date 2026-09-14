@@ -119,8 +119,8 @@ export function HelpScreen() {
 
       <Step
         icon="shuffle"
-        title="Trois modes de séance"
-        text="« À revoir » ne propose que les cartes mûres du jour, plus quelques neuves : c’est la séance quotidienne. « Tout revoir » interroge sur tout un thème, échéances ou non, et peut en mélanger plusieurs — utile avant un contrôle. « Mes difficultés » ne reprend que les cartes déjà ratées."
+        title="Trois séances possibles"
+        text="L’onglet Réviser en propose trois, sans rien te demander d’avance. « Révision du jour » : les cartes échues plus quelques neuves — c’est celle à faire tous les jours. « Tout revoir » : un thème entier, échues ou non, avant un contrôle ; la liste s’ouvre et la séance démarre au thème choisi, « Tous mes thèmes » repassant tout d’un coup. « Mes difficultés » : uniquement les cartes déjà ratées. En bas, « Ajuster » sert à ne réviser que certains thèmes, à inverser recto et verso, ou à te tester sans modifier le programme."
       />
 
       <Step
