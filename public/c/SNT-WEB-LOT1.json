@@ -2,28 +2,19 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SNT-WEB-LOT1",
-  "publishedAt": "2026-09-13T09:20:22.630Z",
-  "listed": false,
+  "publishedAt": "2026-09-14T15:09:17.754Z",
+  "listed": true,
   "level": "2de",
-  "subject": "Sciences numériques et technologie",
+  "subject": "Sciences Numériques et Technologies",
   "deck": "Le web — Lot 1 - SNT - Web",
   "lot": "Lot 1 - SNT - Web",
+  "dueBy": "2026-09-28",
   "shareId": "sh3y5n1d3m6r6u6g",
-  "rev": 1789291222630,
+  "rev": 1789398557754,
   "cards": [
     [
       "Quelle est la différence entre Internet et le Web ?",
       "Internet est un réseau de machines reliées par de la fibre optique. Le web a besoin d’internet pour fonctionner, mais ce sont deux choses différentes.",
-      null
-    ],
-    [
-      "En quelle année la barre du milliard de sites web est-elle franchie ?",
-      "2014.",
-      null
-    ],
-    [
-      "Sur quelles trois technologies le web repose-t-il ?",
-      "Le HTTP, le HTML et l’URL.",
       null
     ],
     [
