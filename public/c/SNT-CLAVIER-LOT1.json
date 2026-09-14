@@ -1,0 +1,46 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SNT-CLAVIER-LOT1",
+  "publishedAt": "2026-09-14T15:06:59.375Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences Numériques et Technologies",
+  "deck": "Raccourcis Clavier — Série 1",
+  "lot": "Série 1",
+  "dueBy": "2026-09-21",
+  "shareId": "sh0t106q2h2m695a",
+  "rev": 1789398419375,
+  "cards": [
+    [
+      "Annuler une saisie",
+      "CTRL + Z",
+      null
+    ],
+    [
+      "Tout sélectionner",
+      "CTRL + A",
+      null
+    ],
+    [
+      "Coller",
+      "CTRL + V",
+      null
+    ],
+    [
+      "Copier",
+      "CTRL + C",
+      null
+    ],
+    [
+      "Couper",
+      "CTRL + X",
+      null
+    ],
+    [
+      "Se déconnecter",
+      "CTRL + ALT + SUPPR",
+      null
+    ]
+  ]
+}
