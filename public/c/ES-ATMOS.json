@@ -1,0 +1,64 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "ES-ATMOS",
+  "publishedAt": "2026-09-15T04:48:40.288Z",
+  "listed": true,
+  "level": "Tle",
+  "subject": "Enseignement Scientifique",
+  "deck": "Atmosphère",
+  "shareId": "sh4c4x5k5e1l1b2v",
+  "rev": 1789447720288,
+  "cards": [
+    [
+      "Création de la Terre, Apparition de l'atmosphère primitive",
+      "- 4,6 Ga",
+      null
+    ],
+    [
+      "1 Ga",
+      "1 milliard d'années",
+      null
+    ],
+    [
+      "Présence de O2 dans les océans",
+      "- 3,8 Ga",
+      null
+    ],
+    [
+      "Apparition O2 dans l'atmosphère",
+      "- 2,4 Ga",
+      null
+    ],
+    [
+      "Premières bactéries photosynthétiques (cyanobactéries)",
+      "- 3,8 Ga",
+      null
+    ],
+    [
+      "Premiers végétaux terrestres",
+      "- 500 Ma (millions d'années)",
+      null
+    ],
+    [
+      "Chondrites",
+      "Ce sont des fragments de petits astéroïdes, éjectés de la ceinture principale par un choc-collision entre deux astéroïdes. Certains nous renseignent sur la composition de la Terre lors de sa formation.",
+      null
+    ],
+    [
+      "Composition atmosphère actuelle",
+      "- 79% de N2 (Diazote)\n- 21% de O2 (Dioxygène)\n- et traces d'autres gaz (H20, CO2, CH4, N20,...)",
+      null
+    ],
+    [
+      "Composition atmosphère primitive",
+      "Dans l'ordre décroissant : essentiellement du H2O (autour de 80%) puis du CO2 et N2",
+      null
+    ],
+    [
+      "Date à laquelle l'atmosphère a la même composition qu'actuellement",
+      "- 500 Ma",
+      null
+    ]
+  ]
+}
