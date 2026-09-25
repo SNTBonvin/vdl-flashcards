@@ -6,6 +6,9 @@ Ce guide couvre l'usage courant. Le même contenu est disponible **dans
 l'application**, à la rubrique « Prise en main » des réglages — plus pratique
 depuis un téléphone.
 
+Pour les élèves, il existe une version courte et sans les outils d'enseignant :
+[GUIDE-ELEVE.md](GUIDE-ELEVE.md), à coller dans l'ENT ou à distribuer.
+
 ## Le plus rapide : partir d'un exemple
 
 Dans l'application : **Réglages → Prise en main → Ajouter l'exemple**.

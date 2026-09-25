@@ -12,8 +12,13 @@ serveur, fonctionnement hors ligne complet une fois l'application installée.
 ## Prise en main
 
 Le mode d'emploi est dans [TUTORIEL.md](TUTORIEL.md), et le même contenu est
-accessible **dans l'application** — *Réglages → Prise en main* — ce qui est plus
-commode depuis un téléphone.
+accessible **dans l'application** — *Réglages → À propos → Prise en main* — ce
+qui est plus commode depuis un téléphone.
+
+[GUIDE-ELEVE.md](GUIDE-ELEVE.md) est la version à remettre aux élèves : récupérer
+un lot, réviser, planifier ses reprises dans l'agenda, lire ses statistiques,
+écrire ses propres cartes, sauvegarder avant de changer de téléphone. Il se colle
+tel quel dans l'ENT ou s'imprime.
 
 Pour découvrir l'application sans rien saisir, cette page propose d'**ajouter un
 exemple en un clic** : une matière, un thème et sept cartes qui portent sur
