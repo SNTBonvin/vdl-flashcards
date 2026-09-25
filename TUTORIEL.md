@@ -330,6 +330,26 @@ que sur l'appareil de qui l'utilise. C'est un rangement — un élève n'a pas �
 voir des outils dont il n'a que faire. Publier suppose d'avoir les droits sur le
 dépôt, et aucun réglage ne les donne.
 
+### Le mode auteur
+
+*Réglages → Diffusion → **Cet appareil prépare, il ne révise pas***. Le réglage
+n'apparaît qu'une fois un jeton enregistré (ou « Je publie à la main » allumé) :
+un élève ne peut pas tomber dessus.
+
+Allumé, il retire de cet appareil tout ce qui sert à réviser : l'onglet
+**Aujourd'hui**, l'onglet **Réviser**, le bouton « Réviser » des thèmes et des
+matières, les compteurs « à réviser » et « difficiles », les bandeaux
+d'échéance, les rappels, le plan de reprises, les filtres « dues / neuves /
+difficiles » et l'état d'apprentissage affiché sur chaque carte. Les rubriques
+**Révision** et **Rappels** quittent les réglages.
+
+Il reste : **Matières · Diffusion · Réglages**. Les thèmes annoncent leur nombre
+de cartes, d'archivées et de séries ; les cartes se listent, s'écrivent,
+s'importent, s'exportent, se partagent et se publient.
+
+C'est l'application de celui qui écrit les cartes des autres. Éteindre le
+réglage rend tout, à l'identique : rien n'est supprimé, seulement masqué.
+
 ### Ce que j'ai diffusé
 
 *Réglages → Diffusion → **Ce que j'ai diffusé***. Un inventaire de ce qui est

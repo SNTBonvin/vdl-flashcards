@@ -265,6 +265,12 @@ export interface Settings {
    * n'agissent que sur l'appareil de qui les utilise.
    */
   teacherTools: boolean
+  /**
+   * Mode auteur : cet appareil sert à préparer des cartes, pas à les réviser.
+   * Les écrans de révision — accueil, séance, compteurs, échéances, rappels —
+   * disparaissent, et la diffusion prend leur place.
+   */
+  authorMode: boolean
   /** Encart « quel mode choisir ? » sur l'écran Réviser. */
   /** Encart d’aide de l’écran Réviser, du temps où il fallait choisir un mode.
    *  Plus lu : chaque séance porte désormais sa propre explication. */
@@ -281,6 +287,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sharedBy: '',
   publishRepo: '',
   teacherTools: false,
+  authorMode: false,
   showReviewHelp: true,
 }
 

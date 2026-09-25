@@ -212,6 +212,12 @@ export interface Store extends State {
    * couvre le cas de celui qui dépose ses fichiers lui-même.
    */
   teacherMode: boolean
+  /**
+   * Cet appareil prépare-t-il des cartes au lieu d'en réviser ? Réservé à qui
+   * diffuse : le réglage ne s'affiche que là où les outils de diffusion sont
+   * déjà visibles, pour qu'un élève ne tombe pas dessus par hasard.
+   */
+  authorMode: boolean
   /** Relit la présence du jeton après l'avoir enregistré ou oublié. */
   refreshToken(): Promise<void>
 
@@ -912,6 +918,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       ...state,
       ...indexes,
       teacherMode: state.hasToken || state.settings.teacherTools,
+      authorMode:
+        state.settings.authorMode && (state.hasToken || state.settings.teacherTools),
       refreshToken,
       createSubject,
       updateSubject,

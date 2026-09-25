@@ -146,7 +146,17 @@ export function LibraryScreen() {
                   key={subject.id}
                   type="button"
                   className="card card--pad card--tap"
-                  data-status={waiting > 0 ? 'run' : counts.total === 0 ? 'idle' : 'ok'}
+                  data-status={
+                    store.authorMode
+                      ? counts.total === 0
+                        ? 'idle'
+                        : 'ok'
+                      : waiting > 0
+                        ? 'run'
+                        : counts.total === 0
+                          ? 'idle'
+                          : 'ok'
+                  }
                   onClick={() => navigate({ name: 'subject', id: subject.id })}
                 >
                   <div className="row">
@@ -162,7 +172,9 @@ export function LibraryScreen() {
                         <span className="chip">
                           {counts.total} {plural(counts.total, 'carte')}
                         </span>
-                        {waiting > 0 && <span className="chip chip--accent">{waiting} dues</span>}
+                        {waiting > 0 && !store.authorMode && (
+                          <span className="chip chip--accent">{waiting} dues</span>
+                        )}
                       </span>
                     </span>
                     <Icon name="chevron-right" size={18} />

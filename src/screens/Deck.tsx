@@ -266,7 +266,13 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
 
       <StatRow
         items={
-          deck.reserve
+          store.authorMode
+            ? [
+                { value: counts.total, label: plural(counts.total, 'carte') },
+                { value: counts.archived, label: 'archivées' },
+                { value: lots.length, label: plural(lots.length, 'série') },
+              ]
+            : deck.reserve
             ? [
                 { value: counts.total, label: plural(counts.total, 'carte') },
                 { value: counts.archived, label: 'archivées' },
@@ -287,7 +293,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
       {/* Un thème vide n'a rien à réviser : lui proposer quand même le bouton
           revient à promettre ce qu'on ne peut pas tenir. On propose alors de le
           remplir, ce qui est la seule chose à y faire. */}
-      {counts.total === 0 ? (
+      {store.authorMode && counts.total > 0 ? null : counts.total === 0 ? (
         <div className="row" style={{ gap: 10 }}>
           <button
             type="button"
@@ -320,7 +326,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
       )}
 
       <div className="quietbar">
-        {counts.total > 0 && !deck.reserve && (
+        {counts.total > 0 && !deck.reserve && !store.authorMode && (
           <button type="button" className="quietbar__item" onClick={() => setPlanOpen(true)}>
             {nextReprise ? `Reprise ${formatDue(nextReprise.getTime())}` : 'Planifier'}
           </button>
@@ -330,7 +336,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
             Partager
           </button>
         )}
-        {!deck.reserve && (
+        {!deck.reserve && !store.authorMode && (
           <button
             type="button"
             className="quietbar__item"
@@ -347,7 +353,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
 
       {/* Échéance annoncée par le professeur. Retirable : c'est l'appareil de
           l'élève, et rien ne s'y impose. */}
-      {deadlines.map((group) => (
+      {!store.authorMode && deadlines.map((group) => (
         <div key={group.dueBy} className="card card--pad row" data-status="warn" style={{ gap: 12 }}>
           <span className="glyph glyph--warm">
             <Icon name="today" size={18} />
@@ -547,9 +553,15 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
           {(
             [
               ['all', 'Toutes'],
-              ['due', 'Dues'],
-              ['new', 'Neuves'],
-              ['hard', 'Difficiles'],
+              // Dues, neuves, difficiles : des états d'apprentissage. Ils ne
+              // disent rien à qui écrit les cartes.
+              ...(store.authorMode
+                ? []
+                : ([
+                    ['due', 'Dues'],
+                    ['new', 'Neuves'],
+                    ['hard', 'Difficiles'],
+                  ] as [Filter, string][])),
               ...(mixed ? ([['shared', 'Reçues'], ['own', 'Mes cartes']] as [Filter, string][]) : []),
               ...(counts.archived > 0
                 ? ([['archived', `Archivées ${counts.archived}`]] as [Filter, string][])
@@ -634,7 +646,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
                     {lotCount.get(card.id)} {plural(lotCount.get(card.id)!, 'série')}
                   </span>
                 )}
-                <span className="chip mono">{cardStateLabel(card)}</span>
+                {!store.authorMode && <span className="chip mono">{cardStateLabel(card)}</span>}
               </button>
             ))}
           </div>

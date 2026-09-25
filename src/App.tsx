@@ -38,6 +38,16 @@ const TABS: { name: Route['name']; label: string; icon: IconName }[] = [
   { name: 'settings', label: 'Réglages', icon: 'settings' },
 ]
 
+/**
+ * En mode auteur, l'appareil ne révise pas : les deux onglets de révision
+ * cèdent la place à la diffusion, qui devient le lieu de travail.
+ */
+const TABS_AUTEUR: { name: Route['name']; label: string; icon: IconName }[] = [
+  { name: 'library', label: 'Matières', icon: 'library' },
+  { name: 'diffusion', label: 'Diffusion', icon: 'upload' },
+  { name: 'settings', label: 'Réglages', icon: 'settings' },
+]
+
 function Shell() {
   const store = useStore()
   const { route, navigate } = useRoute()
@@ -105,16 +115,20 @@ function Shell() {
   if (!store.ready) return <Booting />
 
   const showChrome = !sessionOpen
+  const tabs = store.authorMode ? TABS_AUTEUR : TABS
 
   return (
     <div className="shell">
       {showChrome && <AppBar route={route} />}
 
-      {route.name === 'today' && <TodayScreen />}
+      {/* En mode auteur, l'accueil et la séance n'ont plus d'objet : on est
+          renvoyé aux matières, où le travail commence. */}
+      {route.name === 'today' && (store.authorMode ? <LibraryScreen /> : <TodayScreen />)}
       {route.name === 'library' && <LibraryScreen />}
       {route.name === 'subject' && <SubjectScreen id={route.id} />}
       {route.name === 'deck' && <DeckScreen key={route.id} id={route.id} lot={route.lot} />}
-      {route.name === 'review' && <ReviewScreen onSessionChange={setSessionOpen} />}
+      {route.name === 'review' &&
+        (store.authorMode ? <LibraryScreen /> : <ReviewScreen onSessionChange={setSessionOpen} />)}
       {route.name === 'stats' && <StatsScreen />}
       {route.name === 'settings' && <SettingsScreen />}
       {route.name === 'share' && <ShareScreen token={route.token} />}
@@ -128,7 +142,7 @@ function Shell() {
 
       {showChrome && (
         <nav className="tabbar" aria-label="Navigation principale">
-          {TABS.map((tab) => {
+          {tabs.map((tab) => {
             const active =
               route.name === tab.name ||
               (tab.name === 'library' &&
@@ -136,7 +150,9 @@ function Shell() {
                   route.name === 'deck' ||
                   route.name === 'catalogue')) ||
               (tab.name === 'settings' &&
-                (route.name === 'stats' || route.name === 'help' || route.name === 'diffusion'))
+                (route.name === 'stats' ||
+                  route.name === 'help' ||
+                  (route.name === 'diffusion' && !store.authorMode)))
             return (
               <button
                 key={tab.name}

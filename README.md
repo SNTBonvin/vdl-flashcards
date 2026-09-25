@@ -115,6 +115,14 @@ sauvegarde JSON reste le filet.
 - **Aller plus loin** — quand le quota du jour retient des cartes, un bouton
   permet d'en prendre dix de plus. L'application conseille un rythme, elle ne
   l'impose pas.
+- **Mode auteur** — un appareil qui prépare des cartes sans jamais les réviser
+  n'a que faire de l'accueil, des séances, des compteurs d'échéance et des
+  rappels. Le réglage « Cet appareil prépare, il ne révise pas » les retire :
+  la barre d'onglets devient *Matières · Diffusion · Réglages*, les compteurs
+  de révision cèdent la place au nombre de cartes, d'archivées et de séries, et
+  les rubriques Révision et Rappels disparaissent des réglages. Il ne s'affiche
+  que là où les outils de diffusion sont déjà visibles — un jeton enregistré ou
+  le dépôt manuel —, de sorte qu'un élève ne tombe pas dessus.
 - **Fiche de thème hiérarchisée** — une seule action de plein poids
   (« Réviser N »), une barre de liens discrets pour ce qui touche le thème
   entier (planifier, partager, rappel, modifier), et les commandes qui touchent

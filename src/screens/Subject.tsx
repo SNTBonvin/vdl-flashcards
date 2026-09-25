@@ -64,27 +64,32 @@ export function SubjectScreen({ id }: { id: string }) {
         items={[
           { value: decks.length, label: plural(decks.length, 'thème') },
           { value: counts.total, label: plural(counts.total, 'carte') },
-          { value: waiting, label: 'à réviser', accent: waiting > 0 },
+          ...(store.authorMode
+            ? []
+            : [{ value: waiting, label: 'à réviser', accent: waiting > 0 }]),
         ]}
       />
 
       <div className="row" style={{ gap: 10 }}>
-        <button
-          type="button"
-          className="btn btn--primary grow"
-          disabled={counts.total === 0}
-          onClick={() => {
-            requestSession({
-              deckIds: decks.map((d) => d.id),
-              mode: waiting > 0 ? 'due' : 'quiz',
-              label: subject.name,
-            })
-            navigate({ name: 'review' })
-          }}
-        >
-          <Icon name="review" size={18} />
-          {waiting > 0 ? `Réviser ${waiting}` : 'Tout revoir'}
-        </button>
+        {!store.authorMode && (
+          <button
+            type="button"
+            className="btn btn--primary grow"
+            disabled={counts.total === 0}
+            onClick={() => {
+              requestSession({
+                deckIds: decks.map((d) => d.id),
+                mode: waiting > 0 ? 'due' : 'quiz',
+                label: subject.name,
+              })
+              navigate({ name: 'review' })
+            }}
+          >
+            <Icon name="review" size={18} />
+            {waiting > 0 ? `Réviser ${waiting}` : 'Tout revoir'}
+          </button>
+        )}
+        {store.authorMode && <span className="grow" />}
         <button
           type="button"
           className="icon-btn"

@@ -148,6 +148,7 @@ export function SettingsScreen() {
       </Fold>
 
       {/* ---------------- Révision ---------------- */}
+      {!store.authorMode && (
       <Fold
         icon="review"
         title="Révision"
@@ -212,7 +213,10 @@ export function SettingsScreen() {
         </div>
       </Fold>
 
+      )}
+
       {/* ---------------- Rappels ---------------- */}
+      {!store.authorMode && (
       <Fold
         icon="bell"
         title="Rappels"
@@ -278,6 +282,8 @@ export function SettingsScreen() {
         </div>
       </Fold>
 
+      )}
+
       {/* ---------------- Diffusion ----------------
           C'est le jeton qui décide, désormais, de ce que l'appareil montre.
           Celui qui l'a enregistré publie : les outils apparaissent d'eux-mêmes,
@@ -319,6 +325,18 @@ export function SettingsScreen() {
                 onChange={(v) => void store.saveSettings({ teacherTools: v })}
                 label="Je publie à la main"
                 hint="À garder allumé si tu déposes tes fichiers toi-même sur le dépôt, sans jeton : les outils de diffusion restent alors visibles."
+              />
+              <hr className="rule" />
+              {/* Volontairement ici, et nulle part ailleurs : ce réglage change
+                  la forme de l'application, et n'a de sens que pour qui
+                  prépare des cartes sans jamais les réviser. Un élève ne le
+                  voit pas — cette rubrique ne s'ouvre qu'avec un jeton ou le
+                  dépôt manuel. */}
+              <Toggle
+                checked={store.settings.authorMode}
+                onChange={(v) => void store.saveSettings({ authorMode: v })}
+                label="Cet appareil prépare, il ne révise pas"
+                hint="Retire l’accueil, les séances, les compteurs de révision et les rappels : il ne reste que les matières, la diffusion et les réglages. À n’allumer que sur ton appareil de travail."
               />
             </div>
           </>
