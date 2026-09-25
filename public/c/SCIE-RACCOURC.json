@@ -1,0 +1,89 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SCIE-RACCOURC",
+  "publishedAt": "2026-09-25T20:58:26.446Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences numériques et technologie",
+  "deck": "Raccourcis Clavier",
+  "shareId": "sh0t106q2h2m695a",
+  "rev": 1790369906446,
+  "cards": [
+    [
+      "Ouvrir un nouveau document",
+      "CTRL + N",
+      "N pour New"
+    ],
+    [
+      "Mettre du texte en italique",
+      "CTRL + I",
+      null
+    ],
+    [
+      "Fermer une fenêtre",
+      "ALT + F4",
+      null
+    ],
+    [
+      "Explorateur Windows",
+      "Windows + E",
+      null
+    ],
+    [
+      "Annuler une saisie",
+      "CTRL + Z",
+      null
+    ],
+    [
+      "Tout sélectionner",
+      "CTRL + A",
+      null
+    ],
+    [
+      "Coller",
+      "CTRL + V",
+      null
+    ],
+    [
+      "Rechercher un texte",
+      "CTRL + F",
+      "F pour Find"
+    ],
+    [
+      "Copier",
+      "CTRL + C",
+      null
+    ],
+    [
+      "Couper",
+      "CTRL + X",
+      null
+    ],
+    [
+      "Souligner un texte",
+      "CTRL + U",
+      null
+    ],
+    [
+      "Annuler Ctrl + Z",
+      "CTRL + Y",
+      null
+    ],
+    [
+      "Se déconnecter",
+      "CTRL + ALT + SUPPR",
+      null
+    ],
+    [
+      "Mettre du texte en gras",
+      "CTRL + G",
+      null
+    ],
+    [
+      "Imprimer",
+      "CTRL + P",
+      null
+    ]
+  ]
+}
