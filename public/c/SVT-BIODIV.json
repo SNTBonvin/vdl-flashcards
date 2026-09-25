@@ -2,23 +2,18 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SVT-BIODIV",
-  "publishedAt": "2026-09-13T08:51:54.012Z",
+  "publishedAt": "2026-09-25T21:00:19.216Z",
   "listed": true,
   "level": "2de",
   "subject": "Sciences de la Vie et de la Terre",
   "deck": "Biodiversité",
   "description": "Classe de seconde",
   "shareId": "sh0v0v0m3v5a2k24",
-  "rev": 1789289514013,
+  "rev": 1790370019216,
   "cards": [
     [
-      "Qu'est-ce qu'un écosystème ?",
-      "Un écosystème = une biocénose (êtres vivants) + un biotope (milieu de vie : température pH, salinité...)",
-      null
-    ],
-    [
-      "Quels sont les 3 niveaux de biodiversité ?",
-      "1. Diversité des écosystèmes 2. Diversité des espèces 3. Diversité génétique (ou intraspécifique).",
+      "Qu'est-ce que la biocénose ?",
+      "L'ensemble des êtres vivants qui peuplent un écosystème.",
       null
     ],
     [
@@ -27,23 +22,8 @@
       null
     ],
     [
-      "Quels sont les indicateurs qui servent à estimer la biodiversité dans un milieu ?",
-      "Le nombre d'espèce et l'hétérogénéité.",
-      null
-    ],
-    [
-      "Qu'est-ce que la biocénose ?",
-      "L'ensemble des êtres vivants qui peuplent un écosystème.",
-      null
-    ],
-    [
-      "Qu'est-ce que le biotope ?",
-      "Le milieu de vie d'un écosystème (conditions physico-chimiques : température pH salinité humidité...).",
-      null
-    ],
-    [
-      "L'apparition d'une nouvelle espèce dans un milieu enrichit-elle forcément la biodiversité ?",
-      "Non car si c'est une espèce envahissante il peut y avoir une surabondance d'une espèce par rapport aux autres, ce qui appauvrit la biodiversité.",
+      "Qu'est-ce que la notion d'espèce ?",
+      "Un concept créé par l'être humain pour regrouper des individus capables de se reproduire entre eux et de donner une descendance fertile.",
       null
     ],
     [
@@ -52,58 +32,8 @@
       null
     ],
     [
-      "Qu'observe-t-on chez les foraminifères après la crise K/T ?",
-      "Disparition des Globotruncanidés baisse des Hétérohélicidés et apparition massive des Globigérinidés.",
-      null
-    ],
-    [
-      "Les organismes vivants actuels représentent-ils toute la biodiversité passée ?",
-      "Non. Ils ne représentent qu'une infime partie de tous les organismes ayant existé depuis le début de la vie.",
-      null
-    ],
-    [
-      "Quels groupes de foraminifères dominaient avant la crise K/T ?",
-      "Les Globotruncanidés et les Hétérohélicidés.",
-      null
-    ],
-    [
-      "Qu'est-ce qu'une crise biologique ?",
-      "Un événement entraînant des extinctions massives d'espèces suivi d'une phase de diversification.",
-      null
-    ],
-    [
-      "À quoi servent les fossiles pour étudier la biodiversité ?",
-      "Ils permettent de reconstituer la biodiversité du passé et de montrer que l'état actuel n'est qu'une étape de l'histoire du vivant.",
-      null
-    ],
-    [
-      "Qu'est-ce que la crise K/T ?",
-      "La crise entre le Crétacé et le Tertiaire (il y a environ 66 Ma) qui a provoqué des extinctions massives dont celle des dinosaures non-aviens.",
-      null
-    ],
-    [
-      "Quel est l'effet d'une crise biologique sur la biodiversité ?",
-      "Elle provoque un effondrement de la biodiversité : beaucoup d'espèces disparaissent mais d'autres persistent et se diversifient.",
-      null
-    ],
-    [
-      "Qu'est-ce que la biodiversité génétique ?",
-      "La diversité génétique qui existe entre les individus d'une même espèce.",
-      null
-    ],
-    [
-      "D'où proviennent les différents allèles présents dans une population ?",
-      "Ils sont issus de mutations qui se sont produites au cours des générations.",
-      null
-    ],
-    [
-      "Qu'est-ce que la notion d'espèce ?",
-      "Un concept créé par l'être humain pour regrouper des individus capables de se reproduire entre eux et de donner une descendance fertile.",
-      null
-    ],
-    [
-      "Qu'est-ce que la diversité génétique ?",
-      "La variabilité de l'ADN entre les individus d'une même espèce. Elle repose sur la coexistence de différents allèles dans une population.",
+      "Qu'est-ce que la biodiversité et comment évolue-t-elle ?",
+      "La biodiversité désigne la diversité du vivant à tous les niveaux (écosystèmes espèces gènes). Elle évolue en permanence sur de courtes comme de longues échelles de temps.",
       null
     ],
     [
@@ -112,33 +42,18 @@
       null
     ],
     [
-      "Donne un exemple d'évolution de la biodiversité actuelle.",
-      "L'incendie du Massif des Maures : les espèces végétales (pin chêne-liège) et animales (mésange tortue d'Hermann) se succèdent et se réinstallent progressivement après l'incendie.",
+      "Quels sont les indicateurs qui servent à estimer la biodiversité dans un milieu ?",
+      "Le nombre d'espèce et l'hétérogénéité.",
       null
     ],
     [
-      "Quel outil utilise-t-on pour distinguer des individus d'espèces proches qui se ressemblent ?",
-      "Des outils d'analyse génétique permettant de comparer les séquences d'ADN ou les allèles.",
+      "Quels sont les 3 niveaux de biodiversité ?",
+      "1. Diversité des écosystèmes 2. Diversité des espèces 3. Diversité génétique (ou intraspécifique).",
       null
     ],
     [
-      "Un écosystème perturbé peut-il se régénérer ?",
-      "Oui. Si la perturbation n'est pas trop intense ni trop fréquente l'écosystème peut se régénérer.",
-      null
-    ],
-    [
-      "Qu'est-ce que la biodiversité et comment évolue-t-elle ?",
-      "La biodiversité désigne la diversité du vivant à tous les niveaux (écosystèmes espèces gènes). Elle évolue en permanence sur de courtes comme de longues échelles de temps.",
-      null
-    ],
-    [
-      "Qu'est-ce que la spéciation ?",
-      "L'apparition d'une nouvelle espèce : deux populations ne peuvent plus se reproduire entre elles donc elles deviennent des espèces différentes.",
-      null
-    ],
-    [
-      "Quel exemple illustre la difficulté de distinguer des espèces visuellement ?",
-      "Les coccinelles européennes ressemblent aux coccinelles asiatiques mais sont des espèces distinctes.",
+      "Quels groupes de foraminifères dominaient avant la crise K/T ?",
+      "Les Globotruncanidés et les Hétérohélicidés.",
       null
     ],
     [
@@ -147,13 +62,63 @@
       null
     ],
     [
+      "À quoi servent les fossiles pour étudier la biodiversité ?",
+      "Ils permettent de reconstituer la biodiversité du passé et de montrer que l'état actuel n'est qu'une étape de l'histoire du vivant.",
+      null
+    ],
+    [
+      "À quelle échelle de temps la biodiversité évolue-t-elle ?",
+      "La biodiversité évolue sur de courtes comme de longues échelles de temps au niveau génétique et au niveau spécifique.",
+      null
+    ],
+    [
+      "Quel est l'effet d'une crise biologique sur la biodiversité ?",
+      "Elle provoque un effondrement de la biodiversité : beaucoup d'espèces disparaissent mais d'autres persistent et se diversifient.",
+      null
+    ],
+    [
+      "Les organismes vivants actuels représentent-ils toute la biodiversité passée ?",
+      "Non. Ils ne représentent qu'une infime partie de tous les organismes ayant existé depuis le début de la vie.",
+      null
+    ],
+    [
+      "Donne un exemple d'évolution de la biodiversité actuelle.",
+      "L'incendie du Massif des Maures : les espèces végétales (pin chêne-liège) et animales (mésange tortue d'Hermann) se succèdent et se réinstallent progressivement après l'incendie.",
+      null
+    ],
+    [
+      "Qu'est-ce que la crise K/T ?",
+      "La crise entre le Crétacé et le Tertiaire (il y a environ 66 Ma) qui a provoqué des extinctions massives dont celle des dinosaures non-aviens.",
+      null
+    ],
+    [
+      "Qu'est-ce que la biodiversité génétique ?",
+      "La diversité génétique qui existe entre les individus d'une même espèce.",
+      null
+    ],
+    [
+      "Quel exemple illustre la difficulté de distinguer des espèces visuellement ?",
+      "Les coccinelles européennes ressemblent aux coccinelles asiatiques mais sont des espèces distinctes.",
+      null
+    ],
+    [
+      "Qu'est-ce que la spéciation ?",
+      "L'apparition d'une nouvelle espèce : deux populations ne peuvent plus se reproduire entre elles donc elles deviennent des espèces différentes.",
+      null
+    ],
+    [
       "Qu'est-ce qu'un allèle ?",
       "Une version particulière d'un gène. Les gènes existent en différentes versions appelées allèles.",
       null
     ],
     [
-      "Qu'appelle-t-on spéciation ?",
-      "Le processus par lequel une population se sépare et donne naissance à de nouvelles espèces au cours de l'évolution.",
+      "Un écosystème perturbé peut-il se régénérer ?",
+      "Oui. Si la perturbation n'est pas trop intense ni trop fréquente l'écosystème peut se régénérer.",
+      null
+    ],
+    [
+      "Qu'est-ce qu'une crise biologique ?",
+      "Un événement entraînant des extinctions massives d'espèces suivi d'une phase de diversification.",
       null
     ],
     [
@@ -162,8 +127,43 @@
       null
     ],
     [
-      "À quelle échelle de temps la biodiversité évolue-t-elle ?",
-      "La biodiversité évolue sur de courtes comme de longues échelles de temps au niveau génétique et au niveau spécifique.",
+      "D'où proviennent les différents allèles présents dans une population ?",
+      "Ils sont issus de mutations qui se sont produites au cours des générations.",
+      null
+    ],
+    [
+      "Qu'observe-t-on chez les foraminifères après la crise K/T ?",
+      "Disparition des Globotruncanidés baisse des Hétérohélicidés et apparition massive des Globigérinidés.",
+      null
+    ],
+    [
+      "Qu'est-ce qu'un écosystème ?",
+      "Un écosystème = une biocénose (êtres vivants) + un biotope (milieu de vie : température pH, salinité...)",
+      null
+    ],
+    [
+      "L'apparition d'une nouvelle espèce dans un milieu enrichit-elle forcément la biodiversité ?",
+      "Non car si c'est une espèce envahissante il peut y avoir une surabondance d'une espèce par rapport aux autres, ce qui appauvrit la biodiversité.",
+      null
+    ],
+    [
+      "Quel outil utilise-t-on pour distinguer des individus d'espèces proches qui se ressemblent ?",
+      "Des outils d'analyse génétique permettant de comparer les séquences d'ADN ou les allèles.",
+      null
+    ],
+    [
+      "Qu'est-ce que la diversité génétique ?",
+      "La variabilité de l'ADN entre les individus d'une même espèce. Elle repose sur la coexistence de différents allèles dans une population.",
+      null
+    ],
+    [
+      "Qu'est-ce que le biotope ?",
+      "Le milieu de vie d'un écosystème (conditions physico-chimiques : température pH salinité humidité...).",
+      null
+    ],
+    [
+      "Qu'appelle-t-on spéciation ?",
+      "Le processus par lequel une population se sépare et donne naissance à de nouvelles espèces au cours de l'évolution.",
       null
     ]
   ]
