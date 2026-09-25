@@ -2,15 +2,15 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SNT-WEB-LOT1",
-  "publishedAt": "2026-09-25T20:55:26.497Z",
+  "publishedAt": "2026-09-25T20:57:53.718Z",
   "listed": true,
   "level": "2de",
-  "subject": "Sciences Numériques et technologie",
+  "subject": "Sciences numériques et technologie",
   "deck": "Le web — Lot 1 - SNT - Web",
   "lot": "Lot 1 - SNT - Web",
   "dueBy": "2026-09-28",
   "shareId": "sh3y5n1d3m6r6u6g",
-  "rev": 1790369726497,
+  "rev": 1790369873718,
   "cards": [
     [
       "Quelle est la différence entre Internet et le Web ?",
