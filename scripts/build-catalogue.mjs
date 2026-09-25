@@ -46,7 +46,7 @@ if (existsSync(dir)) {
 }
 
 /** Ordre scolaire, et non alphabétique : « 1re » vient après « 2de ». */
-const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle']
+const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle', 'Post-bac']
 const rank = (level) => {
   const index = LEVELS.indexOf(level ?? '')
   return index === -1 ? LEVELS.length : index

@@ -6,7 +6,7 @@ import { EmptyState, SectionHead, plural } from '../components/ui'
 import { CatalogError, fetchCatalogue, type CatalogueEntry } from '../io/catalog'
 
 /** Ordre scolaire, et non alphabétique : « 1re » vient après « 2de ». */
-const LEVEL_ORDER = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle']
+const LEVEL_ORDER = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle', 'Post-bac']
 
 /**
  * Catalogue des jeux publiés.

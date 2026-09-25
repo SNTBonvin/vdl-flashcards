@@ -380,7 +380,8 @@ redéposer. La fiche d'un thème, elle, signale simplement « Publié sous SVT-B
 
 La feuille demande ensuite le code, le **nom affiché** — ce que
 verront vos élèves, votre thème gardant son nom de travail —, éventuellement le
-niveau, et décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
+niveau (de la 6e au **post-bac**, pour les ateliers et la préparation aux études
+supérieures), et décidez s'il apparaîtra dans le catalogue. L'application prépare alors le
 fichier exact à déposer :
 
 1. **Copier le contenu du fichier** ;

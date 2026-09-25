@@ -39,8 +39,11 @@ function editUrl(repo: string, code: string): string {
   return /github\.com/.test(base) ? `${base}/edit/${path}` : `${base}/-/edit/${path}`
 }
 
-/** Niveaux proposés, du collège au lycée. « Tous niveaux » reste possible. */
-const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle']
+/**
+ * Niveaux proposés, du collège au supérieur. « Tous niveaux » reste possible :
+ * le niveau n'est qu'un rangement pour le catalogue, jamais une condition.
+ */
+const LEVELS = ['6e', '5e', '4e', '3e', '2de', '1re', 'Tle', 'Post-bac']
 
 /**
  * Publication d'un jeu sous un code court.
