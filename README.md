@@ -18,7 +18,16 @@ qui est plus commode depuis un téléphone.
 [GUIDE-ELEVE.md](GUIDE-ELEVE.md) est la version à remettre aux élèves : récupérer
 un lot, réviser, planifier ses reprises dans l'agenda, lire ses statistiques,
 écrire ses propres cartes, sauvegarder avant de changer de téléphone. Il se colle
-tel quel dans l'ENT ou s'imprime.
+tel quel dans l'ENT.
+
+Pour la distribution papier, [docs/Guide-eleve-flashcards.pdf](docs/Guide-eleve-flashcards.pdf)
+en donne la mise en page — quatre pages A4, soit deux feuilles recto-verso. Il se
+refabrique depuis `docs/guide-eleve-impression.html` :
+
+```sh
+npm i -D playwright && npx playwright install chromium
+node scripts/guide-pdf.mjs
+```
 
 Pour découvrir l'application sans rien saisir, cette page propose d'**ajouter un
 exemple en un clic** : une matière, un thème et sept cartes qui portent sur
