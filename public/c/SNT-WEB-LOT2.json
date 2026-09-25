@@ -2,14 +2,14 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SNT-WEB-LOT2",
-  "publishedAt": "2026-09-13T09:22:22.126Z",
-  "listed": false,
+  "publishedAt": "2026-09-25T20:55:40.958Z",
+  "listed": true,
   "level": "2de",
-  "subject": "Sciences numériques et technologie",
+  "subject": "Sciences Numériques et technologie",
   "deck": "Le web — Lot 2 - SNT - Web",
   "lot": "Lot 2 - SNT - Web",
   "shareId": "sh3y5n1d3m6r6u6g",
-  "rev": 1789291342126,
+  "rev": 1790369740958,
   "cards": [
     [
       "À quoi sert le langage CSS ?",
