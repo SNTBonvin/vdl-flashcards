@@ -2,22 +2,17 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "ATEL-BIOLOGIE",
-  "publishedAt": "2026-09-24T13:30:28.922Z",
+  "publishedAt": "2026-09-25T20:51:33.077Z",
   "listed": true,
-  "level": "Tle",
+  "level": "Post-bac",
   "subject": "Atelier PASS",
   "deck": "Biologie cellulaire",
   "shareId": "sh095z2u0e5i454k",
-  "rev": 1790256628922,
+  "rev": 1790369493077,
   "cards": [
     [
-      "Cytoplasme ou cytosol : lequel contient les organites ?",
-      "Le cytoplasme. Cytoplasme = cytosol + organites. Le cytosol, c'est la phase liquide seule.",
-      null
-    ],
-    [
-      "Le noyau fait-il partie du cytoplasme ?",
-      "Non. Le cytoplasme, c'est tout ce qui est à l'intérieur de la membrane plasmique et à l'extérieur du noyau.",
+      "Qu'est-ce qui caractérise le lysosome ?",
+      "Un pH très acide, environ 4,5, et des enzymes qui dégradent ce qu'on lui apporte en petits constituants réutilisables.",
       null
     ],
     [
@@ -26,18 +21,8 @@
       null
     ],
     [
-      "À quoi servent les pores nucléaires ?",
-      "À faire entrer et sortir des molécules du noyau.",
-      null
-    ],
-    [
       "Hétérochromatine ou euchromatine : laquelle est la plus condensée ?",
       "L'hétérochromatine, en périphérie du noyau. L'euchromatine est moins condensée.",
-      null
-    ],
-    [
-      "De quoi est faite la chromatine ?",
-      "D'ADN associé à des protéines, notamment les histones.",
       null
     ],
     [
@@ -46,23 +31,13 @@
       null
     ],
     [
-      "Pourquoi une cellule est-elle compartimentée ?",
-      "Parce qu'un compartiment fermé est un milieu chimique différent, donc une fonction possible. Exemple : le pH 4,5 du lysosome, impossible en plein cytosol.",
+      "Où se trouve l'espace intermembranaire de la mitochondrie ?",
+      "Entre la membrane externe et la membrane interne. La matrice, elle, est au centre.",
       null
     ],
     [
-      "RER ou REL : lequel porte les ribosomes, et que fabrique-t-il ?",
-      "Le RER. Rugueux = Ribosomes. Il synthétise les protéines.",
-      null
-    ],
-    [
-      "Que font les ribosomes libres du cytosol ?",
-      "Ils fabriquent les protéines qui resteront dans la cellule — toutes les protéines ne viennent pas du RER.",
-      null
-    ],
-    [
-      "Quelles sont les trois fonctions du réticulum endoplasmique lisse ?",
-      "Synthèse des lipides, réserve de calcium, détoxification.",
+      "À quoi servent les pores nucléaires ?",
+      "À faire entrer et sortir des molécules du noyau.",
       null
     ],
     [
@@ -76,8 +51,48 @@
       null
     ],
     [
-      "Qu'est-ce qui caractérise le lysosome ?",
-      "Un pH très acide, environ 4,5, et des enzymes qui dégradent ce qu'on lui apporte en petits constituants réutilisables.",
+      "Que produit la mitochondrie, et qu'indique leur nombre ?",
+      "De l'ATP. Plus une cellule consomme d'énergie, plus elle en possède — une cellule cardiaque en est bourrée.",
+      null
+    ],
+    [
+      "De quoi est faite la chromatine ?",
+      "D'ADN associé à des protéines, notamment les histones.",
+      null
+    ],
+    [
+      "RER ou REL : lequel porte les ribosomes, et que fabrique-t-il ?",
+      "Le RER. Rugueux = Ribosomes. Il synthétise les protéines.",
+      null
+    ],
+    [
+      "Le noyau fait-il partie du cytoplasme ?",
+      "Non. Le cytoplasme, c'est tout ce qui est à l'intérieur de la membrane plasmique et à l'extérieur du noyau.",
+      null
+    ],
+    [
+      "Que font les peroxysomes ?",
+      "Ils oxydent les acides gras et participent à la détoxification de la cellule.",
+      null
+    ],
+    [
+      "Qu'y a-t-il dans la matrice mitochondriale ?",
+      "Le milieu central de la mitochondrie, et son propre ADN, circulaire et distinct de celui du noyau.",
+      null
+    ],
+    [
+      "Pourquoi une cellule est-elle compartimentée ?",
+      "Parce qu'un compartiment fermé est un milieu chimique différent, donc une fonction possible. Exemple : le pH 4,5 du lysosome, impossible en plein cytosol.",
+      null
+    ],
+    [
+      "Que font les ribosomes libres du cytosol ?",
+      "Ils fabriquent les protéines qui resteront dans la cellule — toutes les protéines ne viennent pas du RER.",
+      null
+    ],
+    [
+      "Cytoplasme ou cytosol : lequel contient les organites ?",
+      "Le cytoplasme. Cytoplasme = cytosol + organites. Le cytosol, c'est la phase liquide seule.",
       null
     ],
     [
@@ -91,23 +106,8 @@
       null
     ],
     [
-      "Où se trouve l'espace intermembranaire de la mitochondrie ?",
-      "Entre la membrane externe et la membrane interne. La matrice, elle, est au centre.",
-      null
-    ],
-    [
-      "Qu'y a-t-il dans la matrice mitochondriale ?",
-      "Le milieu central de la mitochondrie, et son propre ADN, circulaire et distinct de celui du noyau.",
-      null
-    ],
-    [
-      "Que produit la mitochondrie, et qu'indique leur nombre ?",
-      "De l'ATP. Plus une cellule consomme d'énergie, plus elle en possède — une cellule cardiaque en est bourrée.",
-      null
-    ],
-    [
-      "Que font les peroxysomes ?",
-      "Ils oxydent les acides gras et participent à la détoxification de la cellule.",
+      "Quelles sont les trois fonctions du réticulum endoplasmique lisse ?",
+      "Synthèse des lipides, réserve de calcium, détoxification.",
       null
     ]
   ]
