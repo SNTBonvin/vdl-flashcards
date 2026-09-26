@@ -93,28 +93,27 @@ export function HelpScreen() {
         )}
       </section>
 
+      {/* ---- Le parcours de l'élève, dans l'ordre où les gestes servent ----
+          Les mêmes étapes que le guide remis aux élèves (GUIDE-ELEVE.md) :
+          une seule progression à tenir à jour, plutôt que deux qui divergent.
+          Ce qui ne concerne que celui qui prépare les cartes est plus bas, et
+          ne s'affiche que sur son appareil. */}
       <Step
-        icon="library"
-        title="1. Ranger"
-        text="Une matière contient des thèmes, un thème contient des cartes. Crée d’abord une matière — Histoire-Géographie, Anglais — puis un thème par chapitre."
-      />
-
-      <Step
-        icon="plus"
-        title="2. Remplir"
-        text="« Ajouter une carte » pour une carte à la fois. « Importer » pour en coller plusieurs : une par ligne, recto et verso séparés par un point-virgule ou une tabulation. C’est ce qui permet de rédiger dans un tableur et de tout coller d’un coup."
+        icon="today"
+        title="1. Installer sur le téléphone"
+        text="Android : menu du navigateur, puis « Installer l’application ». iPhone : dans Safari, Partager, puis « Sur l’écran d’accueil ». Une fois installée, elle fonctionne sans réseau — et c’est la condition pour que les notifications existent sur iPhone. Attention : sur iPhone, Safari et l’application installée ne partagent pas leurs données. Des cartes ajoutées depuis Safari n’apparaîtront pas dans l’application. Prends l’habitude de tout faire depuis l’icône de l’écran d’accueil."
       />
 
       <Step
         icon="inbox"
-        title="Réserve et reprise"
-        text="« Ajouter une carte » puis « Reprendre une carte que j’ai déjà » recopie une carte écrite ailleurs, sans ressaisie. Et un thème coché « de réserve » sert de vivier : ses cartes attendent d’être affectées, sans jamais être proposées en révision."
+        title="2. Recevoir un lot"
+        text="« Lien ou code reçu », sur l’accueil ou dans « Matières », ouvre aussi bien un lien qu’on t’a envoyé qu’un code court du genre « SVT-2DE-BIO1 ». « Matières › Parcourir le catalogue » liste en plus les jeux publiés, par niveau et par matière. Avant d’ajouter les cartes, un champ « À savoir pour le » te propose la date de ton contrôle : ces cartes te seront alors proposées la veille au plus tard, puis elles reprendront leur rythme normal. Si le même lot t’est renvoyé, corrigé ou complété, rouvre-le : rien n’est dupliqué, ta progression est conservée, et tes propres cartes ne sont pas touchées."
       />
 
       <Step
         icon="review"
         title="3. Réviser"
-        text="Réponds « Raté », « Difficile » ou « Su ». Une carte ratée revient tout de suite ; une carte sue s’espace de plus en plus. L’échéance calculée est affichée sur chaque bouton avant que tu répondes."
+        text="Réponds « Raté », « Difficile » ou « Su ». Une carte ratée revient tout de suite ; une carte sue s’espace de plus en plus. Le délai calculé est affiché sur chaque bouton avant que tu répondes — inutile de tricher en se disant « je l’aurais eue » : c’est l’effort de retrouver la réponse qui fait mémoriser, pas la lecture."
       />
 
       <Step
@@ -124,52 +123,75 @@ export function HelpScreen() {
       />
 
       <Step
-        icon="move"
-        title="Partager un thème"
-        text="Le bouton « Partager ce thème » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si tu corriges une faute plus tard, rediffuse le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée. Pour ouvrir un lien ou un code reçu : « Lien ou code reçu », sur l’accueil ou dans « Matières » — sur iPhone, c’est le seul chemin qui mène à l’application installée."
-      />
-
-      <Step
         icon="today"
-        title="À savoir pour quand ?"
-        text="Quand tu ajoutes des cartes reçues, un champ « À savoir pour le » te propose de dire pour quand il faut les savoir — la date de ton contrôle, telle qu’elle est sur ton cahier de textes. Ce n’est pas obligatoire. Si tu la mets, chacune de ces cartes te sera proposée la veille au plus tard, même si son tour n’était pas encore venu. Une fois la date passée, elles reprennent leur rythme normal. Pour t’en fixer une sur un thème que tu as déjà : « Planifier mes révisions › Poser une échéance ». Pour la changer ou la retirer : le bandeau du thème, bouton « Modifier »."
-      />
-
-      <Step
-        icon="layers"
-        title="Les séries"
-        text="Une série est une sélection de cartes d’un même thème, gardée sous la main. Elle sert à deux choses : se fixer une échéance — « ces quinze cartes, pour vendredi » — et diffuser une partie d’un thème sans tout donner d’un coup. Coche des cartes, puis « Créer une série ». Chez celui qui la reçoit, les séries d’un même thème se rejoignent dans ce thème."
-      />
-
-      <Step
-        icon="today"
-        title="Planifier ses révisions"
-        text="Dans un thème, « Planifier mes révisions » dépose des rendez-vous dans l’agenda du téléphone. C’est le seul rappel qui sonne même application fermée : une page web ne peut pas programmer une notification à l’avance. Tu n’as pas de rythme à choisir — sans échéance, ils suivent la courbe de l’oubli (demain, dans une semaine, dans un mois, dans six mois) ; si tu t’es fixé une date, ils se répartissent jusqu’à elle, le dernier la veille."
-      />
-
-      <Step
-        icon="upload"
-        title="Publier sous un code"
-        text="La publication apparaît d’elle-même sur l’appareil où un jeton GitHub est enregistré — « Réglages › Diffusion › Configurer la publication » —, ou si tu allumes « Je publie à la main ». « Matières › Parcourir le catalogue » liste les jeux publiés, par niveau et par matière. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
+        title="4. Planifier ses révisions"
+        text="Dans un thème, « Planifier » dépose des rendez-vous dans l’agenda du téléphone. C’est le seul rappel qui sonne même application fermée : une page web ne peut pas programmer une notification à l’avance. Tu n’as pas de rythme à choisir — sans échéance, ils suivent la courbe de l’oubli (demain, dans une semaine, dans un mois, dans six mois) ; si tu t’es fixé une date, ils se répartissent jusqu’à elle, le dernier la veille. Pour poser une échéance après coup : « Planifier › Poser une échéance » ; pour la changer ou la retirer, le bandeau du thème, bouton « Modifier »."
       />
 
       <Step
         icon="bell"
-        title="Se faire rappeler"
-        text="Chaque thème peut avoir son rappel : une heure et des jours de la semaine. Sur iPhone, l’application doit être installée sur l’écran d’accueil pour que les notifications fonctionnent."
+        title="Le rappel de l’application"
+        text="Chaque thème peut aussi avoir son rappel : une heure et des jours de la semaine. Mais cette notification ne part qu’à l’ouverture de l’application — elle rappelle ce qui est dû, elle ne réveille pas le téléphone. À défaut, la pastille de l’onglet « Aujourd’hui » dit combien de cartes attendent. Sur iPhone, les notifications ne fonctionnent que si l’application est installée sur l’écran d’accueil."
+      />
+
+      <Step
+        icon="chart"
+        title="5. Voir ses statistiques"
+        text="Onglet « Aujourd’hui », icône de graphique en haut à droite. Les courbes d’apprentissage montrent ton taux de réussite selon le temps écoulé depuis la dernière reprise ; l’activité, ta régularité semaine après semaine. Ces chiffres ne sont vus que par toi et ne sont envoyés nulle part."
+      />
+
+      <Step
+        icon="plus"
+        title="6. Écrire ses propres cartes"
+        text="Une matière contient des thèmes, un thème contient des cartes : crée d’abord une matière — Histoire-Géographie, Anglais — puis un thème par chapitre. À la hauteur de « Cartes », le bouton + ouvre « Ajouter une carte », le bouton ⋯ propose « Importer ». Reformuler un cours pour en faire une question est en soi un travail de mémorisation, et tes cartes cohabitent avec celles reçues dans le même thème."
+      />
+
+      <Step
+        icon="upload"
+        title="Écrire beaucoup de cartes d’un coup"
+        text="« Importer » accepte une liste : une carte par ligne, recto et verso séparés par un point-virgule ou une tabulation. C’est ce qui permet de rédiger dans un tableur, ou de reprendre une liste existante, et de tout coller d’un coup. « Ajouter une carte » puis « Reprendre une carte que j’ai déjà » recopie une carte écrite ailleurs, sans ressaisie."
       />
 
       <Step
         icon="download"
-        title="Tes données"
-        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Pour changer de téléphone, exporte la sauvegarde depuis les réglages. Pour donner ou retravailler un jeu de cartes, exporte plutôt un paquet — depuis un thème, une matière ou une série, en CSV pour le tableur ou en JSON pour le réimporter ici."
+        title="7. Changer de téléphone sans rien perdre"
+        text="Tout est stocké sur cet appareil, hors ligne : aucun compte, aucun serveur, aucune requête vers un service tiers. Personne ne peut donc te rendre tes cartes si tu les perds, et trois choses les effacent : désinstaller l’application, vider les données du navigateur, naviguer en navigation privée. Avant de changer d’appareil : « Réglages › Données › Exporter la sauvegarde », puis, sur le nouveau téléphone, « Restaurer ». Le bouton « Cartes », à côté, n’exporte que des cartes — pour en donner à un camarade, pas pour sauvegarder."
       />
 
-      <Step
-        icon="today"
-        title="Installer sur le téléphone"
-        text="Android : menu du navigateur, puis « Installer l’application ». iPhone : Partager, puis « Sur l’écran d’accueil ». Une fois installée, elle fonctionne sans réseau."
-      />
+      {/* ---- Ce qui ne concerne que celui qui prépare les cartes ----
+          Hors du parcours de l'élève, et masqué sur son appareil : une
+          consigne qu'on ne peut pas suivre est une consigne qui inquiète.
+          Le jeton GitHub, ou « Je publie à la main », suffit à révéler cette
+          partie. */}
+      {store.teacherMode && (
+        <section className="stack stack-3">
+          <SectionHead title="Préparer et diffuser" />
+
+          <Step
+            icon="move"
+            title="Partager un thème"
+            text="« Partager » produit un lien à coller dans l’ENT, et un QR code à projeter quand le jeu est assez court. Le jeu de cartes voyage dans le lien : rien n’est déposé sur un serveur. Si tu corriges une faute plus tard, rediffuse le lien — chez l’élève le thème sera mis à jour, sans doublon, et sa progression conservée."
+          />
+
+          <Step
+            icon="layers"
+            title="Les séries"
+            text="Une série est une sélection de cartes d’un même thème, gardée sous la main. Elle sert à deux choses : fixer une échéance — « ces quinze cartes, pour vendredi » — et diffuser une partie d’un thème sans tout donner d’un coup. Coche des cartes, puis « Créer une série ». Chez celui qui la reçoit, les séries d’un même thème se rejoignent dans ce thème."
+          />
+
+          <Step
+            icon="upload"
+            title="Publier sous un code"
+            text="« Diffusion » rassemble ce qui a été donné et ce qui est en ligne, et c’est de là qu’on publie. « Publier » prépare un fichier et un code court — « SVT-2DE-BIO1 » — à déposer sur la forge. L’élève tape ce code dans l’application, sans lien ni QR code : c’est le chemin le plus sûr, surtout sur iPhone. Republier sous le même code met le jeu à jour chez ceux qui l’ont déjà reçu."
+          />
+
+          <Step
+            icon="inbox"
+            title="Le thème de réserve"
+            text="Un thème coché « de réserve » sert de vivier : ses cartes attendent d’être affectées, sans jamais être proposées en révision. Pratique pour déposer une liste brute avant de la répartir en chapitres."
+          />
+        </section>
+      )}
 
       {/* ---- Pourquoi ça marche : la méthode avant l'outil ---- */}
       <section className="stack stack-3">

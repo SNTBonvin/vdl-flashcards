@@ -7,7 +7,12 @@ l'application**, à la rubrique « Prise en main » des réglages — plus prati
 depuis un téléphone.
 
 Pour les élèves, il existe une version courte et sans les outils d'enseignant :
-[GUIDE-ELEVE.md](GUIDE-ELEVE.md), à coller dans l'ENT ou à distribuer.
+[GUIDE-ELEVE.md](GUIDE-ELEVE.md), à coller dans l'ENT, et
+[docs/Guide-eleve-flashcards.pdf](docs/Guide-eleve-flashcards.pdf) à distribuer.
+Ce même parcours en sept étapes est repris dans l'application, à la rubrique
+« Prise en main » ; la partie « Préparer et diffuser » n'y apparaît que sur un
+appareil où la publication est déverrouillée, si bien qu'un élève ne lit que ce
+qui le concerne.
 
 ## Le plus rapide : partir d'un exemple
 
