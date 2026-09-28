@@ -2,19 +2,14 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "ES-ATMOS",
-  "publishedAt": "2026-09-15T04:48:40.288Z",
+  "publishedAt": "2026-09-28T16:24:36.670Z",
   "listed": true,
-  "level": "Tle",
+  "level": "1re",
   "subject": "Enseignement Scientifique",
   "deck": "Atmosphère",
   "shareId": "sh4c4x5k5e1l1b2v",
-  "rev": 1789447720288,
+  "rev": 1790612676670,
   "cards": [
-    [
-      "Création de la Terre, Apparition de l'atmosphère primitive",
-      "- 4,6 Ga",
-      null
-    ],
     [
       "1 Ga",
       "1 milliard d'années",
@@ -26,23 +21,18 @@
       null
     ],
     [
+      "Composition atmosphère primitive",
+      "Dans l'ordre décroissant : essentiellement du H2O (autour de 80%) puis du CO2 et N2",
+      null
+    ],
+    [
       "Apparition O2 dans l'atmosphère",
       "- 2,4 Ga",
       null
     ],
     [
-      "Premières bactéries photosynthétiques (cyanobactéries)",
-      "- 3,8 Ga",
-      null
-    ],
-    [
-      "Premiers végétaux terrestres",
-      "- 500 Ma (millions d'années)",
-      null
-    ],
-    [
-      "Chondrites",
-      "Ce sont des fragments de petits astéroïdes, éjectés de la ceinture principale par un choc-collision entre deux astéroïdes. Certains nous renseignent sur la composition de la Terre lors de sa formation.",
+      "Date à laquelle l'atmosphère a la même composition qu'actuellement",
+      "- 500 Ma",
       null
     ],
     [
@@ -51,13 +41,23 @@
       null
     ],
     [
-      "Composition atmosphère primitive",
-      "Dans l'ordre décroissant : essentiellement du H2O (autour de 80%) puis du CO2 et N2",
+      "Premiers végétaux terrestres",
+      "- 500 Ma (millions d'années)",
       null
     ],
     [
-      "Date à laquelle l'atmosphère a la même composition qu'actuellement",
-      "- 500 Ma",
+      "Création de la Terre, Apparition de l'atmosphère primitive",
+      "- 4,6 Ga",
+      null
+    ],
+    [
+      "Chondrites",
+      "Ce sont des fragments de petits astéroïdes, éjectés de la ceinture principale par un choc-collision entre deux astéroïdes. Certains nous renseignent sur la composition de la Terre lors de sa formation.",
+      null
+    ],
+    [
+      "Premières bactéries photosynthétiques (cyanobactéries)",
+      "- 3,8 Ga",
       null
     ]
   ]
