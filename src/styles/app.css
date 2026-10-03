@@ -252,6 +252,43 @@
   margin-top: 1px;
 }
 
+/* ---- Ligne d'inventaire ----
+   La ligne mène quelque part, et porte des étiquettes dont l'une se copie :
+   deux gestes distincts, donc deux boutons. Le trait de séparation passe sur
+   l'enveloppe pour que les étiquettes restent dans la ligne. */
+
+.difrow {
+  border-bottom: 1px solid var(--rule);
+}
+.difrow:last-child {
+  border-bottom: 0;
+}
+.difrow .listrow {
+  border-bottom: 0;
+  padding-bottom: 7px;
+}
+
+.difrow__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 var(--gap-4) 13px;
+}
+.difrow__chips:empty {
+  display: none;
+}
+
+.chip--copy {
+  background: var(--surface);
+  color: var(--primary-dark);
+  cursor: pointer;
+  padding-left: 8px;
+}
+.chip--copy:active {
+  background: var(--primary-tint);
+  border-color: var(--primary-light);
+}
+
 /* ---- Feuille modale ---- */
 
 .scrim {

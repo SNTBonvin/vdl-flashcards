@@ -5,6 +5,7 @@ import { ConfirmSheet, Field, Sheet, plural, useToast } from './ui'
 import { formatSize, measure, shareUrl, encodeShare, buildPayload } from '../io/share'
 import { qrModuleCount } from './QrCode'
 import { ExportSheet, exportRows } from './ExportSheet'
+import { PublishSheet } from './PublishSheet'
 import type { Distribution } from '../db/types'
 
 /**
@@ -21,7 +22,6 @@ export function DistributionSheet({
   onShare,
   onEditSelection,
   onDuplicated,
-  onPublish,
 }: {
   open: boolean
   lot: Distribution | null
@@ -30,8 +30,6 @@ export function DistributionSheet({
   onEditSelection: () => void
   /** Le lot copié devient celui affiché : on enchaîne sur sa modification. */
   onDuplicated: (copy: Distribution) => void
-  /** Mène à l'inventaire de diffusion, seul endroit d'où l'on publie. */
-  onPublish: () => void
 }) {
   const store = useStore()
   const toast = useToast()
@@ -40,6 +38,7 @@ export function DistributionSheet({
   const [fit, setFit] = useState<string>('chip')
   const [confirming, setConfirming] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const [publishing, setPublishing] = useState(false)
 
   const deck = lot ? store.decks.find((d) => d.id === lot.deckId) : null
   const subject = deck ? store.subjects.find((s) => s.id === deck.subjectId) : null
@@ -81,6 +80,12 @@ export function DistributionSheet({
   }, [open, lot?.id, cards.length])
 
   if (!lot) return null
+
+  /** Le dépôt ne reflète plus le contenu : même règle que dans l'inventaire. */
+  const perimee =
+    Boolean(lot.publishedAs) &&
+    (lot.publishedCount !== cards.length ||
+      cards.some((c) => c.updatedAt > (lot.publishedAt ?? 0)))
 
   return (
     <>
@@ -169,16 +174,24 @@ export function DistributionSheet({
             Modifier les cartes de la série
           </button>
 
-          {/* Publier se fait depuis « Ce que j'ai diffusé » : un seul endroit
-              pour tout ce qui est en ligne. La fiche en dit l'état, car c'est
-              ici qu'on modifie la série et donc ici qu'on s'en aperçoit. */}
-          {lot.publishedAs && (
-            <button type="button" className="btn btn--quiet btn--block" onClick={onPublish}>
-              <Icon name="upload" size={17} />
-              {lot.publishedCount !== cards.length ||
-              cards.some((c) => c.updatedAt > (lot.publishedAt ?? 0))
-                ? `Publiée sous ${lot.publishedAs} — à republier`
-                : `Publiée sous ${lot.publishedAs}`}
+          {/* Composer une série et la mettre au catalogue sont le même geste :
+              la publication se fait donc ici, et non plus en renvoyant vers
+              « Ce que j'ai diffusé », qui obligeait à retrouver la série dans
+              une liste. L'inventaire reste la vue d'ensemble, pas le passage
+              obligé. Rien de tout cela sur l'appareil d'un élève. */}
+          {store.teacherMode && deck && (
+            <button
+              type="button"
+              className={`btn btn--block ${lot.publishedAs ? 'btn--quiet' : 'btn--ghost'}`}
+              disabled={cards.length === 0}
+              onClick={() => setPublishing(true)}
+            >
+              <Icon name="upload" size={18} />
+              {lot.publishedAs
+                ? perimee
+                  ? `Publiée sous ${lot.publishedAs} — republier`
+                  : `Publiée sous ${lot.publishedAs}`
+                : 'Publier dans le catalogue'}
             </button>
           )}
 
@@ -226,6 +239,19 @@ export function DistributionSheet({
           </button>
         </div>
       </Sheet>
+
+      {deck && publishing && (
+        <PublishSheet
+          open
+          deck={deck}
+          lot={lot}
+          cards={cards}
+          onClose={() => setPublishing(false)}
+          onPublished={(code) =>
+            toast(`Code « ${code} » retenu. Dépose le fichier pour le rendre vivant.`)
+          }
+        />
+      )}
 
       <ExportSheet
         open={exporting}

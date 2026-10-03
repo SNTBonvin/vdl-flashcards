@@ -31,6 +31,8 @@ export function DiffusionScreen() {
   /** Choix de ce qu'on publie, puis feuille de publication. */
   const [choix, setChoix] = useState(false)
   const [cible, setCible] = useState<Cible | null>(null)
+  /** Matière mise en avant. `null` : tout, dans l'ordre habituel. */
+  const [matiere, setMatiere] = useState<string | null>(null)
 
   const ouvrir = (c: Cible) => {
     setChoix(false)
@@ -80,7 +82,34 @@ export function DiffusionScreen() {
       )
   }, [store.decks, store.subjects, store.cardsByDeck])
 
+  /**
+   * Les matières présentes, séries et jeux confondus : une matière sans rien
+   * de diffusé n'a pas à encombrer le filtre.
+   */
+  const matieres = useMemo(() => {
+    const noms = new Set<string>()
+    for (const row of series) if (row.subject?.name) noms.add(row.subject.name)
+    for (const row of published) if (row.subject?.name) noms.add(row.subject.name)
+    return [...noms].sort((a, b) => a.localeCompare(b, 'fr'))
+  }, [series, published])
+
+  // Une matière disparue — thème supprimé, dernier jeu retiré — ne doit pas
+  // laisser l'écran vide sans qu'on comprenne pourquoi.
+  const choisie = matiere && matieres.includes(matiere) ? matiere : null
+  const vues = choisie ? series.filter((r) => r.subject?.name === choisie) : series
+  const vusPubliés = choisie ? published.filter((r) => r.subject?.name === choisie) : published
+
   const rien = series.length === 0 && published.length === 0
+
+  /** Un code se note à la main ou se dicte : autant pouvoir le coller. */
+  const copier = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code)
+      toast(`Code « ${code} » copié.`)
+    } catch {
+      toast('Copie impossible : sélectionne le code à la main.', 'error')
+    }
+  }
 
   return (
     <main className="screen stack stack-6">
@@ -101,6 +130,33 @@ export function DiffusionScreen() {
         Publier ou republier
       </button>
 
+      {/* Un seul enseignant tient vite trois matières : le filtre évite de
+          faire défiler les séries d'histoire pour vérifier un code de SVT.
+          Il ne sert à rien tant qu'il n'y a qu'une matière. */}
+      {matieres.length > 1 && (
+        <div className="picker">
+          <button
+            type="button"
+            className="chip chip--select"
+            aria-pressed={choisie === null}
+            onClick={() => setMatiere(null)}
+          >
+            Toutes
+          </button>
+          {matieres.map((nom) => (
+            <button
+              key={nom}
+              type="button"
+              className="chip chip--select"
+              aria-pressed={choisie === nom}
+              onClick={() => setMatiere(nom)}
+            >
+              {nom}
+            </button>
+          ))}
+        </div>
+      )}
+
       {rien ? (
         <EmptyState
           icon="layers"
@@ -118,93 +174,92 @@ export function DiffusionScreen() {
         />
       ) : null}
 
-      {series.length > 0 && (
+      {vues.length > 0 && (
         <section className="stack stack-3">
-          <SectionHead
-            title="Séries"
-            aside={<span className="meta mono">{series.length}</span>}
-          />
+          <SectionHead title="Séries" aside={<span className="meta mono">{vues.length}</span>} />
           <div className="card">
-            {series.map(({ lot, deck, subject, count, stale }) => (
-              <button
-                key={lot.id}
-                type="button"
-                className="listrow"
-                onClick={() => navigate({ name: 'deck', id: lot.deckId, lot: lot.id })}
-              >
-                <span className="grow stack" style={{ gap: 3, minWidth: 0 }}>
-                  <span className="listrow__title truncate">{lot.name}</span>
-                  <span className="listrow__sub truncate">
-                    {subject?.name ? `${subject.name} · ` : ''}
-                    {deck?.name} · {count} {plural(count, 'carte')}
+            {vues.map(({ lot, deck, subject, count, stale }) => (
+              <div key={lot.id} className="difrow">
+                <button
+                  type="button"
+                  className="listrow"
+                  onClick={() => navigate({ name: 'deck', id: lot.deckId, lot: lot.id })}
+                >
+                  <span className="grow stack" style={{ gap: 3, minWidth: 0 }}>
+                    <span className="listrow__title truncate">{lot.name}</span>
+                    <span className="listrow__sub truncate">
+                      {subject?.name ? `${subject.name} · ` : ''}
+                      {deck?.name} · {count} {plural(count, 'carte')}
+                    </span>
                   </span>
-                  <span className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
-                    {lot.dueBy && !isPast(lot.dueBy) && (
-                      <span className="chip chip--warn">pour {formatDeadline(lot.dueBy)}</span>
-                    )}
-                    {lot.publishedAs && <span className="chip mono">{lot.publishedAs}</span>}
-                    {stale && <span className="chip chip--warn">à republier</span>}
-                    {lot.publishedAs && lot.publishedListed === false && (
-                      <span className="chip">hors catalogue</span>
-                    )}
-                    {lot.lastSharedAt ? (
-                      <span className="chip mono">
-                        diffusé le {new Date(lot.lastSharedAt).toLocaleDateString('fr-FR')}
-                      </span>
-                    ) : (
-                      !lot.publishedAs && <span className="chip">jamais diffusé</span>
-                    )}
-                  </span>
-                </span>
-                <Icon name="chevron-right" size={18} />
-              </button>
+                  <Icon name="chevron-right" size={18} />
+                </button>
+                <div className="difrow__chips">
+                  {lot.dueBy && !isPast(lot.dueBy) && (
+                    <span className="chip chip--warn">pour {formatDeadline(lot.dueBy)}</span>
+                  )}
+                  {lot.publishedAs && <CodeChip code={lot.publishedAs} onCopy={copier} />}
+                  {stale && <span className="chip chip--warn">à republier</span>}
+                  {lot.publishedAs && lot.publishedListed === false && (
+                    <span className="chip">hors catalogue</span>
+                  )}
+                  {lot.lastSharedAt ? (
+                    <span className="chip mono">
+                      diffusé le {new Date(lot.lastSharedAt).toLocaleDateString('fr-FR')}
+                    </span>
+                  ) : (
+                    !lot.publishedAs && <span className="chip">jamais diffusé</span>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         </section>
       )}
 
-      {published.length > 0 && (
+      {vusPubliés.length > 0 && (
         <section className="stack stack-3">
           <SectionHead
             title="Jeux publiés"
-            aside={<span className="meta mono">{published.length}</span>}
+            aside={<span className="meta mono">{vusPubliés.length}</span>}
           />
           <div className="card">
-            {published.map(({ deck, subject, count, stale }) => (
-              <button
-                key={deck.id}
-                type="button"
-                className="listrow"
-                onClick={() => navigate({ name: 'deck', id: deck.id })}
-              >
-                <span className="grow stack" style={{ gap: 3, minWidth: 0 }}>
-                  <span className="listrow__title truncate">
-                    {deck.publishedName || deck.name}
+            {vusPubliés.map(({ deck, subject, count, stale }) => (
+              <div key={deck.id} className="difrow">
+                <button
+                  type="button"
+                  className="listrow"
+                  onClick={() => navigate({ name: 'deck', id: deck.id })}
+                >
+                  <span className="grow stack" style={{ gap: 3, minWidth: 0 }}>
+                    <span className="listrow__title truncate">
+                      {deck.publishedName || deck.name}
+                    </span>
+                    <span className="listrow__sub truncate">
+                      {subject?.name ? `${subject.name} · ` : ''}
+                      {count} {plural(count, 'carte')}
+                      {deck.publishedName && deck.publishedName !== deck.name
+                        ? ` · chez toi : ${deck.name}`
+                        : ''}
+                    </span>
                   </span>
-                  <span className="listrow__sub truncate">
-                    {subject?.name ? `${subject.name} · ` : ''}
-                    {count} {plural(count, 'carte')}
-                    {deck.publishedName && deck.publishedName !== deck.name
-                      ? ` · chez toi : ${deck.name}`
-                      : ''}
-                  </span>
-                  <span className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
-                    <span className="chip mono">{deck.publishedAs}</span>
-                    {stale && <span className="chip chip--warn">à republier</span>}
-                    {deck.publishedListed === false ? (
-                      <span className="chip">hors catalogue</span>
-                    ) : (
-                      <span className="chip chip--ok">au catalogue</span>
-                    )}
-                    {deck.publishedAt && (
-                      <span className="chip mono">
-                        déposé le {new Date(deck.publishedAt).toLocaleDateString('fr-FR')}
-                      </span>
-                    )}
-                  </span>
-                </span>
-                <Icon name="chevron-right" size={18} />
-              </button>
+                  <Icon name="chevron-right" size={18} />
+                </button>
+                <div className="difrow__chips">
+                  {deck.publishedAs && <CodeChip code={deck.publishedAs} onCopy={copier} />}
+                  {stale && <span className="chip chip--warn">à republier</span>}
+                  {deck.publishedListed === false ? (
+                    <span className="chip">hors catalogue</span>
+                  ) : (
+                    <span className="chip chip--ok">au catalogue</span>
+                  )}
+                  {deck.publishedAt && (
+                    <span className="chip mono">
+                      déposé le {new Date(deck.publishedAt).toLocaleDateString('fr-FR')}
+                    </span>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         </section>
@@ -320,5 +375,33 @@ export function DiffusionScreen() {
         </div>
       )}
     </main>
+  )
+}
+
+/**
+ * Le code d'un jeu, qui se copie d'un appui.
+ *
+ * On le lit pour le dicter à une classe ou le coller dans l'ENT : le
+ * retaper de mémoire est la seule façon de se tromper. L'étiquette dit
+ * « copié » un instant, parce qu'un toast seul se rate quand on regarde
+ * son doigt.
+ */
+function CodeChip({ code, onCopy }: { code: string; onCopy: (code: string) => Promise<void> }) {
+  const [copie, setCopie] = useState(false)
+
+  return (
+    <button
+      type="button"
+      className="chip mono chip--copy"
+      aria-label={`Copier le code ${code}`}
+      onClick={async () => {
+        await onCopy(code)
+        setCopie(true)
+        setTimeout(() => setCopie(false), 1400)
+      }}
+    >
+      <Icon name={copie ? 'check' : 'copy'} size={13} />
+      {copie ? 'copié' : code}
+    </button>
   )
 }

@@ -1094,10 +1094,6 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
           setOpenLotId(null)
         }}
         onDuplicated={(copy) => setOpenLotId(copy.id)}
-        onPublish={() => {
-          setOpenLotId(null)
-          navigate({ name: 'diffusion' })
-        }}
       />
 
       {sharingLot && (

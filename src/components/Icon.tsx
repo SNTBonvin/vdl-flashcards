@@ -38,6 +38,7 @@ export type IconName =
   | 'move'
   | 'shield'
   | 'more'
+  | 'copy'
 
 const PATHS: Record<IconName, string> = {
   today: 'M7 3v3M17 3v3M4 8.5h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM9 14l2 2 4-4',
@@ -47,6 +48,7 @@ const PATHS: Record<IconName, string> = {
   plus: 'M12 5.5v13M5.5 12h13',
   /** Trois points : les commandes secondaires, sans mot pour les nommer. */
   more: 'M6 12h0M12 12h0M18 12h0',
+  copy: 'M9.5 9.5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1zM6.5 15.5h-1a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1',
   'chevron-right': 'm9.5 5.5 6.5 6.5-6.5 6.5',
   'chevron-left': 'M14.5 5.5 8 12l6.5 6.5',
   'chevron-down': 'm5.5 9.5 6.5 6.5 6.5-6.5',

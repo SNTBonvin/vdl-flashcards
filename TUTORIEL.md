@@ -374,6 +374,14 @@ d'affichage quand il diffère du vôtre, et les mêmes pastilles.
 
 Un appui ouvre le thème, la fiche de la série dépliée : de quoi republier,
 rediffuser ou corriger sans avoir à retrouver où elle se cachait.
+
+**Filtrer par matière** — dès qu'il y a plus d'une matière diffusée, une rangée
+d'étiquettes en tête d'écran — « Toutes », puis une par matière — restreint les
+deux listes. On vérifie un code de SVT sans faire défiler les séries d'histoire.
+
+**Copier un code** — l'étiquette du code est un bouton : un appui le met dans le
+presse-papiers, l'étiquette dit « copié » un instant. C'est ce qu'on colle dans
+l'ENT, et c'est la seule façon de ne pas se tromper en le retapant.
 ## Publier sous un code court
 
 Un lien est long, et sur iPhone il n'atteint pas l'application installée. Un
@@ -433,6 +441,13 @@ Une série se publie comme un thème, mais en gardant l'essentiel : **toutes les
 séries d'un thème portent le même identifiant de thème**. Chez l'élève, les codes
 successifs se rejoignent donc dans **un seul thème qui grossit**, au lieu de
 s'empiler en chapitres séparés.
+
+Deux chemins y mènent. Dans la **fiche de la série** — celle qui s'ouvre quand
+on vient de la créer —, **« Publier dans le catalogue »** ouvre directement la
+feuille de publication : composer une série et la mettre en ligne sont le même
+geste, et il n'y a plus à aller la rechercher dans une liste. Le bouton n'existe
+que là où la publication est déverrouillée, et affiche ensuite le code obtenu,
+« — republier » en prime quand les cartes ont changé depuis.
 
 Dans **Publier ou republier**, les séries apparaissent sous leur thème. Le code
 proposé les distingue (`SVT-BIODIVER-SERIE1`), et le nom affiché reprend
