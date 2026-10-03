@@ -343,7 +343,10 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
             data-on={deck.reminder?.enabled || undefined}
             onClick={() => setReminderOpen(true)}
           >
-            {deck.reminder?.enabled ? 'Rappel activé' : 'Rappel'}
+            {/* Allumé, le lien dit son horaire : « activé » occupait la même
+                place sans rien apprendre, et vérifier l'heure obligeait à
+                ouvrir la feuille. */}
+            {deck.reminder?.enabled ? `Rappel ${deck.reminder.time}` : 'Rappel'}
           </button>
         )}
         <button type="button" className="quietbar__item" onClick={() => setEditingDeck(true)}>

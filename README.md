@@ -20,6 +20,12 @@ un lot, réviser, planifier ses reprises dans l'agenda, lire ses statistiques,
 écrire ses propres cartes, sauvegarder avant de changer de téléphone. Il se colle
 tel quel dans l'ENT.
 
+Il est aussi publié avec l'application, à **`/guide.html`** — une page autonome
+(`public/guide.html`) qui suit la même charte, s'adapte au téléphone, suit le
+thème sombre du système, s'imprime proprement et ne charge rien d'extérieur : les
+polices viennent du même serveur. C'est le lien à donner aux élèves ; il propose
+le PDF en téléchargement (`public/guide-eleve.pdf`).
+
 Pour la distribution papier, [docs/Guide-eleve-flashcards.pdf](docs/Guide-eleve-flashcards.pdf)
 en donne la mise en page — quatre pages A4, soit deux feuilles recto-verso. Il se
 refabrique depuis `docs/guide-eleve-impression.html` :

@@ -61,13 +61,15 @@ export default defineConfig({
         // Le rechargement de la page, lui, reste déclenché par l'utilisateur.
         skipWaiting: true,
         clientsClaim: true,
-        globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,woff2,pdf}'],
         navigateFallback: 'index.html',
         // ... sauf pour les jeux publiés : ouvrir « /c/CODE.json » dans un
         // navigateur est une navigation, que le repli renverrait vers
         // l'application. On verrait la page d'accueil à la place du fichier,
         // et l'on croirait le jeu absent alors qu'il est bien publié.
-        navigateFallbackDenylist: [/\/c\/[^/]+\.json$/, /\/catalogue\.json$/],
+        // Le guide en PDF est un fichier, pas une page : sans cette exception,
+        // le repli renverrait l'application à la place du document.
+        navigateFallbackDenylist: [/\/c\/[^/]+\.json$/, /\/catalogue\.json$/, /\.pdf$/],
         cleanupOutdatedCaches: true,
         // L'application ne contacte aucun service tiers : tout est précaché,
         // polices comprises. Seule exception, les jeux publiés sous un code,

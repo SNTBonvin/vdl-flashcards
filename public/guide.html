@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flashcards — Guide de l’élève</title>
+<meta name="description" content="Récupérer ses cartes, réviser, planifier ses reprises, lire ses statistiques, écrire ses propres flashcards et les sauvegarder.">
+<meta name="theme-color" content="#275f4a">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+  /* Polices auto-hébergées : cette page est destinée à des élèves, elle
+     n'émet aucune requête vers un service tiers — Google Fonts compris. */
+  @font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('fonts/hanken-grotesk-latin-400-normal.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('fonts/hanken-grotesk-latin-600-normal.woff2') format('woff2');
+    font-weight: 600; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Hanken Grotesk';
+    src: url('fonts/hanken-grotesk-latin-700-normal.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+
+  :root {
+    color-scheme: light dark;
+    --primary: #275f4a;
+    --primary-dark: #173d2f;
+    --primary-tint: #e9efe9;
+    --ink: #221f1a;
+    --ink-2: #4a4339;
+    --ink-3: #6e6557;
+    --border: #e8e3d9;
+    --rule: #f0ece3;
+    --paper: #f6f4ee;
+    --surface: #fffdf8;
+    --warn-bg: #f5ecd6;
+    --warn-line: #e0cfa4;
+    --warn: #8c6411;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --primary: #7fb89b;
+      --primary-dark: #a8d3bc;
+      --primary-tint: #1f2c25;
+      --ink: #f4f1e8;
+      --ink-2: #cfc8b8;
+      --ink-3: #9e9583;
+      --border: #302b23;
+      --rule: #262119;
+      --paper: #14120e;
+      --surface: #1c1913;
+      --warn-bg: #2a2317;
+      --warn-line: #463a21;
+      --warn: #d6b572;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 16px 72px;
+    background: var(--paper);
+    color: var(--ink-2);
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  main { max-width: 680px; margin: 0 auto; }
+
+  h1, h2, h3 { color: var(--ink); margin: 0; font-weight: 600; letter-spacing: -0.015em; }
+
+  /* ---------------- En-tête ---------------- */
+  header { padding: 40px 0 26px; border-bottom: 2px solid var(--primary); margin-bottom: 30px; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--primary); font-weight: 500; margin: 0;
+  }
+  h1 { font-size: clamp(28px, 7vw, 38px); line-height: 1.12; margin: 10px 0 14px; }
+  .lede { margin: 0; font-size: 17px; }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------------- Résumé ---------------- */
+  .resume {
+    background: var(--primary-tint);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px;
+    margin-bottom: 34px;
+  }
+  .resume h2 { font-size: 16px; margin-bottom: 8px; }
+  .resume ol { margin: 0; padding-left: 20px; }
+  .resume li { margin-bottom: 5px; }
+  .resume li:last-child { margin-bottom: 0; }
+
+  /* ---------------- Sections ---------------- */
+  section { margin-bottom: 36px; scroll-margin-top: 16px; }
+  section > h2 {
+    font-size: clamp(19px, 4.5vw, 22px);
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 15px;
+  }
+  .num {
+    flex: none;
+    width: 29px; height: 29px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px; font-weight: 500;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .num { color: #14120e; }
+  }
+  h3 { font-size: 16.5px; color: var(--primary-dark); margin: 22px 0 6px; }
+  p { margin: 0 0 12px; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+  ul { margin: 0 0 12px; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  .ui { font-weight: 600; color: var(--primary-dark); }
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.86em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.55;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 15px;
+    margin: 0 0 12px;
+    overflow-x: auto;
+  }
+
+  .note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px 17px;
+    margin: 16px 0;
+    font-size: 15.5px;
+  }
+  .note--warn { background: var(--warn-bg); border-color: var(--warn-line); }
+  .note__title {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase;
+    font-weight: 500; color: var(--warn);
+    margin-bottom: 6px;
+  }
+  .note__title--n { color: var(--primary); }
+
+  .grades { margin: 14px 0; border-top: 1px solid var(--rule); }
+  .grade {
+    display: flex; gap: 14px; align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .grade b { flex: none; width: 76px; color: var(--primary-dark); font-weight: 600; }
+
+  /* ---------------- Pied ---------------- */
+  .fin { border-top: 2px solid var(--primary); padding-top: 24px; }
+  .fin h2 { font-size: 20px; margin-bottom: 14px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 8px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 46px; padding: 0 20px;
+    border-radius: 10px;
+    font: inherit; font-weight: 600; font-size: 15.5px;
+    text-decoration: none;
+    border: 1px solid var(--primary);
+  }
+  .btn--primary { background: var(--primary); color: var(--paper); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .btn--primary { color: #14120e; }
+  }
+  .btn--ghost { background: transparent; color: var(--primary-dark); border-color: var(--border); }
+  footer { margin-top: 30px; font-size: 13.5px; color: var(--ink-3); }
+
+  /* ---------------- Impression ---------------- */
+  @media print {
+    @page { size: A4; margin: 15mm; }
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    header { padding-top: 0; }
+    .actions, footer { display: none; }
+    section, .note, .resume, .grades { break-inside: avoid; }
+    section > h2, h3 { break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <p class="eyebrow">Flashcards · mémoriser sans y passer ses soirées</p>
+  <h1>Guide de l’élève</h1>
+  <p class="lede">
+    Récupérer les cartes que ton professeur t’envoie, t’organiser pour les réviser,
+    suivre tes progrès, fabriquer tes propres cartes, et ne rien perdre quand tu
+    changes de téléphone. L’application s’ouvre dans le navigateur :
+    <strong>rien à créer</strong>, pas de compte, pas de mot de passe, pas d’adresse
+    à donner. Tes cartes restent sur ton téléphone, et ton professeur ne voit pas ce
+    que tu révises.
+  </p>
+</header>
+
+<div class="resume">
+  <h2>En résumé</h2>
+  <ol>
+    <li>Installe l’application sur ton écran d’accueil.</li>
+    <li>Ouvre le lien ou tape le code reçu, et dis pour quand tu dois savoir ces cartes.</li>
+    <li>Ouvre l’application tous les jours et fais <span class="ui">« Révision du jour »</span>. Dix minutes suffisent.</li>
+    <li>Pose tes rendez-vous de révision dans l’agenda du téléphone : c’est le seul rappel qui sonne application fermée.</li>
+    <li>Avant de changer de téléphone, exporte ta sauvegarde.</li>
+  </ol>
+</div>
+
+<section id="installer">
+  <h2><span class="num">1</span> Installer l’application</h2>
+  <p>
+    Fais-le <strong>en premier</strong> : une fois installée, l’application s’ouvre comme
+    n’importe quelle autre, fonctionne sans réseau, et les notifications deviennent
+    possibles.
+  </p>
+  <h3>Android</h3>
+  <p>Ouvre l’adresse dans Chrome, puis le menu (les trois points) et <span class="ui">« Installer l’application »</span>.</p>
+  <h3>iPhone</h3>
+  <p>Ouvre l’adresse dans <strong>Safari</strong> (pas Chrome), appuie sur le bouton Partager, puis <span class="ui">« Sur l’écran d’accueil »</span>.</p>
+  <div class="note note--warn">
+    <span class="note__title">Sur iPhone</span>
+    L’application installée et Safari <strong>ne partagent pas leurs données</strong> : des
+    cartes ajoutées depuis Safari n’apparaîtront pas dans l’application installée. Prends
+    l’habitude de tout faire depuis l’icône de l’écran d’accueil.
+  </div>
+</section>
+
+<section id="recevoir">
+  <h2><span class="num">2</span> Récupérer le lot de ton professeur</h2>
+  <p>Il y a trois façons de recevoir des cartes. Toutes arrivent au même endroit.</p>
+  <ul>
+    <li><strong>Un lien.</strong> Sur Android, un appui suffit. Sur iPhone, si l’application
+      est installée : copie le lien, ouvre l’application depuis l’écran d’accueil, puis
+      <span class="ui">« Lien ou code reçu »</span> et colle-le.</li>
+    <li><strong>Un code</strong> du genre <code>SVT-2DE-BIO1</code>. Ouvre l’application,
+      appuie sur <span class="ui">« Lien ou code reçu »</span> — sur l’écran d’accueil ou
+      dans l’onglet <span class="ui">Matières</span> — et tape-le. C’est le chemin le plus
+      sûr, surtout sur iPhone.</li>
+    <li><strong>Le catalogue.</strong> <span class="ui">Matières › Parcourir le catalogue</span>
+      liste les jeux publiés, par niveau et par matière. Tu peux t’y servir toi-même.</li>
+  </ul>
+
+  <h3>La date du contrôle</h3>
+  <p>
+    Avant d’ajouter les cartes, un champ te demande <span class="ui">« À savoir pour le »</span>.
+    Mets-y la date de ton contrôle, telle qu’elle est sur ton cahier de textes. Ce n’est pas
+    obligatoire, mais c’est utile : ces cartes te seront alors proposées <strong>la veille au
+    plus tard</strong>, même si leur tour n’était pas encore venu. Une fois la date passée,
+    elles reprennent leur rythme normal, pour que tu ne les oublies pas. Pour la changer ou la
+    retirer : ouvre le thème, le bandeau affiche l’échéance et le bouton
+    <span class="ui">« Modifier »</span>.
+  </p>
+
+  <h3>Quand ton professeur renvoie le même lot</h3>
+  <p>
+    Ouvre le lien ou le code comme la première fois : les cartes nouvelles s’ajoutent, celles
+    que tu as déjà sont mises à jour, <strong>rien n’est perdu et rien n’est dupliqué</strong>.
+    Ta progression est conservée, et les cartes que tu as écrites toi-même ne sont pas touchées.
+    Si tu reçois plusieurs séries d’un même thème, elles se rejoignent dans un seul thème.
+  </p>
+</section>
+
+<section id="reviser">
+  <h2><span class="num">3</span> Réviser</h2>
+  <p>
+    Onglet <span class="ui">Réviser</span>. Trois séances te sont proposées, sans rien à régler
+    d’avance : <span class="ui">« Révision du jour »</span> (les cartes dont c’est le tour, plus
+    quelques nouvelles — celle à faire tous les jours), <span class="ui">« Tout revoir »</span>
+    (un thème entier, à faire la veille d’un contrôle) et
+    <span class="ui">« Mes difficultés »</span> (uniquement les cartes déjà ratées).
+  </p>
+  <p>
+    Pour chaque carte : lis la question, <strong>cherche la réponse dans ta tête</strong>, puis
+    retourne la carte et réponds honnêtement.
+  </p>
+  <div class="grades">
+    <div class="grade"><b>Raté</b><span>La carte revient tout de suite dans la séance.</span></div>
+    <div class="grade"><b>Difficile</b><span>Elle revient bientôt.</span></div>
+    <div class="grade"><b>Su</b><span>Elle revient de plus en plus tard : demain, dans trois jours, dans une semaine, dans un mois.</span></div>
+  </div>
+  <p>
+    Le délai calculé est écrit sur chaque bouton avant que tu répondes. Ne triche pas en te
+    disant « je l’aurais eue » : c’est l’effort de retrouver la réponse qui fait mémoriser, pas
+    la lecture. En bas de l’écran, <span class="ui">« Ajuster »</span> sert à ne réviser que
+    certains thèmes, à inverser recto et verso, ou à te tester <strong>à blanc</strong>, sans
+    que la séance modifie ton programme.
+  </p>
+</section>
+
+<section id="planifier">
+  <h2><span class="num">4</span> Planifier tes révisions</h2>
+  <p>
+    Réviser un peu chaque jour vaut mieux que tout la veille. Pour ne pas y penser, mets tes
+    révisions dans l’agenda de ton téléphone. Ouvre un thème, appuie sur
+    <span class="ui">« Planifier »</span> dans la barre de liens sous le titre, choisis une
+    heure où tu es disponible, puis <span class="ui">« Ajouter à mon agenda »</span>.
+  </p>
+  <ul>
+    <li>Sans échéance, les rendez-vous suivent la courbe de l’oubli : demain, dans une semaine,
+      dans un mois, dans six mois.</li>
+    <li>Avec une date de contrôle, ils se répartissent jusqu’à elle, le dernier
+      <strong>la veille</strong>.</li>
+  </ul>
+  <p>
+    Sur iPhone, ouvre le fichier téléchargé puis <span class="ui">« Tout ajouter »</span> pour
+    le déposer dans ton calendrier ; sur Android, il s’ouvre directement dans l’agenda. Si tu
+    refais le plan plus tard, les rendez-vous sont mis à jour, pas dupliqués.
+  </p>
+  <div class="note">
+    <span class="note__title note__title--n">Les rappels de l’application</span>
+    Chaque thème peut aussi avoir un rappel — bouton <span class="ui">« Rappel »</span>, une
+    heure et des jours de la semaine. Mais <strong>cette notification ne part qu’à l’ouverture
+    de l’application</strong> : elle rappelle ce qui est dû, elle ne réveille pas le téléphone.
+    Une page web n’a pas le droit de programmer une alarme à l’avance. Pour être prévenu
+    application fermée, c’est l’agenda. Sans notification, la pastille de l’onglet
+    <span class="ui">Aujourd’hui</span> te dit combien de cartes t’attendent : la meilleure
+    habitude reste d’ouvrir l’application à heure fixe, par exemple dans les transports.
+  </div>
+</section>
+
+<section id="statistiques">
+  <h2><span class="num">5</span> Voir tes statistiques</h2>
+  <p>Onglet <span class="ui">Aujourd’hui</span>, puis l’icône de graphique en haut à droite.</p>
+  <ul>
+    <li><strong>Courbes d’apprentissage</strong> — ton taux de réussite selon le temps écoulé
+      depuis la dernière fois que tu as vu la carte. Là où la barre s’effondre, tu as attendu
+      trop longtemps.</li>
+    <li><strong>Activité</strong> — le nombre de cartes revues chaque semaine. C’est ta
+      régularité qui se lit ici, et c’est elle qui compte le plus.</li>
+    <li><strong>Répartition des cartes</strong> — combien sont neuves, en cours
+      d’apprentissage, acquises.</li>
+    <li><strong>Par matière</strong> — où tu en es dans chacune.</li>
+  </ul>
+  <p>Ces chiffres ne sont vus que par toi. Ils ne sont envoyés nulle part.</p>
+</section>
+
+<section id="ecrire">
+  <h2><span class="num">6</span> Créer tes propres flashcards</h2>
+  <p>
+    Recevoir les cartes de ton professeur est utile ; <strong>fabriquer les tiennes l’est
+    encore plus</strong>. Reformuler un cours pour en faire une question, c’est déjà mémoriser.
+  </p>
+  <ul>
+    <li>Onglet <span class="ui">Matières</span>, crée une matière (Histoire-Géographie, Anglais…).</li>
+    <li>Dans la matière, crée un <strong>thème</strong> — un par chapitre.</li>
+    <li>Dans le thème, à la hauteur de « Cartes », le bouton <strong>+</strong> ouvre
+      <span class="ui">« Ajouter une carte »</span> ; le bouton <strong>⋯</strong> à côté
+      propose <span class="ui">« Importer des cartes »</span>.</li>
+  </ul>
+
+  <h3>Une idée par carte</h3>
+  <p>
+    Recto court, une seule question : une carte qui contient deux notions n’en fixe aucune,
+    coupe-la en deux. Verso précis : la réponse attendue, pas un paragraphe de cours. Écris la
+    question comme on te la poserait à l’oral, pas comme un titre. À éviter : « La Révolution
+    française ». À écrire : « En quelle année la Bastille est-elle prise ? » — « 1789 ».
+  </p>
+
+  <h3>Écrire beaucoup de cartes d’un coup</h3>
+  <p>
+    <span class="ui">« Importer des cartes »</span> accepte une liste : <strong>une carte par
+    ligne</strong>, recto et verso séparés par un point-virgule. Pratique pour rédiger dans un
+    tableur, ou reprendre une liste que tu as déjà, et tout coller d’un coup.
+  </p>
+<pre>Qui a écrit Candide ?;Voltaire
+En quelle année la Bastille est-elle prise ?;1789</pre>
+  <p>
+    Tes cartes et celles de ton professeur cohabitent dans le même thème. Quand il renvoie son
+    lot, les tiennes ne sont pas touchées.
+  </p>
+</section>
+
+<section id="sauvegarder">
+  <h2><span class="num">7</span> Changer de téléphone sans rien perdre</h2>
+  <p>
+    Tout est stocké <strong>sur ton téléphone</strong>, et nulle part ailleurs. C’est ce qui
+    garantit ta tranquillité, mais cela veut dire aussi que personne ne peut te rendre tes
+    cartes si tu les perds. Trois choses les effacent : désinstaller l’application, vider les
+    données du navigateur, ou naviguer en navigation privée.
+  </p>
+  <h3>Avant de changer de téléphone</h3>
+  <p>
+    <span class="ui">Réglages › Données › Exporter la sauvegarde</span>. Un fichier est
+    téléchargé : il contient tes cartes, ton historique et tes réglages. Mets-le à l’abri —
+    envoie-le-toi par mail, ou dépose-le dans ton espace de stockage.
+  </p>
+  <h3>Sur le nouveau téléphone</h3>
+  <p>
+    Ouvre l’application, installe-la sur l’écran d’accueil, puis
+    <span class="ui">Réglages › Données › Restaurer</span> et choisis le fichier. Tu retrouves
+    tout, y compris ta progression.
+  </p>
+  <p>
+    Dans la même rubrique, le bouton <span class="ui">« Cartes »</span> exporte seulement des
+    cartes (format tableur, ou pour les réimporter ici) : c’est ce qu’il faut pour donner un
+    jeu à un camarade, pas pour sauvegarder.
+  </p>
+</section>
+
+<div class="fin">
+  <h2>Bon à savoir</h2>
+  <p>
+    <strong>Rien ne sort de ton téléphone.</strong> Aucun compte, aucun serveur, aucun traçage.
+    Ton professeur ne sait pas si tu as révisé, ni ce que tu as raté. L’application fonctionne
+    entièrement hors ligne une fois installée.
+  </p>
+  <p>
+    <strong>Dix minutes par jour valent mieux qu’une heure le dimanche.</strong> C’est le seul
+    vrai secret : l’oubli se joue dans les premiers jours, et chaque reprise l’aplatit.
+  </p>
+  <p>
+    <strong>Relire n’est pas réviser.</strong> Relire un cours donne l’impression de le savoir :
+    on reconnaît le texte sans être capable de le retrouver. Une flashcard t’oblige à le
+    retrouver. C’est plus désagréable, et c’est pour ça que ça marche.
+  </p>
+  <p>
+    Si tu veux comprendre le détail, l’application contient sa propre notice :
+    <span class="ui">Réglages › À propos › Prise en main</span>, avec un exemple de sept cartes
+    à installer et à retirer en un geste.
+  </p>
+
+  <div class="actions">
+    <a class="btn btn--primary" href="./">Ouvrir l’application</a>
+    <a class="btn btn--ghost" href="guide-eleve.pdf" download>Télécharger en PDF</a>
+  </div>
+
+  <footer>
+    Cette page ne dépose aucun cookie et n’appelle aucun service extérieur : les polices sont
+    servies depuis le même serveur qu’elle.
+  </footer>
+</div>
+
+</main>
+</body>
+</html>

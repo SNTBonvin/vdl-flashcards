@@ -7,8 +7,10 @@ l'application**, à la rubrique « Prise en main » des réglages — plus prati
 depuis un téléphone.
 
 Pour les élèves, il existe une version courte et sans les outils d'enseignant :
-[GUIDE-ELEVE.md](GUIDE-ELEVE.md), à coller dans l'ENT, et
-[docs/Guide-eleve-flashcards.pdf](docs/Guide-eleve-flashcards.pdf) à distribuer.
+[GUIDE-ELEVE.md](GUIDE-ELEVE.md), à coller dans l'ENT,
+[docs/Guide-eleve-flashcards.pdf](docs/Guide-eleve-flashcards.pdf) à distribuer, et
+une page en ligne publiée avec l'application — **`/guide.html`** —, dont le lien
+se donne tel quel aux élèves ; elle propose le PDF en téléchargement.
 Ce même parcours en sept étapes est repris dans l'application, à la rubrique
 « Prise en main » ; la partie « Préparer et diffuser » n'y apparaît que sur un
 appareil où la publication est déverrouillée, si bien qu'un élève ne lit que ce
@@ -603,6 +605,9 @@ rendez-vous au lieu de les dupliquer.
 Chaque thème peut aussi avoir son rappel : une heure et des jours de la semaine,
 avec le même bouton pour le recopier dans l'agenda. À défaut, la pastille de
 l'onglet « Aujourd'hui » signale les thèmes en attente.
+
+Une fois allumé, le lien de la fiche affiche l'horaire — « Rappel 18:30 » — au
+lieu d'un simple « activé » : on vérifie l'heure sans ouvrir la feuille.
 
 ### Reprise spiralaire
 
