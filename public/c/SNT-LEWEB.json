@@ -2,13 +2,13 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "SNT-LEWEB",
-  "publishedAt": "2026-09-25T20:57:21.944Z",
+  "publishedAt": "2026-10-03T13:05:11.163Z",
   "listed": true,
   "level": "2de",
   "subject": "Sciences numériques et technologie",
   "deck": "Le web",
   "shareId": "sh3y5n1d3m6r6u6g",
-  "rev": 1790369841944,
+  "rev": 1791032711163,
   "cards": [
     [
       "Quelle est la différence entre Internet et le Web ?",
@@ -21,8 +21,23 @@
       null
     ],
     [
+      "Quelle est la différence entre Internet et le Web ?",
+      "Internet est un réseau de machines reliées par de la fibre optique. Le web a besoin d’internet pour fonctionner, mais ce sont deux choses différentes.",
+      null
+    ],
+    [
+      "head ou body : où écrit-on le texte qui doit apparaître sur la page ?",
+      "Dans le body. Le head ne contient que des informations utiles au navigateur, qui ne s’affichent pas.",
+      null
+    ],
+    [
       "À quoi sert le langage CSS ?",
       "À mettre en forme les pages web : couleurs, police, alignements, marges… On parle de feuille de style.",
+      null
+    ],
+    [
+      "Quelle touche ouvre l’inspecteur de propriétés du navigateur ?",
+      "La touche F12.",
       null
     ],
     [
@@ -36,13 +51,43 @@
       null
     ],
     [
+      "Modifier une page web en ligne avec l’inspecteur, est-ce que cela change la page pour tout le monde ?",
+      "Non. La page n’est pas modifiée sur le serveur : seul son affichage change, sur sa propre machine.",
+      null
+    ],
+    [
+      "Dans une feuille de style, on écrit : p { color : black ; }. Que désignent p, color et black ?",
+      "p est le sélecteur (le nom d’une balise HTML), color est la propriété, black est la valeur.",
+      null
+    ],
+    [
+      "En quelle année a lieu le premier achat en ligne ?",
+      "1994.",
+      "Un album de Sting."
+    ],
+    [
       "Que veut dire « le HTML est un langage balisé » ?",
       "Le contenu est encadré par une balise ouvrante et une balise fermante.",
       null
     ],
     [
+      "À quoi sert l’URL ?",
+      "Elle donne une adresse unique à chaque page web et à chaque ressource.",
+      null
+    ],
+    [
       "Dans la représentation du web en toile, que sont les points et les fils ?",
       "Les points sont les ressources (page web, image, texte) ; les fils sont les liens hypertexte.",
+      null
+    ],
+    [
+      "Qu’est-ce qu’un moteur de recherche ?",
+      "Un site web qui permet de faire des recherches.",
+      "Google, Bing, Ecosia…"
+    ],
+    [
+      "Écris en HTML un titre de niveau 1 contenant « Cours de SNT ».",
+      "<h1> Cours de SNT </h1>",
       null
     ],
     [
@@ -54,6 +99,21 @@
       "Que signifie le mot « web » ?",
       "« Toile ». On le représente comme des points reliés par des fils.",
       null
+    ],
+    [
+      "En quelle année apparaît Google ?",
+      "1998.",
+      "Le premier moteur de recherche vraiment performant."
+    ],
+    [
+      "En quelle année le HTML 5 est-il développé ?",
+      "2014.",
+      "Il permet de lire les vidéos directement dans le navigateur."
+    ],
+    [
+      "En quelle année le cap du million de sites web publiés est-il atteint ?",
+      "1997.",
+      "Les moteurs de recherche sont alors à la peine."
     ],
     [
       "En quelle année le HTML 5 est-il développé ?",
@@ -71,13 +131,38 @@
       null
     ],
     [
+      "À quoi sert la balise body ?",
+      "Elle contient les informations à afficher sur la page web.",
+      "Elle peut contenir d’autres balises : h1, ul, a…"
+    ],
+    [
+      "Dans quelle balise se trouve le lien vers la feuille de style CSS ?",
+      "Dans le head.",
+      null
+    ],
+    [
       "Qu’est-ce qu’un navigateur web ?",
       "Un logiciel ou une application qui permet d’afficher les pages web.",
       "Firefox, Chrome, Edge, Opera, Safari…"
     ],
     [
+      "Dans quelle balise indique-t-on l’alphabet utilisé par la page ?",
+      "Dans le head.",
+      null
+    ],
+    [
       "Que renvoie le serveur quand il connaît l’URL demandée ?",
       "Il envoie les fichiers HTML et CSS au navigateur du client, qui les décode et affiche la page web.",
+      null
+    ],
+    [
+      "En quelle année l’iPhone est-il commercialisé ?",
+      "2007.",
+      "Il permet de surfer sur le web depuis un téléphone."
+    ],
+    [
+      "Dans la représentation du web en toile, que sont les points et les fils ?",
+      "Les points sont les ressources (page web, image, texte) ; les fils sont les liens hypertexte.",
       null
     ],
     [
@@ -91,6 +176,11 @@
       null
     ],
     [
+      "Que signifie le mot « web » ?",
+      "« Toile ». On le représente comme des points reliés par des fils.",
+      null
+    ],
+    [
       "À quoi sert la balise head ?",
       "Elle contient les informations essentielles au fonctionnement du navigateur : le lien vers la feuille de style, l’alphabet utilisé, etc.",
       null
@@ -101,8 +191,38 @@
       "Google, Bing, Ecosia…"
     ],
     [
+      "Dans la règle CSS h1 { font-size : 24px ; }, quelle est la valeur ?",
+      "24px. La valeur indique comment on modifie la propriété.",
+      null
+    ],
+    [
+      "Ce qui est écrit dans la balise head s’affiche-t-il dans le navigateur ?",
+      "Non. Rien de ce qui est dans le head ne s’affiche sur la page.",
+      null
+    ],
+    [
+      "Que renvoie le serveur quand il connaît l’URL demandée ?",
+      "Il envoie les fichiers HTML et CSS au navigateur du client, qui les décode et affiche la page web.",
+      null
+    ],
+    [
       "Dans une feuille de style, on écrit : p { color : black ; }. Que désignent p, color et black ?",
       "p est le sélecteur (le nom d’une balise HTML), color est la propriété, black est la valeur.",
+      null
+    ],
+    [
+      "À quoi sert la balise html ?",
+      "C’est la balise principale : elle contient toutes les autres et indique que la page est codée en HTML.",
+      null
+    ],
+    [
+      "Quelles sont les trois balises principales d’une page HTML ?",
+      "html, head et body.",
+      null
+    ],
+    [
+      "Dans le modèle client / serveur, qu’est-ce que le client ?",
+      "La machine qui possède le navigateur.",
       null
     ],
     [
@@ -126,6 +246,11 @@
       null
     ],
     [
+      "En quelle année apparaît Mosaic, le premier navigateur web graphique ?",
+      "1993.",
+      null
+    ],
+    [
       "Modifier une page web en ligne avec l’inspecteur, est-ce que cela change la page pour tout le monde ?",
       "Non. La page n’est pas modifiée sur le serveur : seul son affichage change, sur sa propre machine.",
       null
@@ -141,14 +266,49 @@
       null
     ],
     [
+      "Qui a inventé le Web, et en quelle année ?",
+      "Tim Berners-Lee, en 1989.",
+      "Ingénieur britannique."
+    ],
+    [
       "En quelle année apparaît YouTube ?",
       "2006.",
+      null
+    ],
+    [
+      "À quoi sert le langage CSS ?",
+      "À mettre en forme les pages web : couleurs, police, alignements, marges… On parle de feuille de style.",
+      null
+    ],
+    [
+      "Dans la règle CSS h1 { font-size : 24px ; }, quel est le sélecteur ?",
+      "h1. C’est le nom d’une balise HTML : la règle s’appliquera à tous les titres de niveau 1 de la page.",
       null
     ],
     [
       "En quelle année l’iPhone est-il commercialisé ?",
       "2007.",
       "Il permet de surfer sur le web depuis un téléphone."
+    ],
+    [
+      "En quelle année apparaît YouTube ?",
+      "2006.",
+      null
+    ],
+    [
+      "À quoi sert le HTTP ?",
+      "C’est le protocole de communication entre le serveur et le client web.",
+      null
+    ],
+    [
+      "Navigateur ou moteur de recherche : lequel est un logiciel, lequel est un site web ?",
+      "Le navigateur est un logiciel ou une application ; le moteur de recherche est un site web.",
+      "C’est la confusion la plus fréquente."
+    ],
+    [
+      "Que fait le navigateur quand on entre une URL dans la barre d’adresse ?",
+      "Il envoie une requête au serveur web, dans le langage HTTP.",
+      null
     ],
     [
       "Que fait le navigateur quand on entre une URL dans la barre d’adresse ?",
@@ -161,6 +321,21 @@
       "C’est la confusion la plus fréquente."
     ],
     [
+      "Dans la règle CSS h1 { font-size : 24px ; }, quelle est la propriété ?",
+      "font-size, c’est-à-dire la taille du texte. La propriété indique ce que l’on veut modifier.",
+      null
+    ],
+    [
+      "À quoi sert la balise head ?",
+      "Elle contient les informations essentielles au fonctionnement du navigateur : le lien vers la feuille de style, l’alphabet utilisé, etc.",
+      null
+    ],
+    [
+      "À quoi sert le HTML ?",
+      "C’est le langage d’écriture des pages web.",
+      null
+    ],
+    [
       "En quelle année le cap du million de sites web publiés est-il atteint ?",
       "1997.",
       "Les moteurs de recherche sont alors à la peine."
@@ -168,6 +343,31 @@
     [
       "Quelle touche ouvre l’inspecteur de propriétés du navigateur ?",
       "La touche F12.",
+      null
+    ],
+    [
+      "Que veut dire « le HTML est un langage balisé » ?",
+      "Le contenu est encadré par une balise ouvrante et une balise fermante.",
+      null
+    ],
+    [
+      "Sur quelles trois technologies le web repose-t-il ?",
+      "Le HTTP, le HTML et l’URL.",
+      "Le CSS s’y ajoute aujourd’hui pour la mise en forme des pages."
+    ],
+    [
+      "Comment s’écrit une règle CSS ?",
+      "sélecteur { propriété : valeur ; }",
+      "Exemple : p { color : black ; }"
+    ],
+    [
+      "Qu’est-ce qu’un navigateur web ?",
+      "Un logiciel ou une application qui permet d’afficher les pages web.",
+      "Firefox, Chrome, Edge, Opera, Safari…"
+    ],
+    [
+      "En quelle année la barre du milliard de sites web est-elle franchie ?",
+      "2014.",
       null
     ],
     [
