@@ -2,13 +2,14 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "ATEL-BIOLOGIE",
-  "publishedAt": "2026-09-25T20:51:33.077Z",
+  "publishedAt": "2026-10-08T13:29:51.631Z",
   "listed": true,
   "level": "Post-bac",
+  "by": "M.Bonvin",
   "subject": "Atelier PASS",
   "deck": "Biologie cellulaire",
   "shareId": "sh095z2u0e5i454k",
-  "rev": 1790369493077,
+  "rev": 1791466191631,
   "cards": [
     [
       "Qu'est-ce qui caractérise le lysosome ?",
@@ -108,6 +109,96 @@
     [
       "Quelles sont les trois fonctions du réticulum endoplasmique lisse ?",
       "Synthèse des lipides, réserve de calcium, détoxification.",
+      null
+    ],
+    [
+      "Qui observe et nomme la « cellule » en 1665 ? ; Robert Hooke",
+      "au microscope",
+      "sur une coupe de liège. Le mot naît avant la notion."
+    ],
+    [
+      "Premier principe de la théorie cellulaire",
+      "et par qui ? ; La cellule est l'unité structurale et fonctionnelle de tous les êtres vivants. Schleiden et Schwann",
+      "1838."
+    ],
+    [
+      "Second principe de la théorie cellulaire",
+      "et par qui ? ; Toute cellule provient d'une cellule préexistante. Virchow. Pasteur démontre ensuite que la génération spontanée est fausse.",
+      null
+    ],
+    [
+      "De quelle cellule viennent toutes les nôtres ? ; La cellule-oeuf. Elle donne environ 10 puissance 14 cellules",
+      "réparties en 200 types de tissus.",
+      null
+    ],
+    [
+      "Qu'est-ce qui distingue une cellule procaryote d'une cellule eucaryote ? ; L'absence de noyau chez le procaryote",
+      "et l'absence d'organites membranaires.",
+      null
+    ],
+    [
+      "Chez le procaryote",
+      "la traduction est dite comment ? ; Co-transcriptionnelle : sans noyau",
+      "elle se fait en même temps et au même endroit que la transcription."
+    ],
+    [
+      "Chez l'eucaryote",
+      "la traduction est dite comment ? ; Post-transcriptionnelle : transcription dans le noyau",
+      "export de l'ARN"
+    ],
+    [
+      "Pourquoi le découplage transcription / traduction est-il un avantage ? ; Il crée des étapes intermédiaires",
+      "donc des points de contrôle : l'expression des gènes devient beaucoup plus régulée.",
+      null
+    ],
+    [
+      "Où vivent les archées ? ; Dans des milieux extrêmes : plus de 100 degrés près des sources sous-marines",
+      "milieux saturés en sel",
+      "pH aussi bas que 1. Elles sont extrêmophiles."
+    ],
+    [
+      "Quel outil de laboratoire doit-on aux archées ? ; La PCR",
+      "grâce à leurs enzymes thermostables.",
+      null
+    ],
+    [
+      "Quelles sont les quatre phases du cycle cellulaire ? ; G1",
+      "puis S où l'ADN est répliqué",
+      "puis G2"
+    ],
+    [
+      "Citez les cinq choses qu'une cellule sait faire. ; Se diviser",
+      "se différencier",
+      "se déplacer"
+    ],
+    [
+      "Une cellule quiescente peut-elle se remettre à se diviser ? ; Oui",
+      "si elle en reçoit l'ordre. C'est ce qui distingue la quiescence d'un arrêt définitif.",
+      null
+    ],
+    [
+      "Qu'est-ce que la motilité cellulaire ? ; La capacité d'une cellule à se déplacer",
+      "par exemple une cellule immunitaire qui migre vers un foyer d'infection.",
+      null
+    ],
+    [
+      "Apoptose ou nécrose : laquelle est programmée ? ; L'apoptose",
+      "un suicide organisé déclenché par un signal. La nécrose est subie",
+      "consécutive à une agression."
+    ],
+    [
+      "Donnez un exemple d'apoptose utile au développement. ; Chez l'embryon",
+      "la main se sculpte en éliminant les cellules situées entre les doigts. Une mort qui fabrique une forme.",
+      null
+    ],
+    [
+      "Sénescence et vieillissement : quelle différence ? ; La sénescence est un phénomène CELLULAIRE",
+      "le vieillissement un phénomène de l'ORGANISME.",
+      null
+    ],
+    [
+      "De quelles deux façons l'équilibre d'un tissu peut-il se rompre et mener au cancer ? ; Par un excès de divisions",
+      "ou par des cellules devenues incapables de mourir. Les deux côtés de la balance comptent.",
       null
     ]
   ]
