@@ -2,14 +2,14 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "ATEL-BIOLOGIE",
-  "publishedAt": "2026-10-08T13:29:51.631Z",
+  "publishedAt": "2026-10-08T13:30:56.766Z",
   "listed": true,
   "level": "Post-bac",
   "by": "M.Bonvin",
   "subject": "Atelier PASS",
   "deck": "Biologie cellulaire",
   "shareId": "sh095z2u0e5i454k",
-  "rev": 1791466191631,
+  "rev": 1791466256766,
   "cards": [
     [
       "Qu'est-ce qui caractérise le lysosome ?",
@@ -199,6 +199,116 @@
     [
       "De quelles deux façons l'équilibre d'un tissu peut-il se rompre et mener au cancer ? ; Par un excès de divisions",
       "ou par des cellules devenues incapables de mourir. Les deux côtés de la balance comptent.",
+      null
+    ],
+    [
+      "Cytoplasme ou cytosol : lequel contient les organites ?",
+      "Le cytoplasme. Cytoplasme = cytosol + organites. Le cytosol, c'est la phase liquide seule.",
+      null
+    ],
+    [
+      "Le noyau fait-il partie du cytoplasme ?",
+      "Non. Le cytoplasme, c'est tout ce qui est à l'intérieur de la membrane plasmique et à l'extérieur du noyau.",
+      null
+    ],
+    [
+      "Combien de membranes forment l'enveloppe nucléaire ?",
+      "Deux. Elle est percée de pores qui laissent passer les molécules dans les deux sens.",
+      null
+    ],
+    [
+      "À quoi servent les pores nucléaires ?",
+      "À faire entrer et sortir des molécules du noyau.",
+      null
+    ],
+    [
+      "Hétérochromatine ou euchromatine : laquelle est la plus condensée ?",
+      "L'hétérochromatine, en périphérie du noyau. L'euchromatine est moins condensée.",
+      null
+    ],
+    [
+      "De quoi est faite la chromatine ?",
+      "D'ADN associé à des protéines, notamment les histones.",
+      null
+    ],
+    [
+      "Que fabrique le nucléole ?",
+      "Les ARN ribosomiques. C'est la zone sombre du noyau.",
+      null
+    ],
+    [
+      "Pourquoi une cellule est-elle compartimentée ?",
+      "Parce qu'un compartiment fermé est un milieu chimique différent, donc une fonction possible. Exemple : le pH 4,5 du lysosome, impossible en plein cytosol.",
+      null
+    ],
+    [
+      "RER ou REL : lequel porte les ribosomes, et que fabrique-t-il ?",
+      "Le RER. Rugueux = Ribosomes. Il synthétise les protéines.",
+      null
+    ],
+    [
+      "Que font les ribosomes libres du cytosol ?",
+      "Ils fabriquent les protéines qui resteront dans la cellule — toutes les protéines ne viennent pas du RER.",
+      null
+    ],
+    [
+      "Quelles sont les trois fonctions du réticulum endoplasmique lisse ?",
+      "Synthèse des lipides, réserve de calcium, détoxification.",
+      null
+    ],
+    [
+      "Quels sont les deux rôles de l'appareil de Golgi ?",
+      "Faire mûrir les protéines (leur donner leur forme finale), puis les trier et les adresser.",
+      null
+    ],
+    [
+      "Exocytose ou endocytose : laquelle fait sortir ?",
+      "L'exocytose. L'endocytose fait entrer, en internalisant des molécules dans une vésicule.",
+      null
+    ],
+    [
+      "Qu'est-ce qui caractérise le lysosome ?",
+      "Un pH très acide, environ 4,5, et des enzymes qui dégradent ce qu'on lui apporte en petits constituants réutilisables.",
+      null
+    ],
+    [
+      "Qu'est-ce qui sort du noyau : la proteine, ou l'ARNm ?",
+      "L'ARNm. La transcription a lieu dans le noyau, la traduction dans le cytoplasme, sur un ribosome. La proteine ne traverse jamais le pore nucleaire.",
+      null
+    ],
+    [
+      "Pourquoi certains ribosomes sont-ils fixes sur le reticulum endoplasmique ?",
+      "La traduction commence toujours sur un ribosome libre. Si la proteine porte en tete une sequence signal, le ribosome vient accoster sur le RE et la proteine entre dedans. C'est la destination de la proteine qui decide.",
+      null
+    ],
+    [
+      "Quel est le trajet d'une proteine destinee a la secretion ?",
+      "Noyau (l'ARNm y est transcrit), puis un ribosome accoste au RE rugueux la traduit, puis Golgi, puis une vesicule, puis l'exterieur par exocytose.",
+      null
+    ],
+    [
+      "Combien de membranes possède la mitochondrie ?",
+      "Deux : une externe et une interne.",
+      null
+    ],
+    [
+      "Où se trouve l'espace intermembranaire de la mitochondrie ?",
+      "Entre la membrane externe et la membrane interne. La matrice, elle, est au centre.",
+      null
+    ],
+    [
+      "Qu'y a-t-il dans la matrice mitochondriale ?",
+      "Le milieu central de la mitochondrie, et son propre ADN, circulaire et distinct de celui du noyau.",
+      null
+    ],
+    [
+      "Que produit la mitochondrie, et qu'indique leur nombre ?",
+      "De l'ATP. Plus une cellule consomme d'énergie, plus elle en possède — une cellule cardiaque en est bourrée.",
+      null
+    ],
+    [
+      "Que font les peroxysomes ?",
+      "Ils oxydent les acides gras et participent à la détoxification de la cellule.",
       null
     ]
   ]
