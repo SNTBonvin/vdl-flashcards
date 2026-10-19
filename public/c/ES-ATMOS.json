@@ -2,47 +2,32 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "ES-ATMOS",
-  "publishedAt": "2026-09-28T16:24:36.670Z",
+  "publishedAt": "2026-10-19T10:42:35.354Z",
   "listed": true,
-  "level": "1re",
+  "level": "Tle",
   "subject": "Enseignement Scientifique",
   "deck": "Atmosphère",
   "shareId": "sh4c4x5k5e1l1b2v",
-  "rev": 1790612676670,
+  "rev": 1792406555354,
   "cards": [
-    [
-      "1 Ga",
-      "1 milliard d'années",
-      null
-    ],
-    [
-      "Présence de O2 dans les océans",
-      "- 3,8 Ga",
-      null
-    ],
-    [
-      "Composition atmosphère primitive",
-      "Dans l'ordre décroissant : essentiellement du H2O (autour de 80%) puis du CO2 et N2",
-      null
-    ],
-    [
-      "Apparition O2 dans l'atmosphère",
-      "- 2,4 Ga",
-      null
-    ],
-    [
-      "Date à laquelle l'atmosphère a la même composition qu'actuellement",
-      "- 500 Ma",
-      null
-    ],
     [
       "Composition atmosphère actuelle",
       "- 79% de N2 (Diazote)\n- 21% de O2 (Dioxygène)\n- et traces d'autres gaz (H20, CO2, CH4, N20,...)",
       null
     ],
     [
-      "Premiers végétaux terrestres",
-      "- 500 Ma (millions d'années)",
+      "Lien entre ozone et développement de la vie hors de l'eau",
+      "l'ozone absorbe les UV qui ont des effets mutagènes et délétères sur les êtres vivants (mutation de l'ADN)",
+      null
+    ],
+    [
+      "Nom de la partie de l'atmosphère vers 30 km",
+      "stratosphère",
+      null
+    ],
+    [
+      "Gaz qui absorbe les UV",
+      "Ozone",
       null
     ],
     [
@@ -51,13 +36,58 @@
       null
     ],
     [
-      "Chondrites",
-      "Ce sont des fragments de petits astéroïdes, éjectés de la ceinture principale par un choc-collision entre deux astéroïdes. Certains nous renseignent sur la composition de la Terre lors de sa formation.",
+      "Effet des UV sur les cellules",
+      "création possible de dimère de thymine ce qui augmente la probabilité de mutation",
+      null
+    ],
+    [
+      "Apparition O2 dans l'atmosphère",
+      "- 2,4 Ga",
       null
     ],
     [
       "Premières bactéries photosynthétiques (cyanobactéries)",
       "- 3,8 Ga",
+      null
+    ],
+    [
+      "Sources et puits de dioxygène atmosphérique",
+      "Les êtres vivants (photosynthèse = source, respiration = puits) et les combustions (puits)",
+      null
+    ],
+    [
+      "Présence de O2 dans les océans",
+      "- 3,8 Ga",
+      null
+    ],
+    [
+      "Date à laquelle l'atmosphère a la même composition qu'actuellement",
+      "- 500 Ma",
+      null
+    ],
+    [
+      "Chondrites",
+      "Ce sont des fragments de petits astéroïdes, éjectés de la ceinture principale par un choc-collision entre deux astéroïdes. Certains nous renseignent sur la composition de la Terre lors de sa formation.",
+      null
+    ],
+    [
+      "1 Ga",
+      "1 milliard d'années",
+      null
+    ],
+    [
+      "Altitude de formation de l'ozone",
+      "30 km",
+      null
+    ],
+    [
+      "Composition atmosphère primitive",
+      "Dans l'ordre décroissant : essentiellement du H2O (autour de 80%) puis du CO2 et N2",
+      null
+    ],
+    [
+      "Premiers végétaux terrestres",
+      "- 500 Ma (millions d'années)",
       null
     ]
   ]
