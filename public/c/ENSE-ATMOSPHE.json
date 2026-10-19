@@ -1,0 +1,93 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "ENSE-ATMOSPHE",
+  "publishedAt": "2026-10-19T10:41:10.545Z",
+  "listed": true,
+  "subject": "Enseignement Scientifique",
+  "deck": "Atmosphère",
+  "shareId": "sh4c4x5k5e1l1b2v",
+  "rev": 1792406470545,
+  "cards": [
+    [
+      "Composition atmosphère actuelle",
+      "- 79% de N2 (Diazote)\n- 21% de O2 (Dioxygène)\n- et traces d'autres gaz (H20, CO2, CH4, N20,...)",
+      null
+    ],
+    [
+      "Création de la Terre, Apparition de l'atmosphère primitive",
+      "- 4,6 Ga",
+      null
+    ],
+    [
+      "Apparition O2 dans l'atmosphère",
+      "- 2,4 Ga",
+      null
+    ],
+    [
+      "Premières bactéries photosynthétiques (cyanobactéries)",
+      "- 3,8 Ga",
+      null
+    ],
+    [
+      "Présence de O2 dans les océans",
+      "- 3,8 Ga",
+      null
+    ],
+    [
+      "Date à laquelle l'atmosphère a la même composition qu'actuellement",
+      "- 500 Ma",
+      null
+    ],
+    [
+      "Chondrites",
+      "Ce sont des fragments de petits astéroïdes, éjectés de la ceinture principale par un choc-collision entre deux astéroïdes. Certains nous renseignent sur la composition de la Terre lors de sa formation.",
+      null
+    ],
+    [
+      "1 Ga",
+      "1 milliard d'années",
+      null
+    ],
+    [
+      "Composition atmosphère primitive",
+      "Dans l'ordre décroissant : essentiellement du H2O (autour de 80%) puis du CO2 et N2",
+      null
+    ],
+    [
+      "Premiers végétaux terrestres",
+      "- 500 Ma (millions d'années)",
+      null
+    ],
+    [
+      "Sources et puits de dioxygène atmosphérique",
+      "Les êtres vivants (photosynthèse = source, respiration = puits) et les combustions (puits)",
+      null
+    ],
+    [
+      "Gaz qui absorbe les UV",
+      "Ozone",
+      null
+    ],
+    [
+      "Altitude de formation de l'ozone",
+      "30 km",
+      null
+    ],
+    [
+      "Nom de la partie de l'atmosphère vers 30 km",
+      "stratosphère",
+      null
+    ],
+    [
+      "Lien entre ozone et développement de la vie hors de l'eau",
+      "l'ozone absorbe les UV qui ont des effets mutagènes et délétères sur les êtres vivants (mutation de l'ADN)",
+      null
+    ],
+    [
+      "Effet des UV sur les cellules",
+      "création possible de dimère de thymine ce qui augmente la probabilité de mutation",
+      null
+    ]
+  ]
+}
