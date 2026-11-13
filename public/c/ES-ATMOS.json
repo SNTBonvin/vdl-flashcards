@@ -2,13 +2,13 @@
   "format": "vdl-flashcards-set",
   "version": 1,
   "code": "ES-ATMOS",
-  "publishedAt": "2026-10-19T10:42:35.354Z",
+  "publishedAt": "2026-11-13T16:05:59.444Z",
   "listed": true,
   "level": "Tle",
   "subject": "Enseignement Scientifique",
   "deck": "Atmosphère",
   "shareId": "sh4c4x5k5e1l1b2v",
-  "rev": 1792406555354,
+  "rev": 1794585959444,
   "cards": [
     [
       "Composition atmosphère actuelle",
@@ -88,6 +88,131 @@
     [
       "Premiers végétaux terrestres",
       "- 500 Ma (millions d'années)",
+      null
+    ],
+    [
+      "Les 4 réservoirs de carbone superficiels",
+      "Lithosphère / atmosphère / hydrosphère / biosphère",
+      null
+    ],
+    [
+      "Réservoir de carbone",
+      "Compartiment de la Terre où le carbone est stocké (ex. hydrosphère ou lithosphère)",
+      null
+    ],
+    [
+      "Stock de carbone",
+      "Quantité de carbone contenue dans un réservoir à un instant donné",
+      null
+    ],
+    [
+      "Carbone de l'atmosphère : sous quelle forme",
+      "Surtout du CO2 (et un peu de CH4)",
+      null
+    ],
+    [
+      "Carbone de l'hydrosphère : sous quelle forme",
+      "Surtout du CO2 dissous dans l'eau",
+      null
+    ],
+    [
+      "Carbone de la lithosphère : sous quelle forme",
+      "Roches carbonatées (calcaires) et combustibles fossiles (charbon / pétrole / gaz)",
+      null
+    ],
+    [
+      "Carbone de la biosphère : sous quelle forme",
+      "Matière organique des êtres vivants (végétaux surtout)",
+      null
+    ],
+    [
+      "Flux de carbone",
+      "Quantité de carbone échangée entre deux réservoirs par unité de temps (en tonnes par an)",
+      null
+    ],
+    [
+      "Cycle du carbone",
+      "Ensemble des échanges (flux) de carbone entre les réservoirs de la Terre",
+      null
+    ],
+    [
+      "Condition pour que les stocks restent constants",
+      "Les flux entrants et sortants de chaque réservoir sont équilibrés",
+      null
+    ],
+    [
+      "Flux atmosphère → biosphère",
+      "La photosynthèse (le CO2 devient matière organique)",
+      null
+    ],
+    [
+      "Flux biosphère → atmosphère",
+      "La respiration et la décomposition de la matière organique qui rejettent du CO2",
+      null
+    ],
+    [
+      "Flux atmosphère → hydrosphère",
+      "La dissolution du CO2 dans l'eau",
+      null
+    ],
+    [
+      "Flux d'origine anthropique principal",
+      "La combustion des combustibles fossiles : le carbone de la lithosphère passe dans l'atmosphère sous forme de CO2",
+      null
+    ],
+    [
+      "Autre flux d'origine anthropique",
+      "La déforestation (moins de photosynthèse et combustion ou décomposition du bois)",
+      null
+    ],
+    [
+      "Pourquoi la combustion des fossiles déséquilibre le cycle",
+      "Elle libère en quelques décennies du carbone stocké pendant des millions d'années : le flux vers l'atmosphère dépasse les flux de sortie",
+      null
+    ],
+    [
+      "Conséquence de ce déséquilibre sur l'atmosphère",
+      "Hausse du CO2 atmosphérique donc augmentation de l'effet de serre",
+      null
+    ],
+    [
+      "Origine des combustibles fossiles",
+      "Ils se sont formés à partir du carbone des êtres vivants",
+      null
+    ],
+    [
+      "Durée de formation des combustibles fossiles",
+      "Plusieurs dizaines à plusieurs centaines de millions d'années",
+      null
+    ],
+    [
+      "Les trois combustibles fossiles",
+      "Charbon / pétrole / gaz naturel",
+      null
+    ],
+    [
+      "Pourquoi les combustibles fossiles sont-ils non renouvelables",
+      "Ils se renouvellent beaucoup moins vite qu'on ne les consomme : les stocks ne se reconstituent pas",
+      null
+    ],
+    [
+      "Origine du pétrole et du gaz (hydrocarbures)",
+      "Matière organique (surtout planctonique) déposée au fond des mers puis enfouie dans les sédiments sans dioxygène et transformée par la chaleur et la pression",
+      null
+    ],
+    [
+      "Origine du charbon",
+      "Débris de végétaux (forêts de marécages) enfouis à l'abri de l'air puis transformés lentement en tourbe puis lignite puis houille",
+      null
+    ],
+    [
+      "Hydrocarbure",
+      "Molécule formée uniquement de carbone et d'hydrogène (pétrole et gaz naturel)",
+      null
+    ],
+    [
+      "Formation vs consommation des combustibles fossiles",
+      "Formation : millions d'années. Consommation : quelques siècles depuis la révolution industrielle",
       null
     ]
   ]
