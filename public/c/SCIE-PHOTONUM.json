@@ -1,0 +1,134 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SCIE-PHOTONUM",
+  "publishedAt": "2026-11-13T13:48:55.071Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences numériques et technologie",
+  "deck": "Photo Numérique",
+  "shareId": "sh6h1e2y10070u4l",
+  "rev": 1794577735071,
+  "cards": [
+    [
+      "1826",
+      "Invention de la photographie en noir et blanc par Nicéphore Niépce.",
+      null
+    ],
+    [
+      "1877",
+      "Invention de la photographie en couleur par Louis Ducos du Hauron.",
+      null
+    ],
+    [
+      "1969",
+      "Invention du capteur CCD.",
+      null
+    ],
+    [
+      "2007",
+      "Vente du premier smartphone intégrant un appareil photo : l’iPhone, par la société Apple.",
+      null
+    ],
+    [
+      "Qu’est-ce qu’un pixel ?",
+      "Le plus petit élément d’une image numérique. On lui associe un code : 0 ou 1, un nombre de gris, ou trois nombres RVB.",
+      null
+    ],
+    [
+      "Comment lire le code d’une image noir et blanc (P1) ?",
+      "P1 = noir et blanc. Ligne suivante : largeur puis hauteur. Ensuite un chiffre par pixel : 1 = noir, 0 = blanc.",
+      null
+    ],
+    [
+      "Combien de valeurs possibles pour un pixel noir et blanc ?",
+      "2 valeurs (0 ou 1), donc 1 bit par pixel.",
+      null
+    ],
+    [
+      "Comment lire le code d’une image en niveaux de gris (P2) ?",
+      "P2 = niveaux de gris. Largeur et hauteur, puis la valeur maximale, puis un nombre par pixel. 0 = noir, valeur maximale = blanc.",
+      null
+    ],
+    [
+      "Valeur maximale M : combien de niveaux de gris ?",
+      "M + 1 niveaux, car on compte le 0. Exemple : maximum 50, donc 51 niveaux.",
+      null
+    ],
+    [
+      "256 nuances de gris : combien de bits et d’octets par pixel ?",
+      "8 bits, soit 1 octet par pixel (2⁸ = 256).",
+      null
+    ],
+    [
+      "Comment lire le code d’une image en couleur (P3) ?",
+      "P3 = couleur. Largeur et hauteur, valeur maximale (255), puis les nombres par paquets de 3 : rouge, vert, bleu pour chaque pixel.",
+      null
+    ],
+    [
+      "Que sont les canaux RVB ?",
+      "Rouge, Vert, Bleu : trois valeurs de 0 à 255 pour chaque pixel.",
+      null
+    ],
+    [
+      "Quelles couleurs donnent (255, 0, 0), (0, 255, 0), (0, 0, 255), (0, 0, 0) et (255, 255, 255) ?",
+      "Rouge, vert, bleu, noir et blanc.",
+      null
+    ],
+    [
+      "Combien de couleurs différentes avec les canaux RVB de 0 à 255 ?",
+      "256 × 256 × 256 = 16 777 216 couleurs.",
+      null
+    ],
+    [
+      "Combien d’octets pour un pixel en couleur ?",
+      "3 octets (un par canal), soit 24 bits.",
+      null
+    ],
+    [
+      "Comment calculer la taille d’une image non compressée ?",
+      "Largeur × hauteur × nombre d’octets par pixel. (1 octet en gris, 3 octets en couleur , en noir et blanc, 1 bit par pixel.)",
+      null
+    ],
+    [
+      "Que fait un capteur CCD ?",
+      "Il transforme la lumière en signal électrique, grâce à ses photosites.",
+      null
+    ],
+    [
+      "Qu’est-ce que le filtre de Bayer ?",
+      "Des filtres colorés devant les photosites. 1 pixel = 4 photosites : 1 rouge, 2 verts, 1 bleu.",
+      null
+    ],
+    [
+      "Que sont les métadonnées (EXIF) ?",
+      "Des informations cachées dans le fichier qui décrivent l’image : nom, date de prise de vue, marque de l’appareil, coordonnées GPS.",
+      null
+    ],
+    [
+      "Pourquoi se méfier des métadonnées ?",
+      "Elles peuvent contenir des données sensibles (lieu, date) qui permettent d’identifier une personne.",
+      null
+    ],
+    [
+      "Que fait la compression RAW vers JPG ?",
+      "L’appareil convertit l’image brute (RAW) en JPG avec des algorithmes. Il utilise moins de bits, donc le fichier est plus léger mais contient moins d’informations.",
+      null
+    ],
+    [
+      "Pourquoi une image trop compressée est-elle pixellisée ?",
+      "Le logiciel donne la même information aux pixels voisins. Il n’y a pas forcément moins de pixels.",
+      null
+    ],
+    [
+      "Comment une image est-elle traitée (flou, gris, inversion) ?",
+      "Des algorithmes manipulent les codes RVB de chaque pixel.",
+      null
+    ],
+    [
+      "Comment inverser un pixel ?",
+      "On remplace chaque valeur v par 255 − v. Exemple : (200, 100, 0) devient (55, 155, 255).",
+      null
+    ]
+  ]
+}
