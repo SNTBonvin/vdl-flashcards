@@ -1,0 +1,64 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "SCIE-FORCESEV",
+  "publishedAt": "2026-11-16T18:58:07.639Z",
+  "listed": true,
+  "level": "2de",
+  "subject": "Sciences de la Vie et de la Terre",
+  "deck": "Forces évolutives",
+  "shareId": "sh3h0a196n5t4o1y",
+  "rev": 1794855487639,
+  "cards": [
+    [
+      "Qu'est-ce qu'une population ?",
+      "L'ensemble des individus d'une même espèce vivant dans un même lieu",
+      null
+    ],
+    [
+      "Qu'est-ce que la fréquence d'un allèle dans une population ?",
+      "La fréquence d'un allèle = nombre d'exemplaires de cet allèle ÷ nombre total d'allèles de la population",
+      null
+    ],
+    [
+      "Qu'est-ce qu'une mutation ?",
+      "Un changement de la séquence d'un gène qui crée un nouvel allèle, par hasard",
+      null
+    ],
+    [
+      "Qu'est-ce que la dérive génétique ?",
+      "Une modification aléatoire de la fréquence des allèles au sein d'une population au cours des générations successives",
+      null
+    ],
+    [
+      "Dans quel cas la dérive génétique est-elle plus rapide ?",
+      "Quand l'effectif de la population est faible",
+      null
+    ],
+    [
+      "Qu'est-ce que la sélection naturelle ?",
+      "Elle résulte de la pression du milieu et des interactions entre les organismes : certains individus ont une descendance plus nombreuse que d'autres dans certaines conditions",
+      null
+    ],
+    [
+      "Quel est l'effet de la sélection naturelle sur les fréquences alléliques ?",
+      "Un allèle favorable devient plus fréquent, un allèle défavorable devient plus rare",
+      null
+    ],
+    [
+      "Quel est l'effet de la dérive génétique sur les fréquences alléliques ?",
+      "Les fréquences varient au hasard, dans des sens imprévisibles et différents d'une simulation à l'autre",
+      null
+    ],
+    [
+      "Comment distinguer dérive et sélection dans une simulation ?",
+      "Dérive : les résultats diffèrent d'un groupe à l'autre (hasard)",
+      "sélection : chaque simulation évolue dans le même sens"
+    ],
+    [
+      "Quel est le rôle respectif des mutations, de la dérive et de la sélection ?",
+      "Les mutations créent de nouveaux allèles par hasard",
+      "la dérive et la sélection font varier leur fréquence dans la population"
+    ]
+  ]
+}
