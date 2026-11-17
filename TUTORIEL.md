@@ -413,6 +413,32 @@ miroir : un fichier ajouté directement sur le miroir fait diverger les deux
 dépôts et bloque la recopie jusqu'à ce qu'on la force. Ensuite, le
 code est vivant : `…/vdl-flashcards/c/LECODE.json`.
 
+### Composer un jeu en deux gestes
+
+*Diffusion → **Nouveau jeu***, le premier bouton de l'écran. Un seul formulaire :
+la **matière**, le **thème**, et la liste des cartes collée en dessous — une par
+ligne, recto et verso séparés par un point-virgule, ou un fichier CSV/JSON
+choisi. Les matières et les thèmes déjà là s'offrent en étiquettes, d'un appui ;
+un nom neuf est créé.
+
+« **Créer et publier** » range tout et ouvre la feuille de publication, le code
+déjà proposé. Il reste à choisir le niveau et à déposer.
+
+Deux cas, et le code produit les distingue :
+
+- **thème neuf** — il ne contient que ces cartes : c'est *le thème* qui se
+  publie, sous un code simple (`SVT-BIODIV`) ;
+- **thème déjà là** — les cartes s'y ajoutent et forment *une série*, publiée
+  sous son propre code (`SVT-BIODIV-SERIE2`). C'est le « lot 2 » d'un chapitre
+  entamé, sans rien avoir à cocher.
+
+Les rectos déjà présents dans le thème, et ceux répétés dans le collage, sont
+écartés et comptés avant que vous validiez : rediffuser un lot corrigé n'empile
+pas de jumelles.
+
+La matière créée est une matière ordinaire, rangée dans vos matières. Sur un
+appareil en mode auteur, elle n'est jamais proposée en révision.
+
 ### Publier d'un seul bouton
 
 Le dépôt à la main — télécharger, ouvrir GitHub, coller, valider — peut être

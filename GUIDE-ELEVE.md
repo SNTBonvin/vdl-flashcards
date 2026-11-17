@@ -175,6 +175,10 @@ mémoriser.
 3. Dans le thème, à la hauteur de « Cartes », le bouton **+** ouvre « Ajouter une
    carte ». Le bouton **⋯** à côté propose « Importer des cartes ».
 
+Dans un thème que ton professeur t'a envoyé, un bouton **« Ajouter mes cartes »**
+te le propose directement, sous le bouton de révision — tant que tu n'as pas
+encore écrit la tienne.
+
 ### Une idée par carte
 
 - Recto court, une seule question. Une carte qui contient deux notions n'en fixe

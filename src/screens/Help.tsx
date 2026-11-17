@@ -143,7 +143,7 @@ export function HelpScreen() {
       <Step
         icon="plus"
         title="6. Écrire ses propres cartes"
-        text="Une matière contient des thèmes, un thème contient des cartes : crée d’abord une matière — Histoire-Géographie, Anglais — puis un thème par chapitre. À la hauteur de « Cartes », le bouton + ouvre « Ajouter une carte », le bouton ⋯ propose « Importer ». Reformuler un cours pour en faire une question est en soi un travail de mémorisation, et tes cartes cohabitent avec celles reçues dans le même thème."
+        text="Une matière contient des thèmes, un thème contient des cartes : crée d’abord une matière — Histoire-Géographie, Anglais — puis un thème par chapitre. À la hauteur de « Cartes », le bouton + ouvre « Ajouter une carte », le bouton ⋯ propose « Importer ». Dans un thème reçu de ton professeur, un bouton « Ajouter mes cartes » te le propose directement, tant que tu n’en as écrit aucune. Reformuler un cours pour en faire une question est en soi un travail de mémorisation, et tes cartes cohabitent avec celles reçues dans le même thème."
       />
 
       <Step
@@ -177,6 +177,12 @@ export function HelpScreen() {
             icon="layers"
             title="Les séries"
             text="Une série est une sélection de cartes d’un même thème, gardée sous la main. Elle sert à deux choses : fixer une échéance — « ces quinze cartes, pour vendredi » — et diffuser une partie d’un thème sans tout donner d’un coup. Coche des cartes, puis « Créer une série ». Chez celui qui la reçoit, les séries d’un même thème se rejoignent dans ce thème."
+          />
+
+          <Step
+            icon="plus"
+            title="Composer un jeu en deux gestes"
+            text="« Diffusion › Nouveau jeu » demande une matière, un thème et la liste des cartes — collée, ou prise dans un fichier. Ce qui existe déjà s’offre en étiquettes, un nom neuf est créé. « Créer et publier » range tout et ouvre la feuille de publication, le code déjà proposé. Thème neuf : c’est le thème qui se publie. Thème déjà là : les cartes s’y ajoutent et forment une série, sous son propre code."
           />
 
           <Step

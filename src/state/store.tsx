@@ -163,7 +163,9 @@ export interface Store extends State {
   deleteDeck(id: ID): Promise<void>
 
   createCard(deckId: ID, data: Pick<Card, 'front' | 'back'> & Partial<Card>): Promise<Card>
-  createCards(deckId: ID, rows: { front: string; back: string; notes?: string; tags?: string[] }[]): Promise<number>
+  /** Crée des cartes d'un coup et rend celles qui l'ont été : un appelant qui
+   *  enchaîne — composer une série, publier — a besoin de leurs identifiants. */
+  createCards(deckId: ID, rows: { front: string; back: string; notes?: string; tags?: string[] }[]): Promise<Card[]>
   updateCard(id: ID, patch: Partial<Omit<Card, 'id'>>): Promise<void>
   deleteCard(id: ID): Promise<void>
   deleteCards(ids: ID[]): Promise<void>
@@ -398,10 +400,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const cards = rows
         .filter((r) => r.front.trim() && r.back.trim())
         .map((r) => makeCard(deckId, r as Card))
-      if (cards.length === 0) return 0
+      if (cards.length === 0) return []
       await idb.putMany('cards', cards)
       dispatch({ type: 'cards', payload: [...stateRef.current.cards, ...cards] })
-      return cards.length
+      return cards
     },
     [],
   )

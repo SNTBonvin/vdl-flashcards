@@ -325,6 +325,25 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         )
       )}
 
+      {/* Un thème reçu ne contient d'abord que les cartes du professeur : rien
+          n'y dit qu'on peut y mettre les siennes. Le « + » de la section Cartes
+          le permet, mais il est muet — et personne ne cherche un bouton dont il
+          ignore l'existence. L'invitation disparaît dès la première carte
+          personnelle : elle n'a plus rien à apprendre. */}
+      {!store.teacherMode &&
+        !deck.reserve &&
+        cards.length > 0 &&
+        cards.every((c) => c.sharedFrom) && (
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => setEditingCard('new')}
+          >
+            <Icon name="plus" size={18} />
+            Ajouter mes cartes
+          </button>
+        )}
+
       <div className="quietbar">
         {counts.total > 0 && !deck.reserve && !store.authorMode && (
           <button type="button" className="quietbar__item" onClick={() => setPlanOpen(true)}>
@@ -867,7 +886,7 @@ export function DeckScreen({ id, lot: lotFromUrl }: { id: string; lot?: string }
         deckName={deck.name}
         onClose={() => setImportOpen(false)}
         onImport={async (rows) => {
-          const added = await store.createCards(deck.id, rows)
+          const { length: added } = await store.createCards(deck.id, rows)
           setImportOpen(false)
           toast(`${added} ${plural(added, 'carte importée', 'cartes importées')}.`)
         }}

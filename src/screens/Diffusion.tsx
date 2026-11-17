@@ -4,6 +4,7 @@ import { useRoute } from '../lib/router'
 import { Icon } from '../components/Icon'
 import { EmptyState, SectionHead, Sheet, plural, useToast } from '../components/ui'
 import { PublishSheet } from '../components/PublishSheet'
+import { NouveauJeuSheet } from '../components/NouveauJeuSheet'
 import { formatDeadline, isPast } from '../srs/deadline'
 import type { Card, Deck, Distribution } from '../db/types'
 
@@ -30,6 +31,8 @@ export function DiffusionScreen() {
   const { navigate } = useRoute()
   /** Choix de ce qu'on publie, puis feuille de publication. */
   const [choix, setChoix] = useState(false)
+  /** Composition d'un jeu neuf, qui enchaîne sur la publication. */
+  const [nouveau, setNouveau] = useState(false)
   const [cible, setCible] = useState<Cible | null>(null)
   /** Matière mise en avant. `null` : tout, dans l'ordre habituel. */
   const [matiere, setMatiere] = useState<string | null>(null)
@@ -120,12 +123,21 @@ export function DiffusionScreen() {
 
       {/* La publication a quitté la fiche de thème pour se tenir ici : l'endroit
           où l'on voit déjà ce qui est en ligne est le bon endroit pour y
-          ajouter, ou pour redéposer ce qui a changé. */}
+          ajouter, ou pour redéposer ce qui a changé.
+
+          Deux gestes, et un seul est quotidien : composer un jeu neuf. Remettre
+          en ligne ce qui existe déjà est de l'entretien, et passe au second
+          rang. */}
       <button
         type="button"
         className="btn btn--primary btn--lg btn--block"
-        onClick={() => setChoix(true)}
+        onClick={() => setNouveau(true)}
       >
+        <Icon name="plus" size={18} />
+        Nouveau jeu
+      </button>
+
+      <button type="button" className="btn btn--ghost btn--block" onClick={() => setChoix(true)}>
         <Icon name="upload" size={18} />
         Publier ou republier
       </button>
@@ -264,6 +276,15 @@ export function DiffusionScreen() {
           </div>
         </section>
       )}
+
+      <NouveauJeuSheet
+        open={nouveau}
+        onClose={() => setNouveau(false)}
+        onReady={(prete) => {
+          setNouveau(false)
+          setCible(prete)
+        }}
+      />
 
       <Sheet open={choix} title="Publier" onClose={() => setChoix(false)}>
         <div className="stack stack-4">
