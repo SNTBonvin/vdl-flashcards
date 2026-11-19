@@ -1,0 +1,129 @@
+{
+  "format": "vdl-flashcards-set",
+  "version": 1,
+  "code": "ENSE-CLIMAT",
+  "publishedAt": "2026-11-19T15:47:06.112Z",
+  "listed": true,
+  "level": "Tle",
+  "subject": "Enseignement Scientifique",
+  "deck": "Climat",
+  "shareId": "sh240u0c284p1r4b",
+  "rev": 1795103226112,
+  "cards": [
+    [
+      "Qu'est ce que le climat ?",
+      "Un climat est défini par un ensemble de moyennes de grandeurs atmosphériques observées dans une région donnée pendant une période donnée. Ces grandeurs sont principalement la température‚ la pression‚ le degré d’hygrométrie‚ la pluviométrie‚ la nébulosité‚ la vitesse et la direction des vents.",
+      null
+    ],
+    [
+      "Qu'est ce que le climatologie ?",
+      "La climatologie étudie les variations du climat local ou global à moyen ou long terme (années‚ siècles‚ millénaires…).",
+      null
+    ],
+    [
+      "Qu'est ce que la météorologie ?",
+      "La météorologie étudie les phénomènes atmosphériques qu’elle prévoit à court terme (jours‚ semaines).",
+      null
+    ],
+    [
+      "Comment calcule-t-on la température moyenne de la Terre ?",
+      "La température moyenne de la Terre‚ calculée à partir de mesures in situ et depuis l’espace par des satellites‚ est l’un des indicateurs du climat global. Il en existe d’autres : volume des océans‚ étendue des glaces et des glaciers...",
+      null
+    ],
+    [
+      "Les pollens sont utilisés pour connaître les climats anciens. Jusque quand ?",
+      "environ 30 000 ans",
+      null
+    ],
+    [
+      "Des carottes de glaces en Antarctique sont utilisées pour connaître les climats anciens. Jusque quand ?",
+      "A l'origine on pouvait trouver des glaces de 420 000 ans. Un autre programme a réussi à trouver des glaces de 720 000 ans. Actuellement un programme essaie de trouver des glaces de 1.5 millions d'années.",
+      null
+    ],
+    [
+      "Comment les pollens peuvent nous renseigner sur les climats anciens ?",
+      "Les pollens des plantes ayant vécu dans le passé peuvent se retrouver piégés dans des tourbes et sont reconnaissables (différents selon les espèces). Certaines espèces ont des préférences climatiques et cela permet de reconstituer des paléoclimats",
+      null
+    ],
+    [
+      "Comment les carottes de glace peuvent nous renseigner sur les climats anciens ?",
+      "Les couches de glace contiennent des bulles d'air fossilisées‚ leur analyse permet de connaître la composition atmosphérique en gaz à effet de serre (CO2 et CH4) et donc d'en déduire la température moyenne sur Terre.",
+      null
+    ],
+    [
+      "Les roches sont utilisées pour connaître les climats anciens. Jusque quand ?",
+      "Cela dépend des roches mais des traces de certaines roches volcaniques (trapp du décan) permettent de déduire d'un climat chaud ou froid sur plusieurs millions d'années",
+      null
+    ],
+    [
+      "Comment les roches peuvent nous renseigner sur les climats anciens ?",
+      "Certaines roches se forment dans des environnements arides (évaporites)‚ ou alors témoignent de la présence d'un glacier (blocs erratiques et moraines)",
+      null
+    ],
+    [
+      "Qu'est ce que l'effet de serre ?",
+      "C'est un phénomène naturel qui permet de mieux garder les infra rouges émis par la Terre grâce à certains gaz de l'atmosphère (gaz à effet de serre).",
+      null
+    ],
+    [
+      "Quel type de rayonnement émet le sol ?",
+      "de l'infrarouge",
+      null
+    ],
+    [
+      "Un gaz à effet de serre se caractérise par le fait qu’il",
+      "absorbe une partie du rayonnement infrarouge.",
+      null
+    ],
+    [
+      "Les deux principaux gaz à effet de serre impliqués dans le forçage radiatif sont",
+      "CO2 et vapeur d'eau (H2O)",
+      null
+    ],
+    [
+      "Depuis un siècle‚ l’ordre de grandeur d’augmentation de la température moyenne du globe est de",
+      "1°C",
+      null
+    ],
+    [
+      "Qu'est ce que le forçage radiatif ?",
+      "C'est la différence entre les énergies radiatives (rayonnement) reçues par la Terre et émises par le système climatique (qui sort de l'atmosphère). On le considère comme nul avant la révolution industriel (système à l'équilibre)",
+      null
+    ],
+    [
+      "Que fait le forçage radiatif depuis la révolution industrielle ?",
+      "Il augmente ce qui se traduit par moins d'énergie qui sort du système‚ en effet les gaz à effet de serre retiennent davantage les infrarouges émis par la Terre. La Terre se réchauffe.",
+      null
+    ],
+    [
+      "Quels sont les caractéristiques qui font qu'un gaz contribue à l'effet de serre ?",
+      "- sa concentration dans l'atmosphère </br>- son pouvoir réchauffement global (sa capacité à bloquer les infrarouges) </br>- sa durée de séjour dans l'atmosphère </br>",
+      null
+    ],
+    [
+      "Citer 4 gaz à effet de serre ?",
+      "CO2‚ N2O (oxyde d'azote)‚ H2O (vapeur) et CH4 (méthane)",
+      null
+    ],
+    [
+      "Quelles conséquences de cette augmentation de ce réchauffement ?",
+      "Augmentation du niveau des mers : </br>- par fonte des glaciers continentaux (et pas de la banquise !!)</br>- par dilatation thermique de l'eau de surface des océans </br>",
+      null
+    ],
+    [
+      "Qu'est ce qu'une rétroaction ?",
+      "Une rétroaction climatique est le phénomène par lequel un effet sur le climat agit en retour sur ses causes d'une manière qui peut le stabiliser ou au contraire l'amplifier.",
+      null
+    ],
+    [
+      "Citer quelques rétroactions positives ? (effets amplificateurs)",
+      "- l'augmentation de la concentration de gaz à effet de serre atmosphérique </br>- la perte de la surface glaciaire (diminution de l'albédo)</br>- le dégel du permafrost qui libère des gaz à effet de serre </br>- le réchauffement de l'océan (qui diminue la solubilité du CO2) </br>- le déboisement (moins de captage de CO2 par la végétation)</br>",
+      null
+    ],
+    [
+      "Citer quelques rétroactions négatives ? (effets stabilisateurs)",
+      "- la végétalisation </br>Remarque : sur les longues périodes géologiques‚ il y a d'autres causes comme l'érosion des roches (consomme du CO2)‚ le refroidissement de l'océan‚ la tectonique des plaques (modification des courants marins autour de l'Antarctique)",
+      null
+    ]
+  ]
+}
